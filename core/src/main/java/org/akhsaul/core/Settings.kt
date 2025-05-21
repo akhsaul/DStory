@@ -8,11 +8,16 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.preference.PreferenceDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.akhsaul.core.domain.model.User
+import java.time.Duration
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataStore() {
 
@@ -46,8 +51,23 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         putBoolean(THEME_MODE_KEY, isDark)
     }
 
+    fun isUserLoggedIn(): Boolean {
+        val lastLogin = getString(LAST_LOGIN_KEY, null) ?: return false
+
+        val duration = Duration.between(
+            ZonedDateTime.parse(lastLogin, DateTimeFormatter.ISO_INSTANT),
+            ZonedDateTime.now(ZoneOffset.UTC)
+        )
+
+        return getUser() != null && duration.toMinutes() <= 60
+    }
+
     fun setUser(user: User) {
         putStringSet(USER_KEY, setOf(user.id, user.name, user.token))
+        putString(
+            LAST_LOGIN_KEY,
+            ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
+        )
     }
 
     fun getUser(): User? {
@@ -77,6 +97,15 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         }
     }
 
+    override fun getString(key: String, defValue: String?): String? {
+        return getFromDataStore(stringPreferencesKey(key)) ?: defValue
+    }
+
+    override fun putString(key: String, value: String?) {
+        if (value == null) return
+        editDataStore(stringPreferencesKey(key), value)
+    }
+
     override fun getBoolean(key: String, defValue: Boolean): Boolean {
         return getFromDataStore(booleanPreferencesKey(key)) ?: defValue
     }
@@ -86,8 +115,7 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
     }
 
     override fun getStringSet(key: String, defValues: Set<String>?): Set<String>? {
-        val data = getFromDataStore(stringSetPreferencesKey(key))
-        return data ?: defValues
+        return getFromDataStore(stringSetPreferencesKey(key)) ?: defValues
     }
 
     override fun putStringSet(key: String, values: Set<String>?) {
@@ -96,6 +124,7 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
     }
 
     companion object {
+        private const val LAST_LOGIN_KEY = "last_login"
         private const val USER_KEY = "user"
         private const val THEME_MODE_KEY = "theme_mode"
         private const val TAG = "Settings"
