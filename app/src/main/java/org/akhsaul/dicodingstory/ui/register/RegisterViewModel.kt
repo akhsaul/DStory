@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import org.akhsaul.core.domain.model.Register
 import org.akhsaul.core.domain.repository.AuthRepository
 import kotlin.time.Duration.Companion.seconds
 
