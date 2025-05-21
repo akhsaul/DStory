@@ -32,6 +32,10 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(binding) {
+            inputName.editText?.setText("Ujang")
+            inputEmail.editText?.setText(resources.getString(R.string.tmp_email))
+            inputPassword.editText?.setText(resources.getString(R.string.tmp_pass))
+
             lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.registerResult.collect {
@@ -50,9 +54,8 @@ class RegisterFragment : Fragment() {
                                     },
                                     onHidden = {
                                         btnRegister.isEnabled = true
-                                        findNavController().navigate(
-                                            R.id.action_registerFragment_to_loginFragment
-                                        )
+                                        // return to loginFragment
+                                        findNavController().popBackStack()
                                     }
                                 )
                             }

@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
+import org.koin.core.component.KoinComponent
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), KoinComponent {
     private lateinit var binding: FragmentHomeBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -20,10 +23,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.btnLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }
         binding.btnRegister.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_registerFragment)
         }
     }
 }

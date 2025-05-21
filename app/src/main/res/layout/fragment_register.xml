@@ -6,25 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.register.RegisterFragment">
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="100dp"
-        app:placeholderText="Ujang"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:placeholderText="Ujang">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <org.akhsaul.dicodingstory.view.TextInput
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints="Name"
             android:ems="10"
-            android:text="Ujang"
+            android:hint="Name"
             android:inputType="text|textPersonName|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions"
-            android:hint="Name" />
+            android:text="Ujang" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -33,20 +33,20 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
-        app:placeholderText="example@gmail.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputName">
+        app:layout_constraintTop_toBottomOf="@+id/inputName"
+        app:placeholderText="example@gmail.com">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <org.akhsaul.dicodingstory.view.TextInput
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints="@string/prompt_email"
             android:ems="10"
-            android:text="@string/tmp_email"
-            android:hint="Email"
-            android:inputType="text|textEmailAddress|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions" />
+            android:hint="@string/prompt_email"
+            android:inputType="text|textEmailAddress|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions"
+            android:text="@string/tmp_email" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputPassword"
@@ -58,13 +58,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputEmail">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <org.akhsaul.dicodingstory.view.TextInput
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints="@string/prompt_password"
             android:ems="10"
-            android:text="@string/tmp_pass"
-            android:hint="Password"
-            android:inputType="text|textPassword|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions" />
+            android:hint="@string/prompt_password"
+            android:inputType="text|textPassword|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions"
+            android:text="@string/tmp_pass" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -82,10 +83,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

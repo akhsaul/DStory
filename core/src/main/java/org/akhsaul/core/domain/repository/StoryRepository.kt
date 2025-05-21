@@ -2,7 +2,7 @@ package org.akhsaul.core.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 import org.akhsaul.core.data.Result
-import org.akhsaul.core.data.Story
+import org.akhsaul.core.domain.model.Story
 import java.io.File
 
 interface StoryRepository {

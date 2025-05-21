@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
-import org.akhsaul.core.User
 import org.akhsaul.core.data.source.remote.network.ApiService
+import org.akhsaul.core.domain.model.User
 import org.akhsaul.core.domain.repository.AuthRepository
 import org.akhsaul.core.getErrorResponse
 import org.koin.core.component.KoinComponent
