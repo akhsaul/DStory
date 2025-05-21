@@ -30,6 +30,9 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures{
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -45,6 +48,8 @@ dependencies {
     // App Startup
     implementation("io.insert-koin:koin-androidx-startup")
     implementation(libs.androidx.startup.runtime)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.preference.ktx)
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.svg)

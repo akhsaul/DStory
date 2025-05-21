@@ -35,6 +35,7 @@ android {
     }
     buildFeatures{
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -59,6 +60,9 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     testImplementation("io.insert-koin:koin-test")
     // Koin for JUnit 4
     //testImplementation("io.insert-koin:koin-test-junit4")
