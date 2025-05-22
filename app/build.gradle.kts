@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation(platform(libs.koin.bom))
     implementation("io.insert-koin:koin-core")
     implementation("io.insert-koin:koin-android")
@@ -52,6 +53,9 @@ dependencies {
     // App Startup
     implementation("io.insert-koin:koin-androidx-startup")
     implementation(project(":core"))
+    implementation(libs.coil)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.svg)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.lifecycle.livedata.ktx)
