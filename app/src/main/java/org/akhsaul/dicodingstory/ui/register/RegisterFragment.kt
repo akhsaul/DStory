@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
-import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.FragmentRegisterBinding
 import org.akhsaul.dicodingstory.getText
 import org.akhsaul.dicodingstory.showErrorWithToast
@@ -32,10 +31,6 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(binding) {
-            inputName.editText?.setText("Ujang")
-            inputEmail.editText?.setText(resources.getString(R.string.tmp_email))
-            inputPassword.editText?.setText(resources.getString(R.string.tmp_pass))
-
             lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.registerResult.collect {

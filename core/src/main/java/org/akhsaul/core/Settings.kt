@@ -15,9 +15,10 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.akhsaul.core.domain.model.User
 import java.time.Duration
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+import kotlin.time.toJavaInstant
 
 class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataStore() {
 
@@ -51,22 +52,25 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         putBoolean(THEME_MODE_KEY, isDark)
     }
 
+    @OptIn(ExperimentalTime::class)
     fun isUserLoggedIn(): Boolean {
         val lastLogin = getString(LAST_LOGIN_KEY, null) ?: return false
 
         val duration = Duration.between(
-            ZonedDateTime.parse(lastLogin, DateTimeFormatter.ISO_INSTANT),
-            ZonedDateTime.now(ZoneOffset.UTC)
+            Instant.parse(lastLogin).toJavaInstant(),
+            Clock.System.now().toJavaInstant()
         )
 
         return getUser() != null && duration.toMinutes() <= 60
     }
 
+    @OptIn(ExperimentalTime::class)
     fun setUser(user: User) {
         putStringSet(USER_KEY, setOf(user.id, user.name, user.token))
+
         putString(
             LAST_LOGIN_KEY,
-            ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
+            Clock.System.now().toString()
         )
     }
 

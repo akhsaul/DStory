@@ -35,7 +35,7 @@ fun Context?.showMessageWithToast(
     val toast = Toast.makeText(
         this,
         message,
-        Toast.LENGTH_SHORT
+        Toast.LENGTH_LONG
     )
 
     if (Build.VERSION.SDK_INT >= 30) {
@@ -44,7 +44,7 @@ fun Context?.showMessageWithToast(
         toast.show()
         onShow()
         scope.launch(Dispatchers.IO) {
-            delay(2.seconds)
+            delay((3.2).seconds)
             onHidden()
         }
     }

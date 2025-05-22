@@ -1,7 +1,9 @@
 package org.akhsaul.core.di
 
+import android.util.Log
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
+import org.akhsaul.core.BuildConfig
 import org.akhsaul.core.Settings
 import org.akhsaul.core.data.AuthRepositoryImpl
 import org.akhsaul.core.data.StoryRepositoryImpl
@@ -16,15 +18,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 val coreModule = module {
     single<OkHttpClient> {
         val certificatePinner = CertificatePinner.Builder()
-            .add("story-api.dicoding.dev", "sha256/bKTIluDN5O7wQKDoVBap/2FVvNQkOlv6Uivq+D44YH4=")
-            .add("story-api.dicoding.dev", "sha256/bdrBhpj38ffhxpubzkINl0rG+UyossdhcBYj+Zx2fcc=")
-            .add("story-api.dicoding.dev", "sha256/C5+lpZ7tcVwmwQIMcRtPbsQtWLABXhQzejna0wHFr8M=")
+            .add(BuildConfig.HOSTNAME, "sha256/bKTIluDN5O7wQKDoVBap/2FVvNQkOlv6Uivq+D44YH4=")
+            .add(BuildConfig.HOSTNAME, "sha256/bdrBhpj38ffhxpubzkINl0rG+UyossdhcBYj+Zx2fcc=")
+            .add(BuildConfig.HOSTNAME, "sha256/C5+lpZ7tcVwmwQIMcRtPbsQtWLABXhQzejna0wHFr8M=")
             .build()
 
         val clientBuilder = OkHttpClient.Builder()
             .certificatePinner(certificatePinner)
 
-        val user = get<Settings>().getUser()
+        val settings = get<Settings>()
+        Log.i("CoreModule", "Settings: ${settings.hashCode()}")
+        val user = settings.getUser()
         if (user != null) {
             clientBuilder.addInterceptor {
                 val newRequest = it.request().newBuilder()
@@ -39,7 +43,7 @@ val coreModule = module {
     }
     single<ApiService> {
         Retrofit.Builder()
-            .baseUrl("https://story-api.dicoding.dev/v1/")
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(get())
             .build()

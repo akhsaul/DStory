@@ -49,7 +49,8 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
                 emit(Result.Success(user))
             }
         } else {
-            emit(Result.Error(apiResult.message()))
+            val errorResponse = apiResult.getErrorResponse()
+            emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
     }.catch {
         emit(Result.Error(it.message))

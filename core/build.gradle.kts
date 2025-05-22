@@ -1,6 +1,19 @@
+import org.jetbrains.kotlin.konan.properties.loadProperties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+}
+
+var BASE_URL: String? = System.getenv("BASE_URL")
+var HOSTNAME: String? = System.getenv("HOSTNAME")
+
+val localFile = rootProject.file("local.properties")
+if (localFile.exists()) {
+    loadProperties(localFile.toString()).let {
+        BASE_URL = it.getProperty("BASE_URL")
+        HOSTNAME = it.getProperty("HOSTNAME")
+    }
 }
 
 android {
@@ -8,6 +21,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
+        buildConfigField("String", "BASE_URL", "\"$BASE_URL\"")
+        buildConfigField("String", "HOSTNAME", "\"$HOSTNAME\"")
         minSdk = 27
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -30,7 +45,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures{
+    buildFeatures {
         buildConfig = true
     }
 }
