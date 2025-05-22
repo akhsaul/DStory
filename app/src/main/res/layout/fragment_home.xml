@@ -25,4 +25,15 @@
         android:contentDescription="Button Add Story"
         app:srcCompat="@android:drawable/ic_input_add" />
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:indeterminate="false"
+        tools:visibility="visible" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

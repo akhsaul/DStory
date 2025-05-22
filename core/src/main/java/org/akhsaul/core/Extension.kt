@@ -12,6 +12,7 @@ val MediaType.Companion.PlainText: MediaType?
     get() = "text/plain".toMediaTypeOrNull()
 
 fun Double.toRequestBody(mediaType: MediaType?) = this.toString().toRequestBody(mediaType)
+
 fun File.toMultiPartBody(
     name: String, mediaType: MediaType?
 ) = MultipartBody.Part.createFormData(
