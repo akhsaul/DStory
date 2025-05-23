@@ -40,6 +40,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.lifecycle)
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation(platform(libs.koin.bom))
     implementation("io.insert-koin:koin-core")
