@@ -4,12 +4,14 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +21,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,6 +37,7 @@ import org.koin.core.component.inject
 import java.io.File
 import java.time.format.DateTimeFormatter
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 import kotlin.time.toJavaInstant
 
@@ -70,6 +77,11 @@ class HomeFragment : Fragment(), KoinComponent {
                     // "cancel" or "no thanks" button that lets the user continue
                     // using your app without granting the permission.
                     // Show your custom rationale dialog here.
+                    showPermissionRationaleDialog(
+                        "Camera Permission Required",
+                        CAMERA,
+                        "To add a photo to your story, please allow camera access."
+                    )
                 }
 
                 permission == ACCESS_FINE_LOCATION && shouldShowRequestPermissionRationale(
@@ -81,12 +93,25 @@ class HomeFragment : Fragment(), KoinComponent {
                     // "cancel" or "no thanks" button that lets the user continue
                     // using your app without granting the permission.
                     // Show your custom rationale dialog here.
+                    showPermissionRationaleDialog(
+                        "Location Permission Required",
+                        ACCESS_FINE_LOCATION,
+                        "This app needs location permission to add a story. Please grant the permission."
+                    )
                 }
 
                 permission == CAMERA && !isGranted -> {
+                    showPermissionDeniedForeverDialog(
+                        "Camera Permission Required",
+                        "You have denied camera permission. Please go to app settings and grant the permission manually."
+                    )
                 }
 
                 permission == ACCESS_FINE_LOCATION && !isGranted -> {
+                    showPermissionDeniedForeverDialog(
+                        "Location Permission Required",
+                        "You have denied location permission. Please go to app settings and grant the permission manually."
+                    )
                 }
             }
         }
@@ -100,6 +125,36 @@ class HomeFragment : Fragment(), KoinComponent {
         } else {
             currentImageUri = null
         }
+    }
+
+    private fun showPermissionRationaleDialog(title: String, message: String, permission: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Grant") { _, _ ->
+                requestPermissionLauncher.launch(arrayOf(permission))
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun showPermissionDeniedForeverDialog(title: String, message: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Open settings") { _, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.fromParts("package", requireContext().packageName, null)
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .show()
     }
 
     @OptIn(ExperimentalTime::class)
@@ -164,7 +219,6 @@ class HomeFragment : Fragment(), KoinComponent {
 
     @OptIn(ExperimentalTime::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         binding.fab.setOnClickListener {
             if (isUploading) {
                 Log.i(TAG, "onCreateView: we doing uploading..")
@@ -206,6 +260,17 @@ class HomeFragment : Fragment(), KoinComponent {
                 startCamera()
             }
 
+            val locationToken = CancellationTokenSource()
+            LocationServices.getFusedLocationProviderClient(requireContext())
+                .getCurrentLocation(
+                    CurrentLocationRequest.Builder()
+                        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                        .setMaxUpdateAgeMillis(5.minutes.inWholeMilliseconds)
+                        .build(), locationToken.token
+                ).addOnSuccessListener { location ->
+                    viewModel.currentLocation.tryEmit(location)
+                }
+
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Add Story")
                 .setView(dialogAddStoryLayout.root)
@@ -221,12 +286,12 @@ class HomeFragment : Fragment(), KoinComponent {
                     dialog.dismiss()
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
+                    locationToken.cancel()
                     dialog.dismiss()
                 }
                 .setCancelable(false)
                 .show()
         }
-
         adapter.submitList(
             buildList<Story> {
                 repeat(10) {
