@@ -12,7 +12,7 @@
     tools:context=".ui.login.LoginFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/username"
+        android:id="@+id/ed_login_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -34,13 +34,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password"
+        android:id="@+id/ed_login_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username">
+        app:layout_constraintTop_toBottomOf="@+id/ed_login_email">
 
         <org.akhsaul.dicodingstory.view.TextInput
             android:layout_width="match_parent"
@@ -70,7 +70,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/ed_login_password"
         app:layout_constraintVertical_bias="0.2" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator

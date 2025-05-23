@@ -12,7 +12,7 @@
         android:paddingBottom="8dp">
 
         <ImageView
-            android:id="@+id/ivPhoto"
+            android:id="@+id/iv_item_photo"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:contentDescription="Image"
@@ -23,7 +23,7 @@
             tools:src="@drawable/photo_test" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvName"
+            android:id="@+id/tv_item_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
@@ -34,7 +34,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivPhoto"
+            app:layout_constraintTop_toBottomOf="@+id/iv_item_photo"
             tools:text="Akhsaul" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -49,7 +49,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvName"
+            app:layout_constraintTop_toBottomOf="@+id/tv_item_name"
             tools:text="elevAIte x Dicoding Live #2 - Copilot Hacks: Rahasia Prompt Engineering Biar AI Kerja Maksimal!" />
 
         <com.google.android.material.textview.MaterialTextView

@@ -24,8 +24,8 @@ class ListStoryAdapter(private val listener: (Story) -> Unit) :
                 root.setOnClickListener {
                     onClick(item)
                 }
-                ivPhoto.load(item.photoUrl)
-                tvName.text = item.name
+                ivItemPhoto.load(item.photoUrl)
+                tvItemName.text = item.name
                 tvDesc.text = item.description
                 tvCreateAt.text = ZonedDateTime.parse(
                     item.createdAt,

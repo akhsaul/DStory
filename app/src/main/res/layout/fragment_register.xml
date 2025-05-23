@@ -7,7 +7,7 @@
     tools:context=".ui.register.RegisterFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputName"
+        android:id="@+id/ed_register_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -28,14 +28,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputEmail"
+        android:id="@+id/ed_register_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputName"
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_name"
         app:placeholderText="example@gmail.com">
 
         <org.akhsaul.dicodingstory.view.TextInput
@@ -49,14 +49,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputPassword"
+        android:id="@+id/ed_register_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmail">
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_email">
 
         <org.akhsaul.dicodingstory.view.TextInput
             android:layout_width="match_parent"
@@ -76,7 +76,7 @@
         android:text="Register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_password" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"

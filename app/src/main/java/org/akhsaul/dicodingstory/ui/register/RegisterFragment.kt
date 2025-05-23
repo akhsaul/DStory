@@ -72,9 +72,9 @@ class RegisterFragment : Fragment() {
             }
 
             btnRegister.setOnClickListener {
-                val name = inputName.getText()
-                val email = inputEmail.getText()
-                val password = inputPassword.getText()
+                val name = edRegisterName.getText()
+                val email = edRegisterEmail.getText()
+                val password = edRegisterPassword.getText()
 
                 Log.i(TAG, "onViewCreated: $name, $email, $password")
                 viewModel.register(name!!, email!!, password!!)

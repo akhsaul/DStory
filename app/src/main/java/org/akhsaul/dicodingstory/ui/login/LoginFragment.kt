@@ -79,7 +79,7 @@ class LoginFragment : Fragment(), KoinComponent {
             }
 
             btnLogin.setOnClickListener {
-                loginViewModel.login(username.getText()!!, password.getText()!!)
+                loginViewModel.login(edLoginEmail.getText()!!, edLoginPassword.getText()!!)
             }
         }
     }

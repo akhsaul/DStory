@@ -277,7 +277,12 @@ class HomeFragment : Fragment(), KoinComponent {
             }
         }
 
-        binding.fab.setOnClickListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.triggerRefresh()
+            binding.swipeRefresh.isRefreshing = false
+        }
+
+        binding.btnAddStory.setOnClickListener {
             if (isUploading) {
                 Log.i(TAG, "onCreateView: we doing uploading..")
                 return@setOnClickListener
