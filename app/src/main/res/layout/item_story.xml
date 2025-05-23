@@ -65,6 +65,4 @@
             app:layout_constraintTop_toBottomOf="@+id/tvDesc"
             tools:text="22 mei 2025 jam 10:11" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </com.google.android.material.card.MaterialCardView>

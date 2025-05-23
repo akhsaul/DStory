@@ -19,8 +19,11 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -28,6 +31,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
 import org.akhsaul.dicodingstory.databinding.DialogAddStoryBinding
@@ -219,6 +223,44 @@ class HomeFragment : Fragment(), KoinComponent {
 
     @OptIn(ExperimentalTime::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.currentListStory.collect {
+                    adapter.submitList(it)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.stateFetchListStory.collect {
+
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addStoryResult.collect {
+                    when (it) {
+                        is Result.Loading -> {
+                            binding.progress.isVisible = true
+                        }
+
+                        is Result.Error -> {
+                            binding.progress.isVisible = false
+                            isUploading = false
+                        }
+
+                        else -> {
+                            binding.progress.isVisible = false
+                        }
+                    }
+                }
+            }
+        }
+
         binding.fab.setOnClickListener {
             if (isUploading) {
                 Log.i(TAG, "onCreateView: we doing uploading..")
@@ -275,15 +317,16 @@ class HomeFragment : Fragment(), KoinComponent {
                 .setTitle("Add Story")
                 .setView(dialogAddStoryLayout.root)
                 .setPositiveButton("Add") { dialog, _ ->
-                    binding.progress.visibility = View.VISIBLE
+                    binding.progress.isVisible = true
                     isUploading = true
 
+                    // TODO add story and wait
                     lifecycleScope.launch {
                         delay(5000)
-                        binding.progress.visibility = View.GONE
+                        binding.progress.isVisible = false
                         isUploading = false
                     }
-                    dialog.dismiss()
+                    //dialog.dismiss()
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
                     locationToken.cancel()
@@ -309,6 +352,11 @@ class HomeFragment : Fragment(), KoinComponent {
                 }
             }
         )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.triggerRefresh()
     }
 
     override fun onDestroy() {
