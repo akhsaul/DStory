@@ -1,4 +1,4 @@
-package org.akhsaul.dicodingstory
+package org.akhsaul.dicodingstory.ui.home
 
 import android.location.Location
 import androidx.lifecycle.ViewModel

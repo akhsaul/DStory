@@ -1,4 +1,4 @@
-package org.akhsaul.dicodingstory
+package org.akhsaul.dicodingstory.ui.home
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
@@ -37,9 +37,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
+import org.akhsaul.dicodingstory.BuildConfig
+import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
 import org.akhsaul.dicodingstory.databinding.DialogAddStoryBinding
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
+import org.akhsaul.dicodingstory.showErrorWithToast
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
@@ -219,7 +222,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
             Log.i(TAG, "onCreateView: item $it")
         }
         binding.rvStory.adapter = adapter
-        requireActivity().addMenuProvider(this)
+        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
         return binding.root
     }
 
@@ -244,7 +247,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                     when (it) {
                         is Result.Error -> {
                             this@HomeFragment.requireContext().showErrorWithToast(
-                                lifecycleScope, it.message ?: "No internet available",
+                                lifecycleScope, it.message,
                                 onShow = {
                                     binding.progress.isVisible = false
                                 }
@@ -406,6 +409,9 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         return when (menuItem.itemId) {
             R.id.action_settings -> {
                 // TODO move to settings ui
+                findNavController().navigate(
+                    R.id.action_homeFragment_to_settingsFragment
+                )
                 true
             }
 

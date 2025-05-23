@@ -38,7 +38,7 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         }
     }
 
-    private fun setAppDarkMode(isDark: Boolean) {
+    fun setAppDarkMode(isDark: Boolean) {
         val compatDelegate = if (isDark) {
             AppCompatDelegate.MODE_NIGHT_YES
         } else {
