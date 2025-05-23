@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_homeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
 
     <fragment
@@ -53,4 +56,9 @@
         android:id="@+id/settingsFragment"
         android:name="org.akhsaul.dicodingstory.ui.settings.SettingsFragment"
         android:label="Settings" />
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="org.akhsaul.dicodingstory.ui.detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" />
 </navigation>

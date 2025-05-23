@@ -43,6 +43,7 @@ import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
 import org.akhsaul.dicodingstory.databinding.DialogAddStoryBinding
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
 import org.akhsaul.dicodingstory.showErrorWithToast
+import org.akhsaul.dicodingstory.ui.detail.DetailFragment
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
@@ -220,6 +221,12 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 return@ListStoryAdapter
             }
             Log.i(TAG, "onCreateView: item $it")
+            findNavController().navigate(
+                R.id.action_homeFragment_to_detailFragment,
+                Bundle().apply {
+                    putParcelable(DetailFragment.KEY_DETAIL_DATA, it)
+                }
+            )
         }
         binding.rvStory.adapter = adapter
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)

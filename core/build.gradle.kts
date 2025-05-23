@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.konan.properties.loadProperties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 var BASE_URL: String? = System.getenv("BASE_URL")
