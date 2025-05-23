@@ -60,21 +60,32 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
             Instant.parse(lastLogin).toJavaInstant(),
             Clock.System.now().toJavaInstant()
         )
+        val user = getUser()
 
-        return getUser() != null && duration.toMinutes() <= 60
+        return user != null && duration.toMinutes() <= 60
     }
 
+    /**
+     * Set user to login or logout
+     * @param user set null if you want logout, otherwise it count as login
+     * */
     @OptIn(ExperimentalTime::class)
-    fun setUser(user: User) {
-        putStringSet(USER_KEY, setOf(user.id, user.name, user.token))
-
-        putString(
-            LAST_LOGIN_KEY,
-            Clock.System.now().toString()
-        )
+    fun setUser(user: User?) {
+        if (user == null) {
+            // do logout
+            putStringSet(USER_KEY, null)
+            putString(LAST_LOGIN_KEY, null)
+        } else {
+            // do login
+            putStringSet(USER_KEY, setOf(user.id, user.name, user.token))
+            putString(
+                LAST_LOGIN_KEY,
+                Clock.System.now().toString()
+            )
+        }
     }
 
-    fun getUser(): User? {
+    private fun getUser(): User? {
         val user = getStringSet(USER_KEY, null)
         return if (user == null || user.size != 3) {
             null
@@ -87,16 +98,24 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         }
     }
 
+    fun getAuthToken(): String? {
+        return getUser()?.token
+    }
+
     private fun <T> getFromDataStore(key: Preferences.Key<T>): T? {
         return runBlocking {
             datastore.data.firstOrNull()?.get(key)
         }
     }
 
-    private fun <T> editDataStore(key: Preferences.Key<T>, value: T) {
+    private fun <T> editDataStore(key: Preferences.Key<T>, value: T?) {
         runBlocking {
             datastore.edit {
-                it[key] = value
+                if (value == null) {
+                    it.remove(key)
+                } else {
+                    it[key] = value
+                }
             }
         }
     }
@@ -106,7 +125,6 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
     }
 
     override fun putString(key: String, value: String?) {
-        if (value == null) return
         editDataStore(stringPreferencesKey(key), value)
     }
 
@@ -123,7 +141,6 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
     }
 
     override fun putStringSet(key: String, values: Set<String>?) {
-        if (values == null) return
         editDataStore(stringSetPreferencesKey(key), values)
     }
 

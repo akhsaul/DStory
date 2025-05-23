@@ -26,17 +26,18 @@ val coreModule = module {
         val clientBuilder = OkHttpClient.Builder()
             .certificatePinner(certificatePinner)
 
-        val settings = get<Settings>()
-        Log.i("CoreModule", "Settings: ${settings.hashCode()}")
-        val user = settings.getUser()
-        if (user != null) {
-            clientBuilder.addInterceptor {
-                val newRequest = it.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${user.token}")
+        clientBuilder.addInterceptor {
+            var newRequest = it.request()
+            val settings = get<Settings>()
+            Log.i("CoreModule", "Settings: ${settings.hashCode()}")
+            val token = settings.getAuthToken()
+            if (token != null) {
+                newRequest = it.request().newBuilder()
+                    .addHeader("Authorization", "Bearer $token")
                     .addHeader("User-Agent", "@Akhsaul")
                     .build()
-                it.proceed(newRequest)
             }
+            it.proceed(newRequest)
         }
 
         clientBuilder.build()

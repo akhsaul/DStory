@@ -1,6 +1,7 @@
 package org.akhsaul.dicodingstory.ui.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class LoginFragment : Fragment(), KoinComponent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("LoginFragment", "onCreate: ${settings.hashCode()}")
         if (settings.isUserLoggedIn()) {
             findNavController().navigate(
                 R.id.action_loginFragment_to_homeFragment

@@ -14,16 +14,21 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -45,13 +50,14 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 import kotlin.time.toJavaInstant
 
-class HomeFragment : Fragment(), KoinComponent {
+class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var _adapter: ListStoryAdapter? = null
     private val adapter get() = _adapter!!
     private var _dialogAddStoryLayout: DialogAddStoryBinding? = null
     private val dialogAddStoryLayout get() = _dialogAddStoryLayout!!
+    private val settings: org.akhsaul.core.Settings by inject()
     private val viewModel: HomeViewModel by inject()
 
     private var isUploading = false
@@ -213,6 +219,7 @@ class HomeFragment : Fragment(), KoinComponent {
             Log.i(TAG, "onCreateView: item $it")
         }
         binding.rvStory.adapter = adapter
+        requireActivity().addMenuProvider(this)
         return binding.root
     }
 
@@ -283,6 +290,7 @@ class HomeFragment : Fragment(), KoinComponent {
         }
 
         binding.btnAddStory.setOnClickListener {
+            // TODO move Add Story ui to separated ui
             if (isUploading) {
                 Log.i(TAG, "onCreateView: we doing uploading..")
                 return@setOnClickListener
@@ -383,6 +391,34 @@ class HomeFragment : Fragment(), KoinComponent {
         _binding = null
         _adapter = null
         _dialogAddStoryLayout = null
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.i("HomeFragment", "onCreate: ${settings.hashCode()}")
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.top_menu, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return when (menuItem.itemId) {
+            R.id.action_settings -> {
+                // TODO move to settings ui
+                true
+            }
+
+            R.id.action_logout -> {
+                settings.setUser(null)
+                findNavController().navigate(
+                    R.id.action_homeFragment_to_loginFragment
+                )
+                true
+            }
+
+            else -> false
+        }
     }
 
     companion object {
