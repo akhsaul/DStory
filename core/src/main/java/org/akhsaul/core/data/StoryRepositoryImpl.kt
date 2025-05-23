@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
@@ -18,6 +17,7 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.akhsaul.core.PlainText
+import org.akhsaul.core.catchNoInternet
 import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.core.domain.repository.StoryRepository
@@ -108,7 +108,7 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
         } else {
             emit(Result.Error(response.message()))
         }
-    }.catch {
+    }.catchNoInternet {
         emit(Result.Error(it.message))
     }.onStart {
         emit(Result.Loading)
@@ -133,7 +133,7 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
         } else {
             emit(Result.Error(apiResult.message()))
         }
-    }.catch {
+    }.catchNoInternet {
         emit(Result.Error(it.message))
     }.onStart {
         emit(Result.Loading)
@@ -162,7 +162,7 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
         } else {
             emit(Result.Error(apiResult.message()))
         }
-    }.catch {
+    }.catchNoInternet {
         emit(Result.Error(it.message))
     }.onStart {
         emit(Result.Loading)

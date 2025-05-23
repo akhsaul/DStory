@@ -6,10 +6,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import org.akhsaul.core.BuildConfig
 import org.akhsaul.core.Settings
 import org.akhsaul.core.di.coreModule
-import org.akhsaul.core.domain.repository.AuthRepository
+import org.akhsaul.dicodingstory.HomeViewModel
 import org.akhsaul.dicodingstory.ui.login.LoginViewModel
 import org.akhsaul.dicodingstory.ui.register.RegisterViewModel
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -24,7 +23,6 @@ val appModule = module {
     }
     includes(coreModule)
     viewModelOf(::RegisterViewModel)
-    viewModel {
-        LoginViewModel(get<AuthRepository>())
-    }
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::HomeViewModel)
 }

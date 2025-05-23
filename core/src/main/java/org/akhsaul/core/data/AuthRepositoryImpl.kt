@@ -1,10 +1,10 @@
 package org.akhsaul.core.data
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
+import org.akhsaul.core.catchNoInternet
 import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.model.User
 import org.akhsaul.core.domain.repository.AuthRepository
@@ -30,7 +30,7 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse()
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
-    }.catch {
+    }.catchNoInternet {
         emit(Result.Error(it.message))
     }.onStart {
         emit(Result.Loading)
@@ -52,7 +52,7 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse()
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
-    }.catch {
+    }.catchNoInternet {
         emit(Result.Error(it.message))
     }.onStart {
         emit(Result.Loading)

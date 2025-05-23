@@ -32,13 +32,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
-import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
 import org.akhsaul.dicodingstory.databinding.DialogAddStoryBinding
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
@@ -125,7 +125,7 @@ class HomeFragment : Fragment(), KoinComponent {
         ActivityResultContracts.TakePicture()
     ) { isSuccess ->
         if (isSuccess) {
-            showImage()
+            dialogAddStoryLayout.inputPhoto.setImageURI(requireNotNull(currentImageUri))
         } else {
             currentImageUri = null
         }
@@ -162,8 +162,10 @@ class HomeFragment : Fragment(), KoinComponent {
     }
 
     @OptIn(ExperimentalTime::class)
-    fun getImageUri(context: Context): Uri {
-        val timeStamp = fileNameFormatter.format(Clock.System.now().toJavaInstant())
+    private fun getImageUri(context: Context): Uri {
+        val timeStamp = Clock.System.now().toJavaInstant()
+            .atZone(ZoneId.systemDefault())
+            .format(fileNameFormatter)
         var uri: Uri? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
@@ -177,9 +179,9 @@ class HomeFragment : Fragment(), KoinComponent {
             )
         }
 
-        return uri.let {
+        return uri ?: run {
             val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            val imageFile = File(filesDir, "/MyCamera/$timeStamp.jpg")
+            val imageFile = File(filesDir, "/DStory/$timeStamp.jpg")
             if (imageFile.parentFile?.exists() == false) imageFile.parentFile?.mkdir()
             FileProvider.getUriForFile(
                 context,
@@ -189,14 +191,19 @@ class HomeFragment : Fragment(), KoinComponent {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        canUseCamera = ContextCompat.checkSelfPermission(
+            requireContext(),
+            CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+        canUseLocation = ContextCompat.checkSelfPermission(
+            requireContext(),
+            ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
         _binding = FragmentHomeBinding.inflate(layoutInflater)
         _adapter = ListStoryAdapter {
             if (isUploading) {
@@ -209,13 +216,6 @@ class HomeFragment : Fragment(), KoinComponent {
         return binding.root
     }
 
-    private fun showImage() {
-        currentImageUri?.let {
-            Log.d("Image URI", "showImage: $it")
-            dialogAddStoryLayout.inputPhoto.setImageURI(it)
-        }
-    }
-
     private fun startCamera() {
         currentImageUri = getImageUri(requireContext())
         launcherIntentCamera.launch(currentImageUri!!)
@@ -223,7 +223,6 @@ class HomeFragment : Fragment(), KoinComponent {
 
     @OptIn(ExperimentalTime::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.currentListStory.collect {
@@ -235,7 +234,24 @@ class HomeFragment : Fragment(), KoinComponent {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.stateFetchListStory.collect {
+                    when (it) {
+                        is Result.Error -> {
+                            this@HomeFragment.requireContext().showErrorWithToast(
+                                lifecycleScope, it.message ?: "No internet available",
+                                onShow = {
+                                    binding.progress.isVisible = false
+                                }
+                            )
+                        }
 
+                        is Result.Loading -> {
+                            binding.progress.isVisible = true
+                        }
+
+                        is Result.Success -> {
+                            binding.progress.isVisible = false
+                        }
+                    }
                 }
             }
         }
@@ -270,7 +286,7 @@ class HomeFragment : Fragment(), KoinComponent {
             if (ContextCompat.checkSelfPermission(
                     requireContext(),
                     ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
                 requestPermissionLauncher.launch(arrayOf(ACCESS_FINE_LOCATION))
             }
@@ -286,9 +302,8 @@ class HomeFragment : Fragment(), KoinComponent {
                 DialogAddStoryBinding.inflate(LayoutInflater.from(requireContext()))
             dialogAddStoryLayout.btnAddPhoto.setOnClickListener {
                 if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        CAMERA
-                    ) == PackageManager.PERMISSION_GRANTED
+                        requireContext(), CAMERA
+                    ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     requestPermissionLauncher.launch(arrayOf(CAMERA))
                 }
@@ -335,28 +350,27 @@ class HomeFragment : Fragment(), KoinComponent {
                 .setCancelable(false)
                 .show()
         }
-        adapter.submitList(
-            buildList<Story> {
-                repeat(10) {
-                    add(
-                        Story(
-                            "story-FvU4u0Vp2S3PMsFg",
-                            "Akhsaul",
-                            "Tak semua keberhasilan karier di dunia digital diawali dengan mengambil pendidikan formal di bidang yang sama, sebagaimana yang Meilia Tria Andari (24) alami. Perjalanan Meilia sebagai talenta informatika justru dimulai dengan berkuliah di jurusan Matematika.",
-                            "https://dicoding-assets.sgp1.cdn.digitaloceanspaces.com/blog/wp-content/uploads/2025/05/Blog-Banner-1.png",
-                            Clock.System.now().toString(),
-                            -1.0,
-                            -1.0
-                        )
-                    )
-                }
-            }
-        )
+//        adapter.submitList(
+//            buildList<Story> {
+//                repeat(10) {
+//                    add(
+//                        Story(
+//                            "story-FvU4u0Vp2S3PMsFg",
+//                            "Akhsaul",
+//                            "Tak semua keberhasilan karier di dunia digital diawali dengan mengambil pendidikan formal di bidang yang sama, sebagaimana yang Meilia Tria Andari (24) alami. Perjalanan Meilia sebagai talenta informatika justru dimulai dengan berkuliah di jurusan Matematika.",
+//                            "https://dicoding-assets.sgp1.cdn.digitaloceanspaces.com/blog/wp-content/uploads/2025/05/Blog-Banner-1.png",
+//                            Clock.System.now().toString(),
+//                            -1.0,
+//                            -1.0
+//                        )
+//                    )
+//                }
+//            }
+//        )
     }
 
     override fun onStart() {
         super.onStart()
-        viewModel.triggerRefresh()
     }
 
     override fun onDestroy() {

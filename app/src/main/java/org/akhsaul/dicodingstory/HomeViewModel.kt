@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
@@ -43,8 +45,16 @@ class HomeViewModel : ViewModel(), KoinComponent {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val stateFetchListStory = refreshTrigger.flatMapLatest {
+    val stateFetchListStory = refreshTrigger.onStart {
+        emit(Unit)
+    }.flatMapLatest {
         storyRepository.getAllStory()
+    }.onEach {
+        if (it is Result.Success) {
+            viewModelScope.launch {
+                _currentListStory.emit(it.data)
+            }
+        }
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5.seconds),
