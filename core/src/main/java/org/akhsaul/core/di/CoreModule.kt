@@ -14,6 +14,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 val coreModule = module {
     single<OkHttpClient> {
@@ -24,6 +25,8 @@ val coreModule = module {
             .build()
 
         val clientBuilder = OkHttpClient.Builder()
+            .connectTimeout(120, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
             .certificatePinner(certificatePinner)
 
         clientBuilder.addInterceptor {

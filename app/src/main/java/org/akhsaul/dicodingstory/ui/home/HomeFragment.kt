@@ -29,12 +29,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.location.CurrentLocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
@@ -52,7 +47,6 @@ import java.io.File
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.time.Clock
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 import kotlin.time.toJavaInstant
 
@@ -277,26 +271,26 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
             }
         }
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addStoryResult.collect {
-                    when (it) {
-                        is Result.Loading -> {
-                            binding.progress.isVisible = true
-                        }
-
-                        is Result.Error -> {
-                            binding.progress.isVisible = false
-                            isUploading = false
-                        }
-
-                        else -> {
-                            binding.progress.isVisible = false
-                        }
-                    }
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                viewModel.addStoryResult.collect {
+//                    when (it) {
+//                        is Result.Loading -> {
+//                            binding.progress.isVisible = true
+//                        }
+//
+//                        is Result.Error -> {
+//                            binding.progress.isVisible = false
+//                            isUploading = false
+//                        }
+//
+//                        else -> {
+//                            binding.progress.isVisible = false
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.triggerRefresh()
@@ -304,78 +298,84 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         }
 
         binding.btnAddStory.setOnClickListener {
+
+            findNavController().navigate(
+                R.id.action_homeFragment_to_addStoryFragment
+            )
+            return@setOnClickListener
+
             // TODO move Add Story ui to separated ui
-            if (isUploading) {
-                Log.i(TAG, "onCreateView: we doing uploading..")
-                return@setOnClickListener
-            }
-
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissionLauncher.launch(arrayOf(ACCESS_FINE_LOCATION))
-            }
-
-            if (canUseLocation.not()) {
-                this.requireContext().showErrorWithToast(
-                    lifecycleScope, "Location permission is not granted!"
-                )
-                return@setOnClickListener
-            }
-
-            _dialogAddStoryLayout =
-                DialogAddStoryBinding.inflate(LayoutInflater.from(requireContext()))
-            dialogAddStoryLayout.btnAddPhoto.setOnClickListener {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(), CAMERA
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    requestPermissionLauncher.launch(arrayOf(CAMERA))
-                }
-
-                if (canUseCamera.not()) {
-                    this.requireContext().showErrorWithToast(
-                        lifecycleScope, "Camera permission is not granted!"
-                    )
-                    return@setOnClickListener
-                }
-                startCamera()
-            }
-
-            val locationToken = CancellationTokenSource()
-            LocationServices.getFusedLocationProviderClient(requireContext())
-                .getCurrentLocation(
-                    CurrentLocationRequest.Builder()
-                        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-                        .setMaxUpdateAgeMillis(5.minutes.inWholeMilliseconds)
-                        .build(), locationToken.token
-                ).addOnSuccessListener { location ->
-                    viewModel.currentLocation.tryEmit(location)
-                }
-
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Add Story")
-                .setView(dialogAddStoryLayout.root)
-                .setPositiveButton("Add") { dialog, _ ->
-                    binding.progress.isVisible = true
-                    isUploading = true
-
-                    // TODO add story and wait
-                    lifecycleScope.launch {
-                        delay(5000)
-                        binding.progress.isVisible = false
-                        isUploading = false
-                    }
-                    //dialog.dismiss()
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    locationToken.cancel()
-                    dialog.dismiss()
-                }
-                .setCancelable(false)
-                .show()
+//            if (isUploading) {
+//                Log.i(TAG, "onCreateView: we doing uploading..")
+//                return@setOnClickListener
+//            }
+//
+//            if (ContextCompat.checkSelfPermission(
+//                    requireContext(),
+//                    ACCESS_FINE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED
+//            ) {
+//                requestPermissionLauncher.launch(arrayOf(ACCESS_FINE_LOCATION))
+//            }
+//
+//            if (canUseLocation.not()) {
+//                this.requireContext().showErrorWithToast(
+//                    lifecycleScope, "Location permission is not granted!"
+//                )
+//                return@setOnClickListener
+//            }
+//
+//            _dialogAddStoryLayout =
+//                DialogAddStoryBinding.inflate(LayoutInflater.from(requireContext()))
+//            dialogAddStoryLayout.btnAddPhoto.setOnClickListener {
+//                if (ContextCompat.checkSelfPermission(
+//                        requireContext(), CAMERA
+//                    ) != PackageManager.PERMISSION_GRANTED
+//                ) {
+//                    requestPermissionLauncher.launch(arrayOf(CAMERA))
+//                }
+//
+//                if (canUseCamera.not()) {
+//                    this.requireContext().showErrorWithToast(
+//                        lifecycleScope, "Camera permission is not granted!"
+//                    )
+//                    return@setOnClickListener
+//                }
+//                startCamera()
+//            }
+//
+//            val locationToken = CancellationTokenSource()
+//            LocationServices.getFusedLocationProviderClient(requireContext())
+//                .getCurrentLocation(
+//                    CurrentLocationRequest.Builder()
+//                        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+//                        .setMaxUpdateAgeMillis(5.minutes.inWholeMilliseconds)
+//                        .build(), locationToken.token
+//                ).addOnSuccessListener { location ->
+//                    viewModel.currentLocation.tryEmit(location)
+//                }
+//
+//            MaterialAlertDialogBuilder(requireContext())
+//                .setTitle("Add Story")
+//                .setView(dialogAddStoryLayout.root)
+//                .setPositiveButton("Add") { dialog, _ ->
+//                    binding.progress.isVisible = true
+//                    isUploading = true
+//
+//                    // TODO add story and wait
+//                    lifecycleScope.launch {
+//                        delay(5000)
+//                        binding.progress.isVisible = false
+//                        isUploading = false
+//                    }
+//                    //dialog.dismiss()
+//                }
+//                .setNegativeButton("Cancel") { dialog, _ ->
+//                    locationToken.cancel()
+//                    dialog.dismiss()
+//                }
+//                .setCancelable(false)
+//                .show()
         }
 //        adapter.submitList(
 //            buildList<Story> {

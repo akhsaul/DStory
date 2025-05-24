@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_homeFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addStoryFragment"
+            app:destination="@id/addStoryFragment" />
     </fragment>
 
     <fragment
@@ -61,4 +64,9 @@
         android:name="org.akhsaul.dicodingstory.ui.detail.DetailFragment"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail" />
+    <fragment
+        android:id="@+id/addStoryFragment"
+        android:name="org.akhsaul.dicodingstory.ui.story.AddStoryFragment"
+        android:label="fragment_add_story"
+        tools:layout="@layout/fragment_add_story" />
 </navigation>
