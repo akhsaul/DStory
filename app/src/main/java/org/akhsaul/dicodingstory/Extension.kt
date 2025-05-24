@@ -103,3 +103,15 @@ fun <T> Flow<T>.collectOn(
         }
     }
 }
+
+fun Context.showExitConfirmationDialog(onYes: () -> Unit) {
+    MaterialAlertDialogBuilder(this)
+        .setTitle(R.string.app_name)
+        .setMessage("Are you sure you want to close this application?")
+        .setPositiveButton("Yes") { _, _ ->
+            onYes()
+        }
+        .setNegativeButton("No", null)
+        .setCancelable(false)
+        .show()
+}

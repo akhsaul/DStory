@@ -1,27 +1,29 @@
 package org.akhsaul.dicodingstory.ui.home
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
+import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
 import org.akhsaul.dicodingstory.showErrorWithToast
+import org.akhsaul.dicodingstory.showExitConfirmationDialog
+import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 import org.akhsaul.dicodingstory.ui.detail.DetailFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
@@ -35,6 +37,14 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     private val adapter get() = _adapter!!
     private val settings: org.akhsaul.core.Settings by inject()
     private val viewModel: HomeViewModel by viewModel()
+    private var progressBar: ProgressBarControls? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ProgressBarControls) {
+            progressBar = context
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +58,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     }
 
     private fun onItemStoryClicked(story: Story) {
-        Log.i(TAG, "onCreateView: item $story")
         findNavController().navigate(
             R.id.action_homeFragment_to_detailFragment,
             Bundle().apply {
@@ -59,59 +68,66 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
 
     @OptIn(ExperimentalTime::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.currentListStory.collect {
-                    adapter.submitList(it)
-                }
-            }
+        viewModel.currentListStory.collectOn(
+            lifecycleScope,
+            viewLifecycleOwner
+        ) {
+            adapter.submitList(it)
         }
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.stateFetchListStory.collect {
-                    when (it) {
-                        is Result.Error -> {
-                            this@HomeFragment.requireContext().showErrorWithToast(
-                                lifecycleScope, it.message,
-                                onShow = {
-                                    binding.progress.isVisible = false
-                                }
-                            )
-                            if (adapter.currentList.isEmpty()) {
-                                binding.tvMessage.text = "No internet available"
-                                binding.tvMessage.isVisible = true
+        with(binding) {
+            viewModel.stateFetchListStory.collectOn(
+                lifecycleScope,
+                viewLifecycleOwner
+            ) {
+                when (it) {
+                    is Result.Error -> {
+                        requireContext().showErrorWithToast(
+                            lifecycleScope, it.message,
+                            onShow = {
+                                progressBar?.hideProgressBar()
                             }
+                        )
+                        if (adapter.currentList.isEmpty()) {
+                            textMessage("No internet available")
                         }
+                    }
 
-                        is Result.Loading -> {
-                            binding.progress.isVisible = true
-                        }
-
-                        is Result.Success -> {
-                            binding.progress.isVisible = false
-                            if (adapter.currentList.isEmpty()) {
-                                binding.tvMessage.text = "No data available"
-                                binding.tvMessage.isVisible = true
-                            } else {
-                                binding.tvMessage.text = null
-                                binding.tvMessage.isVisible = false
-                            }
+                    is Result.Loading -> progressBar?.showProgressBar()
+                    is Result.Success -> {
+                        progressBar?.hideProgressBar()
+                        if (adapter.currentList.isEmpty()) {
+                            textMessage("No data available")
+                        } else {
+                            textMessage(null)
                         }
                     }
                 }
             }
+
+            swipeRefresh.setOnRefreshListener {
+                viewModel.triggerRefresh()
+                swipeRefresh.isRefreshing = false
+            }
+
+            btnAddStory.setOnClickListener {
+                findNavController().navigate(
+                    R.id.action_homeFragment_to_addStoryFragment
+                )
+            }
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.triggerRefresh()
-            binding.swipeRefresh.isRefreshing = false
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            requireContext().showExitConfirmationDialog {
+                activity?.finish()
+            }
         }
+    }
 
-        binding.btnAddStory.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_homeFragment_to_addStoryFragment
-            )
+    private fun textMessage(message: String?) {
+        with(binding) {
+            tvMessage.text = message
+            tvMessage.isVisible = message != null
         }
     }
 
@@ -119,11 +135,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         super.onDestroy()
         _binding = null
         _adapter = null
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i("HomeFragment", "onCreate: ${settings.hashCode()}")
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -139,19 +150,16 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 true
             }
 
-            R.id.action_logout -> {
-                settings.setUser(null)
-                findNavController().navigate(
-                    R.id.action_homeFragment_to_loginFragment
-                )
-                true
-            }
-
+            R.id.action_logout -> onButtonLogoutClicked()
             else -> false
         }
     }
 
-    companion object {
-        private const val TAG = "HomeFragment"
+    private fun onButtonLogoutClicked(): Boolean {
+        settings.setUser(null)
+        findNavController().navigate(
+            R.id.action_homeFragment_to_loginFragment
+        )
+        return true
     }
 }

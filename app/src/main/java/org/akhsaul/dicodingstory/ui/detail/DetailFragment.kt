@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil3.load
@@ -42,14 +39,6 @@ class DetailFragment : Fragment() {
             ivDetailPhoto.load(story.photoUrl)
             tvDetailName.text = story.name
             tvDetailDescription.text = story.description
-        }
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { fragmentRootView, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Apply top padding to account for the status bar.
-            // Other paddings (left, right, bottom) might be handled by MainActivity's root listener
-            // or can be selectively applied here if this fragment needs different behavior.
-            fragmentRootView.updatePadding(top = insets.top)
-            windowInsets // Return original insets to allow other listeners or default handling
         }
         return binding.root
     }

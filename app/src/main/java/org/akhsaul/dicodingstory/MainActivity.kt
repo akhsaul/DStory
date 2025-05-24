@@ -6,16 +6,20 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.akhsaul.dicodingstory.databinding.ActivityMainBinding
+import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ProgressBarControls {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
     private var _navController: NavController? = null
@@ -69,18 +73,38 @@ class MainActivity : AppCompatActivity() {
         _navController = null
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 
-    companion object {
-        private const val TAG = "MainActivity"
+    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
+        return super.getOnBackInvokedDispatcher()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val currentFragment = navController.currentDestination
+        var choice = false
+        if (currentFragment?.id == R.id.homeFragment || currentFragment?.id == R.id.loginFragment) {
+            MaterialAlertDialogBuilder(this)
+                .setTitle(currentFragment.label)
+                .setMessage("Do you want quit?")
+                .setPositiveButton("Yes") { dialog, _ ->
+                    choice = navController.navigateUp() || super.onSupportNavigateUp()
+                }
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        } else {
+            choice = navController.navigateUp() || super.onSupportNavigateUp()
+        }
+        return choice
     }
 
     private fun getActionBarHeightPx(context: Context): Int {
         val tv = TypedValue()
         if (context.theme.resolveAttribute(
-                com.google.android.material.R.attr.actionBarSize,
+                android.R.attr.actionBarSize,
                 tv,
                 true
             )
@@ -89,4 +113,17 @@ class MainActivity : AppCompatActivity() {
         }
         return 0
     }
+
+    override fun showProgressBar() {
+        _binding?.mainProgressBar?.isVisible = true
+    }
+
+    override fun hideProgressBar() {
+        _binding?.mainProgressBar?.isVisible = false
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
 }

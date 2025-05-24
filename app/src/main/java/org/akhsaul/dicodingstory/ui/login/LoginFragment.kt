@@ -1,11 +1,12 @@
 package org.akhsaul.dicodingstory.ui.login
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,7 +17,9 @@ import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentLoginBinding
 import org.akhsaul.dicodingstory.getText
 import org.akhsaul.dicodingstory.showErrorWithToast
+import org.akhsaul.dicodingstory.showExitConfirmationDialog
 import org.akhsaul.dicodingstory.showMessageWithDialog
+import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -26,6 +29,14 @@ class LoginFragment : Fragment(), KoinComponent {
     private val viewModel: LoginViewModel by viewModel()
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+    private var progressBar: ProgressBarControls? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ProgressBarControls) {
+            progressBar = context
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +53,6 @@ class LoginFragment : Fragment(), KoinComponent {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -58,16 +68,15 @@ class LoginFragment : Fragment(), KoinComponent {
             ) {
                 when (it) {
                     is Result.Loading -> {
-                        progressBar.isVisible = true
-                        btnRegister.isEnabled = false
-                        btnLogin.isEnabled = false
+                        progressBar?.showProgressBar()
+                        isAllButtonEnabled(false)
                     }
 
                     is Result.Success -> {
                         requireContext().showMessageWithDialog("Login", "Login successfully") {
+                            progressBar?.hideProgressBar()
                             settings.setUser(it.data)
-                            btnRegister.isEnabled = true
-                            btnLogin.isEnabled = true
+                            isAllButtonEnabled(true)
                             findNavController().navigate(
                                 R.id.action_loginFragment_to_homeFragment
                             )
@@ -78,11 +87,10 @@ class LoginFragment : Fragment(), KoinComponent {
                         requireContext().showErrorWithToast(
                             lifecycleScope, it.message,
                             onShow = {
-                                progressBar.isVisible = false
+                                progressBar?.hideProgressBar()
                             },
                             onHidden = {
-                                btnRegister.isEnabled = true
-                                btnLogin.isEnabled = true
+                                isAllButtonEnabled(true)
                             }
                         )
                     }
@@ -107,6 +115,19 @@ class LoginFragment : Fragment(), KoinComponent {
                     R.id.action_loginFragment_to_registerFragment
                 )
             }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            requireContext().showExitConfirmationDialog {
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun isAllButtonEnabled(value: Boolean) {
+        with(binding) {
+            btnRegister.isEnabled = value
+            btnLogin.isEnabled = value
         }
     }
 

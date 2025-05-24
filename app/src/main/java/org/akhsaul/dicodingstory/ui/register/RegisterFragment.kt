@@ -1,10 +1,10 @@
 package org.akhsaul.dicodingstory.ui.register
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,12 +15,21 @@ import org.akhsaul.dicodingstory.databinding.FragmentRegisterBinding
 import org.akhsaul.dicodingstory.getText
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showMessageWithDialog
+import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding: FragmentRegisterBinding get() = _binding!!
     private val viewModel: RegisterViewModel by viewModel()
+    private var progressBar: ProgressBarControls? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ProgressBarControls) {
+            progressBar = context
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -37,15 +46,14 @@ class RegisterFragment : Fragment() {
             ) {
                 when (it) {
                     is Result.Loading -> {
-                        progressBar.isVisible = true
-                        btnRegister.isEnabled = false
-                        btnLogin.isEnabled = false
+                        progressBar?.showProgressBar()
+                        isAllButtonEnabled(false)
                     }
 
                     is Result.Success -> {
                         requireContext().showMessageWithDialog("Register", it.data) {
-                            btnRegister.isEnabled = true
-                            btnLogin.isEnabled = true
+                            progressBar?.hideProgressBar()
+                            isAllButtonEnabled(true)
                             // return to loginFragment
                             findNavController().navigate(
                                 R.id.action_registerFragment_to_loginFragment
@@ -57,11 +65,10 @@ class RegisterFragment : Fragment() {
                         requireContext().showErrorWithToast(
                             lifecycleScope, it.message,
                             onShow = {
-                                progressBar.isVisible = false
+                                progressBar?.hideProgressBar()
                             },
                             onHidden = {
-                                btnRegister.isEnabled = true
-                                btnLogin.isEnabled = true
+                                isAllButtonEnabled(true)
                             }
                         )
                     }
@@ -88,6 +95,13 @@ class RegisterFragment : Fragment() {
                     R.id.action_registerFragment_to_loginFragment
                 )
             }
+        }
+    }
+
+    private fun isAllButtonEnabled(value: Boolean) {
+        with(binding) {
+            btnRegister.isEnabled = value
+            btnLogin.isEnabled = value
         }
     }
 

@@ -20,14 +20,8 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil3.load
 import com.google.android.gms.location.CurrentLocationRequest
@@ -35,13 +29,14 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
 import org.akhsaul.dicodingstory.BuildConfig
+import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentAddStoryBinding
 import org.akhsaul.dicodingstory.getText
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showMessageWithDialog
+import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.time.ZoneId
@@ -58,6 +53,7 @@ class AddStoryFragment : Fragment() {
     private var canUseCamera = false
     private var canUseLocation = false
     private var currentImageUri: Uri? = null
+    private var progressBar: ProgressBarControls? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -173,6 +169,13 @@ class AddStoryFragment : Fragment() {
             .show()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ProgressBarControls) {
+            progressBar = context
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -191,61 +194,52 @@ class AddStoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { fragmentRootView, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Apply top padding to account for the status bar.
-            // Other paddings (left, right, bottom) might be handled by MainActivity's root listener
-            // or can be selectively applied here if this fragment needs different behavior.
-            fragmentRootView.updatePadding(top = insets.top)
-            windowInsets // Return original insets to allow other listeners or default handling
-        }
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addStoryResult.collect {
-                    when (it) {
-                        is Result.Loading -> {
-                            binding.btnUpload.text = "Uploading.."
-                            binding.btnUpload.isEnabled = false
-                            binding.progress.isVisible = true
-                        }
+        with(binding) {
+            viewModel.addStoryResult.collectOn(
+                lifecycleScope,
+                viewLifecycleOwner
+            ) {
+                when (it) {
+                    is Result.Loading -> {
+                        progressBar?.showProgressBar()
+                        btnUpload.text = "Uploading.."
+                        btnUpload.isEnabled = false
+                    }
 
-                        is Result.Error -> {
-                            requireContext().showErrorWithToast(
-                                lifecycleScope, it.message,
-                                onShow = {
-                                    binding.progress.isVisible = false
-                                    binding.btnUpload.text = "Upload"
-                                },
-                                onHidden = {
-                                    binding.btnUpload.isEnabled = true
-                                }
-                            )
-                            Log.e("AddStoryFragment", "addStoryResult, Error: ${it.message}")
-                        }
-
-                        is Result.Success -> {
-                            binding.btnUpload.text = "Upload"
-                            binding.btnUpload.isEnabled = true
-                            binding.progress.isVisible = false
-                            requireContext().showMessageWithDialog(
-                                "Add Story",
-                                it.data
-                            ) {
-                                findNavController().popBackStack()
+                    is Result.Error -> {
+                        requireContext().showErrorWithToast(
+                            lifecycleScope, it.message,
+                            onShow = {
+                                progressBar?.hideProgressBar()
+                            },
+                            onHidden = {
+                                btnUpload.text = "Upload"
+                                btnUpload.isEnabled = true
                             }
+                        )
+                    }
+
+                    is Result.Success -> {
+                        progressBar?.hideProgressBar()
+                        btnUpload.text = "Upload"
+                        btnUpload.isEnabled = true
+                        requireContext().showMessageWithDialog(
+                            "Add Story",
+                            it.data
+                        ) {
+                            findNavController().popBackStack()
                         }
                     }
                 }
             }
+            btnAddPhotoFromCamera.setOnClickListener(::onButtonCameraClicked)
+            btnAddPhotoFromGallery.setOnClickListener(::onButtonGalleryClicked)
+            btnUpload.setOnClickListener(::onButtonUploadClicked)
         }
-        binding.btnAddPhotoFromCamera.setOnClickListener(::onButtonCameraClicked)
-        binding.btnAddPhotoFromGallery.setOnClickListener(::onButtonGalleryClicked)
-        binding.btnUpload.setOnClickListener(::onButtonUploadClicked)
     }
 
-    @Suppress("unused")
-    private fun onButtonCameraClicked(v: View) {
+    private fun onButtonCameraClicked(@Suppress("unused") v: View) {
         if (ContextCompat.checkSelfPermission(
                 requireContext(), CAMERA
             ) != PackageManager.PERMISSION_GRANTED
@@ -262,8 +256,7 @@ class AddStoryFragment : Fragment() {
         startCamera()
     }
 
-    @Suppress("unused")
-    private fun onButtonGalleryClicked(v: View) {
+    private fun onButtonGalleryClicked(@Suppress("unused") v: View) {
         val intent = Intent().apply {
             action = Intent.ACTION_GET_CONTENT
             type = "image/*"
@@ -274,8 +267,7 @@ class AddStoryFragment : Fragment() {
         )
     }
 
-    @Suppress("unused")
-    private fun onButtonUploadClicked(v: View) {
+    private fun onButtonUploadClicked(@Suppress("unused") v: View) {
         if (canUseLocation.not()) {
             this.requireContext().showErrorWithToast(
                 lifecycleScope, "Location permission is not granted!"
