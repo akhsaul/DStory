@@ -37,6 +37,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
+import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.BuildConfig
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
@@ -44,6 +45,7 @@ import org.akhsaul.dicodingstory.databinding.DialogAddStoryBinding
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.ui.detail.DetailFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
@@ -62,7 +64,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     private var _dialogAddStoryLayout: DialogAddStoryBinding? = null
     private val dialogAddStoryLayout get() = _dialogAddStoryLayout!!
     private val settings: org.akhsaul.core.Settings by inject()
-    private val viewModel: HomeViewModel by inject()
+    private val viewModel: HomeViewModel by viewModel()
 
     private var isUploading = false
     private var canUseCamera = false
@@ -215,22 +217,24 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         ) == PackageManager.PERMISSION_GRANTED
 
         _binding = FragmentHomeBinding.inflate(layoutInflater)
-        _adapter = ListStoryAdapter {
-            if (isUploading) {
-                Log.i(TAG, "onCreateView: we doing uploading..")
-                return@ListStoryAdapter
-            }
-            Log.i(TAG, "onCreateView: item $it")
-            findNavController().navigate(
-                R.id.action_homeFragment_to_detailFragment,
-                Bundle().apply {
-                    putParcelable(DetailFragment.KEY_DETAIL_DATA, it)
-                }
-            )
-        }
+        _adapter = ListStoryAdapter(this::onItemStoryClicked)
         binding.rvStory.adapter = adapter
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
         return binding.root
+    }
+
+    private fun onItemStoryClicked(story: Story) {
+        if (isUploading) {
+            Log.i(TAG, "onCreateView: we doing uploading..")
+            return
+        }
+        Log.i(TAG, "onCreateView: item $story")
+        findNavController().navigate(
+            R.id.action_homeFragment_to_detailFragment,
+            Bundle().apply {
+                putParcelable(DetailFragment.KEY_DETAIL_DATA, story)
+            }
+        )
     }
 
     private fun startCamera() {

@@ -17,13 +17,13 @@ import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.FragmentLoginBinding
 import org.akhsaul.dicodingstory.getText
 import org.akhsaul.dicodingstory.showErrorWithToast
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class LoginFragment : Fragment(), KoinComponent {
-
     private val settings: Settings by inject()
-    private val loginViewModel: LoginViewModel by inject()
+    private val loginViewModel: LoginViewModel by viewModel()
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
