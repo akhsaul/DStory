@@ -21,6 +21,7 @@ import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
 import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
+import org.akhsaul.dicodingstory.showConfirmationDialog
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showExitConfirmationDialog
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
@@ -156,10 +157,15 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     }
 
     private fun onButtonLogoutClicked(): Boolean {
-        settings.setUser(null)
-        findNavController().navigate(
-            R.id.action_homeFragment_to_loginFragment
-        )
+        requireContext().showConfirmationDialog(
+            R.string.app_name,
+            R.string.logout_confirm_msg
+        ) {
+            settings.setUser(null)
+            findNavController().navigate(
+                R.id.action_homeFragment_to_loginFragment
+            )
+        }
         return true
     }
 }

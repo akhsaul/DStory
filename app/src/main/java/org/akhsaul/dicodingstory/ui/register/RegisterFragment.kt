@@ -87,7 +87,7 @@ class RegisterFragment : Fragment() {
                     return@setOnClickListener
                 }
                 viewModel.register(name, email, password)
-                btnRegister.isEnabled = false
+                isAllButtonEnabled(false)
             }
 
             btnLogin.setOnClickListener {

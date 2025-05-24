@@ -6,7 +6,6 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -73,14 +72,6 @@ class MainActivity : AppCompatActivity(), ProgressBarControls {
         _navController = null
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
-    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
-        return super.getOnBackInvokedDispatcher()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         val currentFragment = navController.currentDestination
         var choice = false
@@ -125,5 +116,4 @@ class MainActivity : AppCompatActivity(), ProgressBarControls {
     companion object {
         private const val TAG = "MainActivity"
     }
-
 }

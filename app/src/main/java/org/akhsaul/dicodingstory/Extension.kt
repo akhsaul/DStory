@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
@@ -104,14 +105,26 @@ fun <T> Flow<T>.collectOn(
     }
 }
 
-fun Context.showExitConfirmationDialog(onYes: () -> Unit) {
+fun Context.showConfirmationDialog(
+    @StringRes title: Int,
+    @StringRes message: Int,
+    onYes: () -> Unit
+) {
     MaterialAlertDialogBuilder(this)
-        .setTitle(R.string.app_name)
-        .setMessage("Are you sure you want to close this application?")
+        .setTitle(title)
+        .setMessage(message)
         .setPositiveButton("Yes") { _, _ ->
             onYes()
         }
         .setNegativeButton("No", null)
         .setCancelable(false)
         .show()
+}
+
+fun Context.showExitConfirmationDialog(onYes: () -> Unit) {
+    showConfirmationDialog(
+        R.string.app_name,
+        R.string.exit_confirm_msg,
+        onYes
+    )
 }

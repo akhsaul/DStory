@@ -107,7 +107,7 @@ class LoginFragment : Fragment(), KoinComponent {
                     return@setOnClickListener
                 }
                 viewModel.login(email, pass)
-                btnLogin.isEnabled = false
+                isAllButtonEnabled(false)
             }
 
             btnRegister.setOnClickListener {
