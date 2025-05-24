@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.exifinterface)
     implementation(platform(libs.koin.bom))
     implementation("io.insert-koin:koin-core")
     implementation("io.insert-koin:koin-android")

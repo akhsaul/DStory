@@ -5,11 +5,27 @@ import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
+
+fun Context.showMessageWithDialog(
+    title: String,
+    message: String,
+    onOk: () -> Unit
+) {
+    MaterialAlertDialogBuilder(this)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton("OK") { dialog, _ ->
+            onOk()
+            dialog.dismiss()
+        }
+        .show()
+}
 
 fun TextInputLayout.getText(): String? = editText?.text?.toString()
 fun Context?.showErrorWithToast(

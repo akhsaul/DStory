@@ -1,8 +1,8 @@
 package org.akhsaul.dicodingstory.ui.story
 
+import android.content.Context
 import android.location.Location
 import android.net.Uri
-import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.repository.StoryRepository
+import org.akhsaul.core.toFile
 import org.akhsaul.dicodingstory.ui.home.StoryRequest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -66,9 +67,9 @@ class AddStoryViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    fun addStory(photo: Uri, description: String) {
+    fun addStory(context: Context, photo: Uri, description: String) {
         viewModelScope.launch {
-            storyFlow.emit(StoryRequest(photo.toFile(), description))
+            storyFlow.emit(StoryRequest(photo.toFile(context), description))
         }
     }
 }

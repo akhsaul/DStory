@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import coil3.load
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
@@ -36,7 +38,9 @@ import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
 import org.akhsaul.dicodingstory.BuildConfig
 import org.akhsaul.dicodingstory.databinding.FragmentAddStoryBinding
+import org.akhsaul.dicodingstory.getText
 import org.akhsaul.dicodingstory.showErrorWithToast
+import org.akhsaul.dicodingstory.showMessageWithDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.time.ZoneId
@@ -198,15 +202,29 @@ class AddStoryFragment : Fragment() {
                         }
 
                         is Result.Error -> {
-                            binding.btnUpload.isEnabled = true
-                            binding.progress.isVisible = false
-                            binding.btnUpload.text = "Upload"
+                            requireContext().showErrorWithToast(
+                                lifecycleScope, it.message,
+                                onShow = {
+                                    binding.progress.isVisible = false
+                                    binding.btnUpload.text = "Upload"
+                                },
+                                onHidden = {
+                                    binding.btnUpload.isEnabled = true
+                                }
+                            )
+                            Log.e("AddStoryFragment", "addStoryResult, Error: ${it.message}")
                         }
 
-                        else -> {
+                        is Result.Success -> {
                             binding.btnUpload.text = "Upload"
                             binding.btnUpload.isEnabled = true
                             binding.progress.isVisible = false
+                            requireContext().showMessageWithDialog(
+                                "Add Story",
+                                it.data
+                            ) {
+                                findNavController().popBackStack()
+                            }
                         }
                     }
                 }
@@ -236,7 +254,28 @@ class AddStoryFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            //viewModel.addStory(currentImageUri, "")
+            val image = currentImageUri
+            val desc = binding.edAddDescription.getText()
+
+            when {
+                image == null -> {
+                    requireContext().showErrorWithToast(
+                        lifecycleScope, "Please add photo first!"
+                    )
+                    return@setOnClickListener
+                }
+
+                desc == null -> {
+                    requireContext().showErrorWithToast(
+                        lifecycleScope, "Please add description first!"
+                    )
+                    return@setOnClickListener
+                }
+
+                else -> {
+                    viewModel.addStory(requireContext(), image, desc)
+                }
+            }
         }
     }
 
