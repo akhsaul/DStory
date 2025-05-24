@@ -19,9 +19,9 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import org.akhsaul.core.data.Result
+import org.akhsaul.core.domain.model.StoryRequest
 import org.akhsaul.core.domain.repository.StoryRepository
 import org.akhsaul.core.toFile
-import org.akhsaul.dicodingstory.ui.home.StoryRequest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds

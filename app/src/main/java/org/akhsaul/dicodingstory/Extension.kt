@@ -24,6 +24,7 @@ fun Context.showMessageWithDialog(
             onOk()
             dialog.dismiss()
         }
+        .setCancelable(false)
         .show()
 }
 

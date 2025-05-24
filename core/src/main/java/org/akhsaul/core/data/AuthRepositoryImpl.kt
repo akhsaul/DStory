@@ -30,9 +30,7 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse()
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
-    }.catchNoInternet {
-        emit(Result.Error(it.message))
-    }.onStart {
+    }.catchNoInternet().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 
@@ -52,9 +50,7 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse()
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
-    }.catchNoInternet {
-        emit(Result.Error(it.message))
-    }.onStart {
+    }.catchNoInternet().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 }

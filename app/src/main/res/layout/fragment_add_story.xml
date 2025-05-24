@@ -30,13 +30,25 @@
                 tools:src="@drawable/photo_test" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAddPhoto"
+                android:id="@+id/btnAddPhotoFromCamera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Add photo"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Camera"
+                app:layout_constraintEnd_toStartOf="@+id/btnAddPhotoFromGallery"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/inputPhoto" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddPhotoFromGallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Gallery"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btnAddPhotoFromCamera"
                 app:layout_constraintTop_toBottomOf="@+id/inputPhoto" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -47,15 +59,15 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnAddPhoto"
+                app:layout_constraintTop_toBottomOf="@+id/btnAddPhotoFromCamera"
                 app:layout_constraintVertical_chainStyle="packed">
 
                 <org.akhsaul.dicodingstory.view.TextInput
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="top"
-                    android:text="@string/lorem_ipsum"
-                    android:inputType="text|textCapSentences|textMultiLine" />
+                    android:inputType="text|textCapSentences|textMultiLine"
+                    android:text="@string/lorem_ipsum" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton

@@ -2,6 +2,7 @@ package org.akhsaul.dicodingstory.ui.story
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -126,7 +127,19 @@ class AddStoryFragment : Fragment() {
         if (isSuccess) {
             binding.inputPhoto.load(requireNotNull(currentImageUri))
         } else {
+            Log.w(TAG, "Failed to get photo from camera")
             currentImageUri = null
+        }
+    }
+
+    private val launcherIntentGallery = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            currentImageUri = result.data?.data
+            binding.inputPhoto.load(requireNotNull(currentImageUri))
+        } else {
+            Log.w(TAG, "Failed to get photo from gallery")
         }
     }
 
@@ -158,10 +171,6 @@ class AddStoryFragment : Fragment() {
             }
             .setCancelable(false)
             .show()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -230,51 +239,70 @@ class AddStoryFragment : Fragment() {
                 }
             }
         }
-        binding.btnAddPhoto.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(), CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissionLauncher.launch(arrayOf(CAMERA))
-            }
+        binding.btnAddPhotoFromCamera.setOnClickListener(::onButtonCameraClicked)
+        binding.btnAddPhotoFromGallery.setOnClickListener(::onButtonGalleryClicked)
+        binding.btnUpload.setOnClickListener(::onButtonUploadClicked)
+    }
 
-            if (canUseCamera.not()) {
-                this.requireContext().showErrorWithToast(
-                    lifecycleScope, "Camera permission is not granted!"
-                )
-                return@setOnClickListener
-            }
-            startCamera()
+    @Suppress("unused")
+    private fun onButtonCameraClicked(v: View) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(arrayOf(CAMERA))
         }
-        binding.btnUpload.setOnClickListener {
-            if (canUseLocation.not()) {
-                this.requireContext().showErrorWithToast(
-                    lifecycleScope, "Location permission is not granted!"
+
+        if (canUseCamera.not()) {
+            this.requireContext().showErrorWithToast(
+                lifecycleScope, "Camera permission is not granted!"
+            )
+            return
+        }
+        startCamera()
+    }
+
+    @Suppress("unused")
+    private fun onButtonGalleryClicked(v: View) {
+        val intent = Intent().apply {
+            action = Intent.ACTION_GET_CONTENT
+            type = "image/*"
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/png", "image/jpeg"))
+        }
+        launcherIntentGallery.launch(
+            Intent.createChooser(intent, "Pilih Photo (PNG, JPG, JPEG)")
+        )
+    }
+
+    @Suppress("unused")
+    private fun onButtonUploadClicked(v: View) {
+        if (canUseLocation.not()) {
+            this.requireContext().showErrorWithToast(
+                lifecycleScope, "Location permission is not granted!"
+            )
+            return
+        }
+
+        val image = currentImageUri
+        val desc = binding.edAddDescription.getText()
+
+        when {
+            image == null -> {
+                requireContext().showErrorWithToast(
+                    lifecycleScope, "Please add photo first!"
                 )
-                return@setOnClickListener
+                return
             }
 
-            val image = currentImageUri
-            val desc = binding.edAddDescription.getText()
+            desc == null -> {
+                requireContext().showErrorWithToast(
+                    lifecycleScope, "Please add description first!"
+                )
+                return
+            }
 
-            when {
-                image == null -> {
-                    requireContext().showErrorWithToast(
-                        lifecycleScope, "Please add photo first!"
-                    )
-                    return@setOnClickListener
-                }
-
-                desc == null -> {
-                    requireContext().showErrorWithToast(
-                        lifecycleScope, "Please add description first!"
-                    )
-                    return@setOnClickListener
-                }
-
-                else -> {
-                    viewModel.addStory(requireContext(), image, desc)
-                }
+            else -> {
+                viewModel.addStory(requireContext(), image, desc)
             }
         }
     }
@@ -345,5 +373,6 @@ class AddStoryFragment : Fragment() {
 
     companion object {
         private val fileNameFormatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss")
+        private const val TAG = "AddStoryFragment"
     }
 }

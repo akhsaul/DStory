@@ -87,36 +87,6 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 
-    override fun getDetailStory(id: String) = flow {
-        val apiResult = apiService.getDetailStory(id)
-        if (apiResult.isSuccessful) {
-            val story = apiResult.body()?.story?.let {
-                Story(
-                    it.id,
-                    it.name,
-                    it.description,
-                    it.photoUrl,
-                    it.createdAt,
-                    it.lat,
-                    it.lon
-                )
-            }
-
-            if (story == null) {
-                emit(Result.Error("Story not found"))
-            } else {
-                emit(Result.Success(story))
-            }
-        } else {
-            val errorResponse = apiResult.getErrorResponse()
-            emit(Result.Error(errorResponse?.message ?: apiResult.message()))
-        }
-    }.catchNoInternet {
-        emit(Result.Error(it.message))
-    }.onStart {
-        emit(Result.Loading)
-    }.flowOn(Dispatchers.IO)
-
     companion object {
         private const val TAG = "StoryRepositoryImpl"
     }

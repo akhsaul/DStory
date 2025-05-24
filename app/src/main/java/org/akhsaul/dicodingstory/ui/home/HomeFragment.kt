@@ -78,6 +78,10 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                                     binding.progress.isVisible = false
                                 }
                             )
+                            if (adapter.currentList.isEmpty()) {
+                                binding.tvMessage.text = "No internet available"
+                                binding.tvMessage.isVisible = true
+                            }
                         }
 
                         is Result.Loading -> {
@@ -86,6 +90,13 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
 
                         is Result.Success -> {
                             binding.progress.isVisible = false
+                            if (adapter.currentList.isEmpty()) {
+                                binding.tvMessage.text = "No data available"
+                                binding.tvMessage.isVisible = true
+                            } else {
+                                binding.tvMessage.text = null
+                                binding.tvMessage.isVisible = false
+                            }
                         }
                     }
                 }
@@ -102,27 +113,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 R.id.action_homeFragment_to_addStoryFragment
             )
         }
-//        adapter.submitList(
-//            buildList<Story> {
-//                repeat(10) {
-//                    add(
-//                        Story(
-//                            "story-FvU4u0Vp2S3PMsFg",
-//                            "Akhsaul",
-//                            "Tak semua keberhasilan karier di dunia digital diawali dengan mengambil pendidikan formal di bidang yang sama, sebagaimana yang Meilia Tria Andari (24) alami. Perjalanan Meilia sebagai talenta informatika justru dimulai dengan berkuliah di jurusan Matematika.",
-//                            "https://dicoding-assets.sgp1.cdn.digitaloceanspaces.com/blog/wp-content/uploads/2025/05/Blog-Banner-1.png",
-//                            Clock.System.now().toString(),
-//                            -1.0,
-//                            -1.0
-//                        )
-//                    )
-//                }
-//            }
-//        )
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     override fun onDestroy() {
