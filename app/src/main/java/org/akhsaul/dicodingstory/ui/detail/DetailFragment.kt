@@ -6,15 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import coil3.load
 import org.akhsaul.core.domain.model.Story
+import org.akhsaul.dicodingstory.collectOn
+import org.akhsaul.dicodingstory.createAtLocalTime
 import org.akhsaul.dicodingstory.databinding.FragmentDetailBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
-class DetailFragment : Fragment() {
+class DetailFragment : Fragment(), KoinComponent {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: DetailViewModel by viewModels()
+    private val viewModel: DetailViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +41,17 @@ class DetailFragment : Fragment() {
     ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         with(binding) {
+            viewModel.location.collectOn(
+                lifecycleScope,
+                viewLifecycleOwner
+            ) {
+                tvLocation.text = it
+            }
             val story = viewModel.getStory()
             ivDetailPhoto.load(story.photoUrl)
             tvDetailName.text = story.name
             tvDetailDescription.text = story.description
+            tvDate.text = story.createAtLocalTime(dateFormatter)
         }
         return binding.root
     }
@@ -49,7 +62,10 @@ class DetailFragment : Fragment() {
     }
 
     companion object {
-        private const val TAG = "DetailFragment"
+        private val dateFormatter = DateTimeFormatter.ofPattern(
+            "'Dibuat pada tanggal' dd MMMM yyyy 'jam' HH:mm:ss z",
+            Locale("id")
+        )
         const val KEY_DETAIL_DATA = "share_detail_data"
     }
 }

@@ -9,13 +9,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="64dp">
 
         <ImageView
             android:id="@+id/iv_detail_photo"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:contentDescription="Image"
+            android:contentDescription="@string/desc_img_story"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,16 +25,41 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_detail_name"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_detail_photo"
-            tools:text="name" />
+            tools:text="Title Story" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/schedule_24px"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_name"
+            tools:text="Dibuat pada tanggal 24 Mei 2025 jam 23:59" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:drawableStart="@drawable/location_on_24px"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDate"
+            tools:text="Karawang" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_detail_description"
@@ -41,9 +67,10 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_name"
-            tools:text="description" />
+            app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+            tools:text="@string/lorem_ipsum" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

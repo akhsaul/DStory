@@ -57,4 +57,5 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="txt_register">Register</string>
     <string name="txt_login">Login</string>
+    <string name="desc_img_story">Image Story</string>
 </resources>

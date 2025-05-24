@@ -6,10 +6,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import org.akhsaul.core.domain.model.Story
+import org.akhsaul.dicodingstory.createAtLocalTime
 import org.akhsaul.dicodingstory.databinding.ItemStoryBinding
 import org.akhsaul.dicodingstory.util.DiffCallBack
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class ListStoryAdapter(private val listener: (Story) -> Unit) :
@@ -18,7 +17,8 @@ class ListStoryAdapter(private val listener: (Story) -> Unit) :
     class MyViewHolder(
         private val binding: ItemStoryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss O")
+        private val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss z")
+
         fun bind(item: Story, onClick: (Story) -> Unit) {
             with(binding) {
                 root.setOnClickListener {
@@ -27,11 +27,7 @@ class ListStoryAdapter(private val listener: (Story) -> Unit) :
                 ivItemPhoto.load(item.photoUrl)
                 tvItemName.text = item.name
                 tvDesc.text = item.description
-                tvCreateAt.text = ZonedDateTime.parse(
-                    item.createdAt,
-                    DateTimeFormatter.ISO_DATE_TIME
-                ).withZoneSameInstant(ZoneId.systemDefault())
-                    .format(formatter)
+                tvCreateAt.text = item.createAtLocalTime(dateFormatter)
             }
         }
     }

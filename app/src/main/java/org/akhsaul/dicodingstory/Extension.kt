@@ -16,7 +16,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
+import org.akhsaul.core.domain.model.Story
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+import kotlin.time.toJavaInstant
 
 fun Context.showMessageWithDialog(
     title: String,
@@ -128,3 +134,9 @@ fun Context.showExitConfirmationDialog(onYes: () -> Unit) {
         onYes
     )
 }
+
+@OptIn(ExperimentalTime::class)
+fun Story.createAtLocalTime(formatter: DateTimeFormatter): String = Instant.parse(this.createdAt)
+    .toJavaInstant()
+    .atZone(ZoneId.systemDefault())
+    .format(formatter)
