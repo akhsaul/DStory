@@ -9,6 +9,7 @@ import org.akhsaul.core.di.coreModule
 import org.akhsaul.dicodingstory.ui.home.HomeViewModel
 import org.akhsaul.dicodingstory.ui.login.LoginViewModel
 import org.akhsaul.dicodingstory.ui.register.RegisterViewModel
+import org.akhsaul.dicodingstory.ui.story.AddStoryViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -25,4 +26,5 @@ val appModule = module {
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::AddStoryViewModel)
 }

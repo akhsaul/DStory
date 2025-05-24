@@ -1,6 +1,8 @@
 package org.akhsaul.dicodingstory.ui.story
 
 import android.location.Location
+import android.net.Uri
+import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,9 +66,9 @@ class AddStoryViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    fun addStory(story: StoryRequest) {
+    fun addStory(photo: Uri, description: String) {
         viewModelScope.launch {
-            storyFlow.emit(story)
+            storyFlow.emit(StoryRequest(photo.toFile(), description))
         }
     }
 }

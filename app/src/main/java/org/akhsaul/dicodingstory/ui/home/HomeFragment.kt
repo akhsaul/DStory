@@ -1,17 +1,6 @@
 package org.akhsaul.dicodingstory.ui.home
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.Manifest.permission.CAMERA
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -19,9 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -29,187 +15,31 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
-import org.akhsaul.dicodingstory.BuildConfig
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
-import org.akhsaul.dicodingstory.databinding.DialogAddStoryBinding
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.ui.detail.DetailFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.File
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import kotlin.time.toJavaInstant
 
 class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var _adapter: ListStoryAdapter? = null
     private val adapter get() = _adapter!!
-    private var _dialogAddStoryLayout: DialogAddStoryBinding? = null
-    private val dialogAddStoryLayout get() = _dialogAddStoryLayout!!
     private val settings: org.akhsaul.core.Settings by inject()
     private val viewModel: HomeViewModel by viewModel()
-
-    private var isUploading = false
-    private var canUseCamera = false
-    private var canUseLocation = false
-    private var currentImageUri: Uri? = null
-
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { results ->
-        results.forEach { permission, isGranted ->
-            when {
-                permission == CAMERA && isGranted -> {
-                    canUseCamera = true
-                }
-
-                permission == ACCESS_FINE_LOCATION && isGranted -> {
-                    canUseCamera = false
-                }
-
-                permission == CAMERA && shouldShowRequestPermissionRationale(
-                    CAMERA
-                ) -> {
-                    // In an educational UI, explain to the user why your app requires this
-                    // permission for a specific feature to behave as expected, and what
-                    // features are disabled if it's declined. In this UI, include a
-                    // "cancel" or "no thanks" button that lets the user continue
-                    // using your app without granting the permission.
-                    // Show your custom rationale dialog here.
-                    showPermissionRationaleDialog(
-                        "Camera Permission Required",
-                        CAMERA,
-                        "To add a photo to your story, please allow camera access."
-                    )
-                }
-
-                permission == ACCESS_FINE_LOCATION && shouldShowRequestPermissionRationale(
-                    ACCESS_FINE_LOCATION
-                ) -> {
-                    // In an educational UI, explain to the user why your app requires this
-                    // permission for a specific feature to behave as expected, and what
-                    // features are disabled if it's declined. In this UI, include a
-                    // "cancel" or "no thanks" button that lets the user continue
-                    // using your app without granting the permission.
-                    // Show your custom rationale dialog here.
-                    showPermissionRationaleDialog(
-                        "Location Permission Required",
-                        ACCESS_FINE_LOCATION,
-                        "This app needs location permission to add a story. Please grant the permission."
-                    )
-                }
-
-                permission == CAMERA && !isGranted -> {
-                    showPermissionDeniedForeverDialog(
-                        "Camera Permission Required",
-                        "You have denied camera permission. Please go to app settings and grant the permission manually."
-                    )
-                }
-
-                permission == ACCESS_FINE_LOCATION && !isGranted -> {
-                    showPermissionDeniedForeverDialog(
-                        "Location Permission Required",
-                        "You have denied location permission. Please go to app settings and grant the permission manually."
-                    )
-                }
-            }
-        }
-    }
-
-    private val launcherIntentCamera = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { isSuccess ->
-        if (isSuccess) {
-            dialogAddStoryLayout.inputPhoto.setImageURI(requireNotNull(currentImageUri))
-        } else {
-            currentImageUri = null
-        }
-    }
-
-    private fun showPermissionRationaleDialog(title: String, message: String, permission: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("Grant") { _, _ ->
-                requestPermissionLauncher.launch(arrayOf(permission))
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setCancelable(false)
-            .show()
-    }
-
-    private fun showPermissionDeniedForeverDialog(title: String, message: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("Open settings") { _, _ ->
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.data = Uri.fromParts("package", requireContext().packageName, null)
-                startActivity(intent)
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setCancelable(false)
-            .show()
-    }
-
-    @OptIn(ExperimentalTime::class)
-    private fun getImageUri(context: Context): Uri {
-        val timeStamp = Clock.System.now().toJavaInstant()
-            .atZone(ZoneId.systemDefault())
-            .format(fileNameFormatter)
-        var uri: Uri? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val contentValues = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, "$timeStamp.jpg")
-                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/DStory/")
-            }
-            uri = context.contentResolver.insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues
-            )
-        }
-
-        return uri ?: run {
-            val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            val imageFile = File(filesDir, "/DStory/$timeStamp.jpg")
-            if (imageFile.parentFile?.exists() == false) imageFile.parentFile?.mkdir()
-            FileProvider.getUriForFile(
-                context,
-                "${BuildConfig.APPLICATION_ID}.fileprovider",
-                imageFile
-            )
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        canUseCamera = ContextCompat.checkSelfPermission(
-            requireContext(),
-            CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
-        canUseLocation = ContextCompat.checkSelfPermission(
-            requireContext(),
-            ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-
         _binding = FragmentHomeBinding.inflate(layoutInflater)
         _adapter = ListStoryAdapter(this::onItemStoryClicked)
         binding.rvStory.adapter = adapter
@@ -218,10 +48,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     }
 
     private fun onItemStoryClicked(story: Story) {
-        if (isUploading) {
-            Log.i(TAG, "onCreateView: we doing uploading..")
-            return
-        }
         Log.i(TAG, "onCreateView: item $story")
         findNavController().navigate(
             R.id.action_homeFragment_to_detailFragment,
@@ -229,11 +55,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 putParcelable(DetailFragment.KEY_DETAIL_DATA, story)
             }
         )
-    }
-
-    private fun startCamera() {
-        currentImageUri = getImageUri(requireContext())
-        launcherIntentCamera.launch(currentImageUri!!)
     }
 
     @OptIn(ExperimentalTime::class)
@@ -271,111 +92,15 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
             }
         }
 
-//        lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.addStoryResult.collect {
-//                    when (it) {
-//                        is Result.Loading -> {
-//                            binding.progress.isVisible = true
-//                        }
-//
-//                        is Result.Error -> {
-//                            binding.progress.isVisible = false
-//                            isUploading = false
-//                        }
-//
-//                        else -> {
-//                            binding.progress.isVisible = false
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.triggerRefresh()
             binding.swipeRefresh.isRefreshing = false
         }
 
         binding.btnAddStory.setOnClickListener {
-
             findNavController().navigate(
                 R.id.action_homeFragment_to_addStoryFragment
             )
-            return@setOnClickListener
-
-            // TODO move Add Story ui to separated ui
-//            if (isUploading) {
-//                Log.i(TAG, "onCreateView: we doing uploading..")
-//                return@setOnClickListener
-//            }
-//
-//            if (ContextCompat.checkSelfPermission(
-//                    requireContext(),
-//                    ACCESS_FINE_LOCATION
-//                ) != PackageManager.PERMISSION_GRANTED
-//            ) {
-//                requestPermissionLauncher.launch(arrayOf(ACCESS_FINE_LOCATION))
-//            }
-//
-//            if (canUseLocation.not()) {
-//                this.requireContext().showErrorWithToast(
-//                    lifecycleScope, "Location permission is not granted!"
-//                )
-//                return@setOnClickListener
-//            }
-//
-//            _dialogAddStoryLayout =
-//                DialogAddStoryBinding.inflate(LayoutInflater.from(requireContext()))
-//            dialogAddStoryLayout.btnAddPhoto.setOnClickListener {
-//                if (ContextCompat.checkSelfPermission(
-//                        requireContext(), CAMERA
-//                    ) != PackageManager.PERMISSION_GRANTED
-//                ) {
-//                    requestPermissionLauncher.launch(arrayOf(CAMERA))
-//                }
-//
-//                if (canUseCamera.not()) {
-//                    this.requireContext().showErrorWithToast(
-//                        lifecycleScope, "Camera permission is not granted!"
-//                    )
-//                    return@setOnClickListener
-//                }
-//                startCamera()
-//            }
-//
-//            val locationToken = CancellationTokenSource()
-//            LocationServices.getFusedLocationProviderClient(requireContext())
-//                .getCurrentLocation(
-//                    CurrentLocationRequest.Builder()
-//                        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-//                        .setMaxUpdateAgeMillis(5.minutes.inWholeMilliseconds)
-//                        .build(), locationToken.token
-//                ).addOnSuccessListener { location ->
-//                    viewModel.currentLocation.tryEmit(location)
-//                }
-//
-//            MaterialAlertDialogBuilder(requireContext())
-//                .setTitle("Add Story")
-//                .setView(dialogAddStoryLayout.root)
-//                .setPositiveButton("Add") { dialog, _ ->
-//                    binding.progress.isVisible = true
-//                    isUploading = true
-//
-//                    // TODO add story and wait
-//                    lifecycleScope.launch {
-//                        delay(5000)
-//                        binding.progress.isVisible = false
-//                        isUploading = false
-//                    }
-//                    //dialog.dismiss()
-//                }
-//                .setNegativeButton("Cancel") { dialog, _ ->
-//                    locationToken.cancel()
-//                    dialog.dismiss()
-//                }
-//                .setCancelable(false)
-//                .show()
         }
 //        adapter.submitList(
 //            buildList<Story> {
@@ -404,7 +129,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         super.onDestroy()
         _binding = null
         _adapter = null
-        _dialogAddStoryLayout = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -419,7 +143,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
             R.id.action_settings -> {
-                // TODO move to settings ui
                 findNavController().navigate(
                     R.id.action_homeFragment_to_settingsFragment
                 )
@@ -439,7 +162,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     }
 
     companion object {
-        private val fileNameFormatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss")
         private const val TAG = "HomeFragment"
     }
 }
