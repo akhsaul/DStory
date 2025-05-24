@@ -15,7 +15,6 @@ import org.akhsaul.dicodingstory.databinding.FragmentRegisterBinding
 import org.akhsaul.dicodingstory.getText
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showMessageWithDialog
-import org.akhsaul.dicodingstory.showMessageWithToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterFragment : Fragment() {
@@ -44,22 +43,14 @@ class RegisterFragment : Fragment() {
                     }
 
                     is Result.Success -> {
-                        requireContext().showMessageWithToast(
-                            lifecycleScope, it.data,
-                            onShow = {
-                                progressBar.isVisible = false
-                            },
-                            onHidden = {
-                                requireContext().showMessageWithDialog("Register", it.data) {
-                                    btnRegister.isEnabled = true
-                                    btnLogin.isEnabled = true
-                                    // return to loginFragment
-                                    findNavController().navigate(
-                                        R.id.action_registerFragment_to_loginFragment
-                                    )
-                                }
-                            }
-                        )
+                        requireContext().showMessageWithDialog("Register", it.data) {
+                            btnRegister.isEnabled = true
+                            btnLogin.isEnabled = true
+                            // return to loginFragment
+                            findNavController().navigate(
+                                R.id.action_registerFragment_to_loginFragment
+                            )
+                        }
                     }
 
                     is Result.Error -> {
