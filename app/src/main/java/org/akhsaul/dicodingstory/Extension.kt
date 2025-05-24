@@ -1,10 +1,15 @@
 package org.akhsaul.dicodingstory
 
+import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
@@ -17,8 +22,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import org.akhsaul.core.domain.model.Story
+import java.io.File
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -136,7 +143,38 @@ fun Context.showExitConfirmationDialog(onYes: () -> Unit) {
 }
 
 @OptIn(ExperimentalTime::class)
-fun Story.createAtLocalTime(formatter: DateTimeFormatter): String = Instant.parse(this.createdAt)
-    .toJavaInstant()
+fun Instant.convertToLocal(formatter: DateTimeFormatter): String = this.toJavaInstant()
     .atZone(ZoneId.systemDefault())
     .format(formatter)
+
+@OptIn(ExperimentalTime::class)
+fun Story.createAtLocalTime(formatter: DateTimeFormatter): String = Instant.parse(this.createdAt)
+    .convertToLocal(formatter)
+
+@OptIn(ExperimentalTime::class)
+fun Context.getImageUri(fileNameFormatter: DateTimeFormatter): Uri {
+    val timeStamp = Clock.System.now().convertToLocal(fileNameFormatter)
+    var uri: Uri? = null
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "$timeStamp.jpg")
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/DStory/")
+        }
+        uri = contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+    }
+
+    return uri ?: run {
+        val filesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File(filesDir, "/DStory/$timeStamp.jpg")
+        if (imageFile.parentFile?.exists() == false) imageFile.parentFile?.mkdir()
+        FileProvider.getUriForFile(
+            this,
+            "${BuildConfig.APPLICATION_ID}.fileprovider",
+            imageFile
+        )
+    }
+}

@@ -19,10 +19,10 @@ import kotlin.time.Duration.Companion.seconds
 
 class RegisterViewModel() : ViewModel(), KoinComponent {
     private val authRepository: AuthRepository by inject()
-    private val registerState = MutableSharedFlow<Register>()
+    private val dataRegister = MutableSharedFlow<Register>()
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val registerResult = registerState
+    val registerResult = dataRegister
         .debounce(1.seconds)
         .flatMapLatest {
             authRepository.register(it.name, it.email, it.password)
@@ -33,7 +33,7 @@ class RegisterViewModel() : ViewModel(), KoinComponent {
 
     fun register(name: String, email: String, password: String) {
         viewModelScope.launch {
-            registerState.emit(Register(name, email, password))
+            dataRegister.emit(Register(name, email, password))
         }
     }
 

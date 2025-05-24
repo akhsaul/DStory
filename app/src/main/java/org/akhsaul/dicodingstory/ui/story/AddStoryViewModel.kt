@@ -3,6 +3,7 @@ package org.akhsaul.dicodingstory.ui.story
 import android.content.Context
 import android.location.Location
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -63,7 +64,8 @@ class AddStoryViewModel : ViewModel(), KoinComponent {
         if (it is TimeoutCancellationException) {
             emit(Result.Error("Can't get location!"))
         } else {
-            emit(Result.Error(it.message))
+            Log.e(TAG, "Error when try to login", it)
+            emit(Result.Error("Unexpected Error"))
         }
     }
 
@@ -71,5 +73,9 @@ class AddStoryViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             storyFlow.emit(StoryRequest(photo.toFile(context), description))
         }
+    }
+
+    companion object {
+        private const val TAG = "AddStoryViewModel"
     }
 }

@@ -1,7 +1,6 @@
 package org.akhsaul.dicodingstory.di
 
 import android.app.Application
-import android.util.Log
 import org.akhsaul.dicodingstory.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -22,11 +21,6 @@ class MyApplication : Application(), KoinStartup {
                 Level.NONE
             }
         )
-
-        Log.i(TAG, "onCreate: Loading modules")
         modules(appModule)
-    }
-    companion object {
-        private const val TAG = "MyApplication"
     }
 }

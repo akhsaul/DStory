@@ -3,15 +3,11 @@ package org.akhsaul.dicodingstory.ui.story
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -30,21 +25,16 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.akhsaul.core.data.Result
-import org.akhsaul.dicodingstory.BuildConfig
 import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentAddStoryBinding
+import org.akhsaul.dicodingstory.getImageUri
 import org.akhsaul.dicodingstory.getText
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showMessageWithDialog
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.ExperimentalTime
-import kotlin.time.toJavaInstant
 
 class AddStoryFragment : Fragment() {
     private var _binding: FragmentAddStoryBinding? = null
@@ -253,7 +243,9 @@ class AddStoryFragment : Fragment() {
             )
             return
         }
-        startCamera()
+
+        currentImageUri = requireContext().getImageUri(fileNameFormatter)
+        launcherIntentCamera.launch(currentImageUri!!)
     }
 
     private fun onButtonGalleryClicked(@Suppress("unused") v: View) {
@@ -320,41 +312,6 @@ class AddStoryFragment : Fragment() {
                 ).addOnSuccessListener { location ->
                     viewModel.currentLocation.tryEmit(location)
                 }
-        }
-    }
-
-    private fun startCamera() {
-        currentImageUri = getImageUri(requireContext())
-        launcherIntentCamera.launch(currentImageUri!!)
-    }
-
-    @OptIn(ExperimentalTime::class)
-    private fun getImageUri(context: Context): Uri {
-        val timeStamp = Clock.System.now().toJavaInstant()
-            .atZone(ZoneId.systemDefault())
-            .format(fileNameFormatter)
-        var uri: Uri? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val contentValues = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, "$timeStamp.jpg")
-                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/DStory/")
-            }
-            uri = context.contentResolver.insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues
-            )
-        }
-
-        return uri ?: run {
-            val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            val imageFile = File(filesDir, "/DStory/$timeStamp.jpg")
-            if (imageFile.parentFile?.exists() == false) imageFile.parentFile?.mkdir()
-            FileProvider.getUriForFile(
-                context,
-                "${BuildConfig.APPLICATION_ID}.fileprovider",
-                imageFile
-            )
         }
     }
 

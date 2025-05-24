@@ -28,7 +28,7 @@ class DetailFragment : Fragment(), KoinComponent {
             if (Build.VERSION.SDK_INT >= 33) {
                 requireNotNull(it.getParcelable(KEY_DETAIL_DATA, Story::class.java))
             } else {
-                @Suppress("DEPRECATION")
+                @Suppress("deprecation")
                 requireNotNull(it.getParcelable(KEY_DETAIL_DATA))
             }
         }

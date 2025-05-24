@@ -2,7 +2,6 @@ package org.akhsaul.dicodingstory
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.akhsaul.dicodingstory.databinding.ActivityMainBinding
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 
@@ -33,25 +31,26 @@ class MainActivity : AppCompatActivity(), ProgressBarControls {
     }
 
     override fun onStart() {
-        Log.i(TAG, "onCreate: Activity starting")
         super.onStart()
-        _navController = findNavController(binding.fragmentContainerView.id)
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.homeFragment, R.id.settingsFragment -> {
-                    binding.root.fitsSystemWindows = true
-                    binding.appBarLayout.visibility = View.VISIBLE
-                    binding.fragmentContainerView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                        topMargin = getActionBarHeightPx(this@MainActivity)
+        with(binding) {
+            _navController = fragmentContainerView.findNavController()
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.homeFragment, R.id.settingsFragment -> {
+                        root.fitsSystemWindows = true
+                        appBarLayout.visibility = View.VISIBLE
+                        fragmentContainerView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                            topMargin = getActionBarHeightPx(this@MainActivity)
+                        }
                     }
-                }
 
-                else -> {
-                    binding.root.fitsSystemWindows = false
-                    binding.appBarLayout.visibility = View.GONE
-                    binding.fragmentContainerView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                        topMargin = 0
+                    else -> {
+                        root.fitsSystemWindows = false
+                        appBarLayout.visibility = View.GONE
+                        fragmentContainerView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                            topMargin = 0
+                        }
                     }
                 }
             }
@@ -73,23 +72,7 @@ class MainActivity : AppCompatActivity(), ProgressBarControls {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val currentFragment = navController.currentDestination
-        var choice = false
-        if (currentFragment?.id == R.id.homeFragment || currentFragment?.id == R.id.loginFragment) {
-            MaterialAlertDialogBuilder(this)
-                .setTitle(currentFragment.label)
-                .setMessage("Do you want quit?")
-                .setPositiveButton("Yes") { dialog, _ ->
-                    choice = navController.navigateUp() || super.onSupportNavigateUp()
-                }
-                .setNegativeButton("No") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .show()
-        } else {
-            choice = navController.navigateUp() || super.onSupportNavigateUp()
-        }
-        return choice
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     private fun getActionBarHeightPx(context: Context): Int {
@@ -111,9 +94,5 @@ class MainActivity : AppCompatActivity(), ProgressBarControls {
 
     override fun hideProgressBar() {
         _binding?.mainProgressBar?.isVisible = false
-    }
-
-    companion object {
-        private const val TAG = "MainActivity"
     }
 }
