@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import coil3.load
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.collectOn
-import org.akhsaul.dicodingstory.createAtLocalTime
 import org.akhsaul.dicodingstory.databinding.FragmentDetailBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
@@ -51,7 +50,7 @@ class DetailFragment : Fragment(), KoinComponent {
             ivDetailPhoto.load(story.photoUrl)
             tvDetailName.text = story.name
             tvDetailDescription.text = story.description
-            tvDate.text = story.createAtLocalTime(dateFormatter)
+            tvDate.text = story.createdAt.format(dateFormatter)
         }
         return binding.root
     }

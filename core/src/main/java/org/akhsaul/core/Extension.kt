@@ -32,10 +32,10 @@ fun File.toMultiPartBody(
     name, this.name, asRequestBody(mediaType)
 )
 
-inline fun <reified T> Response<T>.getErrorResponse(): T? {
+inline fun <reified T> Response<T>.getErrorResponse(gson: Gson): T? {
     return runCatching {
         val stream = this.errorBody()?.charStream() ?: return null
-        Gson().fromJson(stream, T::class.java)
+        gson.fromJson(stream, T::class.java)
     }.getOrNull()
 }
 

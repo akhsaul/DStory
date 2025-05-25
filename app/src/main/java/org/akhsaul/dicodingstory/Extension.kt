@@ -21,7 +21,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
-import org.akhsaul.core.domain.model.Story
 import java.io.File
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -143,17 +142,16 @@ fun Context.showExitConfirmationDialog(onYes: () -> Unit) {
 }
 
 @OptIn(ExperimentalTime::class)
-fun Instant.convertToLocal(formatter: DateTimeFormatter): String = this.toJavaInstant()
-    .atZone(ZoneId.systemDefault())
+fun Instant.formatToZone(
+    formatter: DateTimeFormatter,
+    zone: ZoneId = ZoneId.systemDefault()
+): String = this.toJavaInstant()
+    .atZone(zone)
     .format(formatter)
 
 @OptIn(ExperimentalTime::class)
-fun Story.createAtLocalTime(formatter: DateTimeFormatter): String = Instant.parse(this.createdAt)
-    .convertToLocal(formatter)
-
-@OptIn(ExperimentalTime::class)
 fun Context.getImageUri(fileNameFormatter: DateTimeFormatter): Uri {
-    val timeStamp = Clock.System.now().convertToLocal(fileNameFormatter)
+    val timeStamp = Clock.System.now().formatToZone(fileNameFormatter)
     var uri: Uri? = null
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         val contentValues = ContentValues().apply {

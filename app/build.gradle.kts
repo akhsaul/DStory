@@ -42,18 +42,16 @@ android {
 dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.lifecycle)
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation(libs.play.services.location)
     implementation(platform(libs.koin.bom))
-    implementation("io.insert-koin:koin-core")
-    implementation("io.insert-koin:koin-android")
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
     // Java Compatibility
-    implementation("io.insert-koin:koin-android-compat")
-    // Jetpack WorkManager
-    implementation("io.insert-koin:koin-androidx-workmanager")
+    implementation(libs.koin.android.compat)
     // Navigation Graph
-    implementation("io.insert-koin:koin-androidx-navigation")
+    implementation(libs.koin.androidx.navigation)
     // App Startup
-    implementation("io.insert-koin:koin-androidx-startup")
+    implementation(libs.koin.androidx.startup)
     implementation(project(":core"))
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
@@ -70,11 +68,9 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.preference)
-    testImplementation("io.insert-koin:koin-test")
-    // Koin for JUnit 4
-    //testImplementation("io.insert-koin:koin-test-junit4")
+    testImplementation(libs.koin.test)
     // Koin for JUnit 5
-    testImplementation("io.insert-koin:koin-test-junit5")
+    testImplementation(libs.koin.test.junit5)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -75,7 +75,7 @@ class MyGeocoder : KoinComponent {
             runCatching {
                 val result = geocoder.getFromLocation(latitude, longitude, maxResults)
                 withContext(Dispatchers.Main) {
-                    listener.onSuccess(result?.filterNotNull() ?: emptyList())
+                    listener.onSuccess(result?.filterNotNull().orEmpty())
                 }
             }.getOrElse {
                 withContext(Dispatchers.Main) {

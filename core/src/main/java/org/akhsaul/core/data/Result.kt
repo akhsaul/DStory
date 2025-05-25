@@ -1,6 +1,6 @@
 package org.akhsaul.core.data
 
-sealed class Result<out R> private constructor() {
+sealed class Result<out R> {
     data class Success<out T : Any>(val data: T) : Result<T>()
     data class Error<out T : Any>(val message: String? = null) : Result<T>()
     data object Loading : Result<Nothing>()

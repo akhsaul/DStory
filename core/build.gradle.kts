@@ -54,16 +54,14 @@ android {
 dependencies {
     implementation(libs.androidx.exifinterface)
     implementation(platform(libs.koin.bom))
-    implementation("io.insert-koin:koin-core")
-    implementation("io.insert-koin:koin-android")
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
     // Java Compatibility
-    implementation("io.insert-koin:koin-android-compat")
-    // Jetpack WorkManager
-    implementation("io.insert-koin:koin-androidx-workmanager")
+    implementation(libs.koin.android.compat)
     // Navigation Graph
-    implementation("io.insert-koin:koin-androidx-navigation")
+    implementation(libs.koin.androidx.navigation)
     // App Startup
-    implementation("io.insert-koin:koin-androidx-startup")
+    implementation(libs.koin.androidx.startup)
     implementation(libs.androidx.startup.runtime)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.preference.ktx)
@@ -73,12 +71,10 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.gson)
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-    testImplementation("io.insert-koin:koin-test")
-    // Koin for JUnit 4
-    //testImplementation("io.insert-koin:koin-test-junit4")
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.koin.test)
     // Koin for JUnit 5
-    testImplementation("io.insert-koin:koin-test-junit5")
+    testImplementation(libs.koin.test.junit5)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

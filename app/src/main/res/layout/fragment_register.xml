@@ -16,7 +16,7 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:contentDescription="TODO"
+            android:contentDescription="@string/txt_img_register"
             android:scaleType="centerCrop"
             android:src="@drawable/photo_test"
             app:layout_constraintEnd_toEndOf="parent"

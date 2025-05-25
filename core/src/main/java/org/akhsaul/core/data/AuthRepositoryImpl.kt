@@ -1,5 +1,6 @@
 package org.akhsaul.core.data
 
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -14,6 +15,7 @@ import org.koin.core.component.inject
 
 class AuthRepositoryImpl : AuthRepository, KoinComponent {
     private val apiService: ApiService by inject()
+    private val gson: Gson by inject()
 
     override fun register(name: String, email: String, password: String) = flow {
         val apiResult = apiService.register(name, email, password)
@@ -27,7 +29,7 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
                 emit(Result.Success(response.message))
             }
         } else {
-            val errorResponse = apiResult.getErrorResponse()
+            val errorResponse = apiResult.getErrorResponse(gson)
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
     }.catchNoInternet().onStart {
@@ -47,7 +49,7 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
                 emit(Result.Success(user))
             }
         } else {
-            val errorResponse = apiResult.getErrorResponse()
+            val errorResponse = apiResult.getErrorResponse(gson)
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
     }.catchNoInternet().onStart {

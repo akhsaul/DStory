@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import org.akhsaul.core.domain.model.Story
-import org.akhsaul.dicodingstory.createAtLocalTime
 import org.akhsaul.dicodingstory.databinding.ItemStoryBinding
 import org.akhsaul.dicodingstory.util.DiffCallBack
 import java.time.format.DateTimeFormatter
@@ -27,7 +26,7 @@ class ListStoryAdapter(private val listener: (Story) -> Unit) :
                 ivItemPhoto.load(item.photoUrl)
                 tvItemName.text = item.name
                 tvDesc.text = item.description
-                tvCreateAt.text = item.createAtLocalTime(dateFormatter)
+                tvCreateAt.text = item.createdAt.format(dateFormatter)
             }
         }
     }

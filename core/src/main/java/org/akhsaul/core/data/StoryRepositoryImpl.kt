@@ -1,6 +1,7 @@
 package org.akhsaul.core.data
 
 import android.graphics.Bitmap
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -25,21 +26,23 @@ import java.io.File
 
 class StoryRepositoryImpl : StoryRepository, KoinComponent {
     private val apiService: ApiService by inject()
+    private val gson: Gson by inject()
 
     override fun addStory(
-        photo: File,
+        photoFile: File,
         description: String,
         lat: Double,
         lon: Double
     ): Flow<Result<String>> = flow {
         val finalPhoto: File
-        val photoType = when (photo.extension.lowercase()) {
+        val photoType = when (photoFile.extension.lowercase()) {
             "png" -> {
-                finalPhoto = photo.reduceFileImage(Bitmap.CompressFormat.PNG)
+                finalPhoto = photoFile.reduceFileImage(Bitmap.CompressFormat.PNG)
                 "image/png"
             }
+
             "jpg", "jpeg" -> {
-                finalPhoto = photo.reduceFileImage(Bitmap.CompressFormat.JPEG)
+                finalPhoto = photoFile.reduceFileImage(Bitmap.CompressFormat.JPEG)
                 "image/jpeg"
             }
 
@@ -56,14 +59,17 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
         if (apiResult.isSuccessful) {
             Result.Success(apiResult.body()?.message ?: "Response is null")
         } else {
-            val errorResponse = apiResult.getErrorResponse()
+            val errorResponse = apiResult.getErrorResponse(gson)
             Result.Error(errorResponse?.message ?: apiResult.message())
         }
     }.catchNoInternet().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 
-    override fun getAllStory(): Flow<Result<List<Story>>> = flow {
+    override fun getAllStory(
+        page: Int?,
+        size: Int?, location: Int
+    ): Flow<Result<List<Story>>> = flow {
         val apiResult = apiService.getAllStory()
         if (apiResult.isSuccessful) {
             val listStory = apiResult.body()?.listStory.orEmpty().map {
@@ -80,14 +86,10 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
 
             emit(Result.Success(listStory))
         } else {
-            val errorResponse = apiResult.getErrorResponse()
+            val errorResponse = apiResult.getErrorResponse(gson)
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
     }.catchNoInternet().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
-
-    companion object {
-        private const val TAG = "StoryRepositoryImpl"
-    }
 }
