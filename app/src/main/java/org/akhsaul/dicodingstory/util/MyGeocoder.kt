@@ -26,11 +26,25 @@ class MyGeocoder : KoinComponent {
         maxResults: Int,
         listener: ResultListener
     ) {
-        if (Build.VERSION.SDK_INT >= 33) {
-            getFromLocation(latitude, longitude, maxResults, listener)
-        } else {
-            scope.launch {
-                getFromLocationLegacy(latitude, longitude, maxResults, listener)
+        when {
+            latitude !in (-90.0..90.0) -> {
+                listener.onFailure("Invalid value for longitude")
+                return
+            }
+
+            longitude !in (-180.0..180.0) -> {
+                listener.onFailure("Invalid value for longitude")
+                return
+            }
+
+            else -> {
+                if (Build.VERSION.SDK_INT >= 33) {
+                    getFromLocation(latitude, longitude, maxResults, listener)
+                } else {
+                    scope.launch {
+                        getFromLocationLegacy(latitude, longitude, maxResults, listener)
+                    }
+                }
             }
         }
     }
