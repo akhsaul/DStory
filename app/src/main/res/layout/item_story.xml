@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/iv_item_photo"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="100dp"
             android:contentDescription="@string/desc_img_story"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"

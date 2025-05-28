@@ -25,6 +25,7 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.akhsaul.core.data.Result
+import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentAddStoryBinding
 import org.akhsaul.dicodingstory.getImageUri
@@ -193,7 +194,7 @@ class AddStoryFragment : Fragment() {
                 when (it) {
                     is Result.Loading -> {
                         progressBar?.showProgressBar()
-                        btnUpload.text = "Uploading.."
+                        btnUpload.setText(R.string.txt_uploading)
                         btnUpload.isEnabled = false
                     }
 
@@ -204,7 +205,7 @@ class AddStoryFragment : Fragment() {
                                 progressBar?.hideProgressBar()
                             },
                             onHidden = {
-                                btnUpload.text = "Upload"
+                                btnUpload.setText(R.string.txt_upload)
                                 btnUpload.isEnabled = true
                             }
                         )
@@ -212,7 +213,7 @@ class AddStoryFragment : Fragment() {
 
                     is Result.Success -> {
                         progressBar?.hideProgressBar()
-                        btnUpload.text = "Upload"
+                        btnUpload.setText(R.string.txt_upload)
                         btnUpload.isEnabled = true
                         requireContext().showMessageWithDialog(
                             "Add Story",

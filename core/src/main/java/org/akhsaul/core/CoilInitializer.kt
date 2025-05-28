@@ -9,7 +9,6 @@ import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
-import java.util.Collections
 
 @Suppress("unused")
 class CoilInitializer : Initializer<ImageLoader> {
@@ -31,5 +30,5 @@ class CoilInitializer : Initializer<ImageLoader> {
         return imageLoader
     }
 
-    override fun dependencies(): MutableList<Class<out Initializer<*>>> = Collections.emptyList()
+    override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 }

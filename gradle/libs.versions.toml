@@ -29,6 +29,7 @@ cameraView = "1.4.2"
 cameraLifecycle = "1.4.2"
 preference = "1.2.1"
 exifinterface = "1.4.1"
+navSafeArgs = "2.7.7"
 
 [libraries]
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
@@ -38,8 +39,6 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 koin-android = { module = "io.insert-koin:koin-android" }
-koin-android-compat = { module = "io.insert-koin:koin-android-compat" }
-koin-androidx-navigation = { module = "io.insert-koin:koin-androidx-navigation" }
 koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup" }
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-test = { module = "io.insert-koin:koin-test" }
@@ -76,4 +75,5 @@ androidx-preference = { group = "androidx.preference", name = "preference", vers
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navSafeArgs" }
 
