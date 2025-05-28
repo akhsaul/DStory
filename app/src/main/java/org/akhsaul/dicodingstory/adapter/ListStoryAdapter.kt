@@ -1,16 +1,18 @@
 package org.akhsaul.dicodingstory.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import org.akhsaul.core.domain.model.Story
+import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.ItemStoryBinding
 import org.akhsaul.dicodingstory.util.DiffCallBack
 import java.time.format.DateTimeFormatter
 
-class ListStoryAdapter(private val listener: (Story) -> Unit) :
+class ListStoryAdapter(private val listener: (Story, View, String) -> Unit) :
     ListAdapter<Story, ListStoryAdapter.MyViewHolder>(DiffCallBack) {
 
     class MyViewHolder(
@@ -18,10 +20,15 @@ class ListStoryAdapter(private val listener: (Story) -> Unit) :
     ) : RecyclerView.ViewHolder(binding.root) {
         private val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss z")
 
-        fun bind(item: Story, onClick: (Story) -> Unit) {
+        fun bind(item: Story, onClick: (Story, View, String) -> Unit) {
             with(binding) {
+                val viewTransitionName = root.context.getString(
+                    R.string.transition_view_detail,
+                    item.id
+                )
+                root.transitionName = viewTransitionName
                 root.setOnClickListener {
-                    onClick(item)
+                    onClick(item, root, viewTransitionName)
                 }
                 ivItemPhoto.load(item.photoUrl)
                 tvItemName.text = item.name

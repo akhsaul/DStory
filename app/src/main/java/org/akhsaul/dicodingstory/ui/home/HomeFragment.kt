@@ -10,11 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.core.view.MenuProvider
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.transition.MaterialElevationScale
+import jp.wasabeef.recyclerview.adapters.SlideInRightAnimationAdapter
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.R
@@ -25,7 +29,6 @@ import org.akhsaul.dicodingstory.showConfirmationDialog
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showExitConfirmationDialog
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
-import org.akhsaul.dicodingstory.ui.detail.DetailFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -47,28 +50,50 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater)
-        _adapter = ListStoryAdapter(this::onItemStoryClicked)
-        binding.rvStory.adapter = adapter
+        _adapter = ListStoryAdapter(::onItemStoryClicked)
+        //binding.rvStory.adapter = adapter
+        binding.rvStory.adapter = SlideInRightAnimationAdapter(adapter).apply {
+            this.setFirstOnly(false)
+            this.setDuration(500)
+        }
+        
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
         return binding.root
     }
 
-    private fun onItemStoryClicked(story: Story) {
+    private fun onItemStoryClicked(
+        story: Story,
+        sharedView: View,
+        transitionName: String
+    ) {
+        exitTransition = MaterialElevationScale(false).setDuration(500L)
+        reenterTransition = MaterialElevationScale(true).setDuration(500L)
         findNavController().navigate(
-            R.id.action_homeFragment_to_detailFragment,
-            Bundle().apply {
-                putParcelable(DetailFragment.KEY_DETAIL_DATA, story)
-            }
+            HomeFragmentDirections.actionHomeFragmentToDetailFragment(
+                story,
+                transitionName
+            ),
+            FragmentNavigatorExtras(sharedView to transitionName)
         )
     }
 
     @OptIn(ExperimentalTime::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // return transition
+        postponeEnterTransition()
+        view.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
+
         viewModel.currentListStory.collectOn(
             lifecycleScope,
             viewLifecycleOwner

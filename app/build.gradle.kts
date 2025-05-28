@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin)
 }
 
 android {
@@ -40,16 +41,13 @@ android {
 }
 
 dependencies {
+    implementation("jp.wasabeef:recyclerview-animators:4.0.2")
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.play.services.location)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
-    // Java Compatibility
-    implementation(libs.koin.android.compat)
-    // Navigation Graph
-    implementation(libs.koin.androidx.navigation)
     // App Startup
     implementation(libs.koin.androidx.startup)
     implementation(project(":core"))
