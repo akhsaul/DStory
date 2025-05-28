@@ -15,8 +15,8 @@
             android:id="@+id/rvStory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:transitionGroup="true"
             android:layout_margin="8dp"
+            android:transitionGroup="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_story" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -28,7 +28,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        android:contentDescription="Button Add Story"
+        android:contentDescription="@string/desc_fab_add"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -37,8 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@color/white"
-        android:text="No data available"
-        android:textAlignment="center"
+        android:text="@string/txt_no_data"
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="gone"

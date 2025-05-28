@@ -14,7 +14,6 @@ import androidx.preference.PreferenceDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.akhsaul.core.domain.model.User
-import kotlin.time.ExperimentalTime
 
 class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataStore() {
 
@@ -48,7 +47,6 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         putBoolean(THEME_MODE_KEY, isDark)
     }
 
-    @OptIn(ExperimentalTime::class)
     fun isUserLoggedIn(): Boolean {
         val user = getUser()
         return user != null
@@ -58,7 +56,6 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
      * Set user to login or logout
      * @param user set null if you want logout, otherwise it count as login
      * */
-    @OptIn(ExperimentalTime::class)
     fun setUser(user: User?) {
         val userData: Set<String>? = user?.let {
             setOf(it.id, it.name, it.token)
@@ -127,7 +124,6 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
     }
 
     companion object {
-        private const val LAST_LOGIN_KEY = "last_login"
         private const val USER_KEY = "user"
         private const val THEME_MODE_KEY = "theme_mode"
         private const val TAG = "Settings"

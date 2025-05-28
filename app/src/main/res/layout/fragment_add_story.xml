@@ -64,7 +64,7 @@
                 android:layout_height="match_parent"
                 android:gravity="top"
                 android:inputType="text|textCapSentences|textMultiLine"
-                android:text="@string/lorem_ipsum" />
+                tools:text="@string/lorem_ipsum" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

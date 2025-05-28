@@ -1,13 +1,29 @@
 <resources>
     <string name="app_name">Dicoding Story</string>
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="tmp_pass">password99</string>
-    <string name="tmp_email">test.mail@example.com</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_password">Password</string>
+    <string name="tmp_pass" translatable="false">password99</string>
+    <string name="tmp_email" translatable="false">test.mail@example.com</string>
     <string name="exit_confirm_msg">Are you sure you want to close this application?</string>
     <string name="logout_confirm_msg">Are you sure you want to logout?</string>
-    <string name="lorem_ipsum">
+    <string name="txt_register">Register</string>
+    <string name="txt_login">Login</string>
+    <string name="txt_settings">Setting</string>
+    <string name="desc_img_story">Image Story</string>
+    <string name="desc_img_login">Image for login UI</string>
+    <string name="txt_img_register">Image for register UI</string>
+    <string name="txt_upload">Upload</string>
+    <string name="txt_uploading">Uploading..</string>
+    <string name="txt_camera">Camera</string>
+    <string name="txt_gallery">Gallery</string>
+    <string name="transition_view_detail" translatable="false">view_transition_%s</string>
+    <string name="transition_view" translatable="false">view_transition</string>
+    <string name="desc_fab_add">Button Add Story</string>
+    <string name="txt_no_data">No data available</string>
+    <string name="title_login">Let\'s login to start sharing your story!</string>
+    <string name="title_register">Register an account</string>
+    <string name="txt_name">Name</string>
+    <string name="lorem_ipsum" translatable="false">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
         dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
@@ -43,16 +59,4 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <string name="txt_register">Register</string>
-    <string name="txt_login">Login</string>
-    <string name="desc_img_story">Image Story</string>
-    <string name="txt_settings">Settings</string>
-    <string name="desc_img_login">Image for login UI</string>
-    <string name="txt_img_register">Image for register UI</string>
-    <string name="txt_upload">Upload</string>
-    <string name="txt_uploading">Uploading..</string>
-    <string name="txt_camera">Camera</string>
-    <string name="txt_gallery">Gallery</string>
-    <string name="transition_view_detail">view_transition_%s</string>
-    <string name="transition_view">view_transition</string>
 </resources>

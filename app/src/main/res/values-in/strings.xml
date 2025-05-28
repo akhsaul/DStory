@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cerita Dicoding</string>
+    <string name="txt_email">Surel</string>
+    <string name="txt_password">Kata sandi</string>
+    <string name="exit_confirm_msg">Apakah kamu yakin ingin menutup aplikasi ini?</string>
+    <string name="logout_confirm_msg">Apakah kamu yakin ingin keluar?</string>
+    <string name="txt_register">Daftar</string>
+    <string name="txt_login">Masuk</string>
+    <string name="txt_settings">Pengaturan</string>
+    <string name="desc_img_story">Gambar cerita</string>
+    <string name="desc_img_login">Gambar untuk antarmuka masuk</string>
+    <string name="txt_img_register">Gambar untuk antarmuka daftar</string>
+    <string name="txt_upload">Unggah</string>
+    <string name="txt_uploading">Mengunggah</string>
+    <string name="txt_camera">Kamera</string>
+    <string name="txt_gallery">Galeri</string>
+    <string name="desc_fab_add">Tombol tambah cerita</string>
+    <string name="txt_no_data">Data tidak tersedia</string>
+    <string name="title_login">Ayo masuk untuk mulai membagikan cerita Anda!</string>
+    <string name="title_register">Daftar akun</string>
+    <string name="txt_name">Nama</string>
+</resources>

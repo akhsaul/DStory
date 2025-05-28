@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
-            android:text="Register an account"
+            android:text="@string/title_register"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -45,17 +45,15 @@
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title"
-            app:placeholderText="Ujang">
+            app:layout_constraintTop_toBottomOf="@+id/title">
 
             <org.akhsaul.dicodingstory.view.TextInput
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Name"
                 android:ems="10"
-                android:hint="Name"
-                android:inputType="text|textPersonName|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions"
-                android:text="Ujang" />
+                android:hint="@string/txt_name"
+                android:inputType="text|textPersonName|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -72,11 +70,10 @@
             <org.akhsaul.dicodingstory.view.TextInput
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="@string/prompt_email"
+                android:autofillHints="@string/txt_email"
                 android:ems="10"
-                android:hint="@string/prompt_email"
-                android:inputType="text|textEmailAddress|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions"
-                android:text="@string/tmp_email" />
+                android:hint="@string/txt_email"
+                android:inputType="text|textEmailAddress|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -92,11 +89,10 @@
             <org.akhsaul.dicodingstory.view.TextInput
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="@string/prompt_password"
+                android:autofillHints="@string/txt_password"
                 android:ems="10"
-                android:hint="@string/prompt_password"
-                android:inputType="text|textPassword|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions"
-                android:text="@string/tmp_pass" />
+                android:hint="@string/txt_password"
+                android:inputType="text|textPassword|textAutoComplete|textAutoCorrect|textEnableTextConversionSuggestions" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
