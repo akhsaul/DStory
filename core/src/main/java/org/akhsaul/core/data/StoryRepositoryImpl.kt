@@ -12,7 +12,7 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.akhsaul.core.PlainText
-import org.akhsaul.core.catchNoInternet
+import org.akhsaul.core.catchNoNetwork
 import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.core.domain.repository.StoryRepository
@@ -62,7 +62,7 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse(gson)
             Result.Error(errorResponse?.message ?: apiResult.message())
         }
-    }.catchNoInternet().onStart {
+    }.catchNoNetwork().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 
@@ -89,7 +89,7 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse(gson)
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
-    }.catchNoInternet().onStart {
+    }.catchNoNetwork().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 }

@@ -100,13 +100,15 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 when (it) {
                     is Result.Error -> {
                         requireContext().showErrorWithToast(
-                            lifecycleScope, it.message,
+                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
                             onShow = {
                                 progressBar?.hideProgressBar()
                             }
                         )
                         if (adapter.currentList.isEmpty()) {
-                            textMessage("No internet available")
+                            textMessage(getString(R.string.txt_no_network))
+                        } else {
+                            textMessage(null)
                         }
                     }
 
@@ -114,7 +116,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                     is Result.Success -> {
                         progressBar?.hideProgressBar()
                         if (adapter.currentList.isEmpty() && it.data.isEmpty()) {
-                            textMessage("No data available")
+                            textMessage(getString(R.string.txt_no_data))
                         } else {
                             textMessage(null)
                         }
@@ -167,12 +169,15 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 true
             }
 
-            R.id.action_logout -> onButtonLogoutClicked()
+            R.id.action_logout -> {
+                onButtonLogoutClicked()
+                true
+            }
             else -> false
         }
     }
 
-    private fun onButtonLogoutClicked(): Boolean {
+    private fun onButtonLogoutClicked() {
         requireContext().showConfirmationDialog(
             R.string.app_name,
             R.string.logout_confirm_msg
@@ -182,6 +187,5 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 R.id.action_homeFragment_to_loginFragment
             )
         }
-        return true
     }
 }

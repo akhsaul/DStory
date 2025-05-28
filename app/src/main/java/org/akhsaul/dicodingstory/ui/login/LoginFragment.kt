@@ -2,7 +2,6 @@ package org.akhsaul.dicodingstory.ui.login
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +39,6 @@ class LoginFragment : Fragment(), KoinComponent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("LoginFragment", "onCreate: ${settings.hashCode()}")
         if (settings.isUserLoggedIn()) {
             findNavController().navigate(
                 R.id.action_loginFragment_to_homeFragment
@@ -73,7 +71,10 @@ class LoginFragment : Fragment(), KoinComponent {
                     }
 
                     is Result.Success -> {
-                        requireContext().showMessageWithDialog("Login", "Login successfully") {
+                        requireContext().showMessageWithDialog(
+                            getString(R.string.txt_login),
+                            getString(R.string.txt_login_success)
+                        ) {
                             progressBar?.hideProgressBar()
                             settings.setUser(it.data)
                             isAllButtonEnabled(true)
@@ -85,7 +86,7 @@ class LoginFragment : Fragment(), KoinComponent {
 
                     is Result.Error -> {
                         requireContext().showErrorWithToast(
-                            lifecycleScope, it.message,
+                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
                             onShow = {
                                 progressBar?.hideProgressBar()
                             },
@@ -102,7 +103,7 @@ class LoginFragment : Fragment(), KoinComponent {
                 val pass = edLoginPassword.getText()
                 if (email == null || pass == null) {
                     requireContext().showErrorWithToast(
-                        lifecycleScope, "Please fill all field!"
+                        lifecycleScope, getString(R.string.txt_error_input)
                     )
                     return@setOnClickListener
                 }

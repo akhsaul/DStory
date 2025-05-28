@@ -1,5 +1,6 @@
 package org.akhsaul.dicodingstory.ui.detail
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import coil3.load
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.MaterialContainerTransform
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.R
@@ -17,7 +19,6 @@ import org.akhsaul.dicodingstory.showErrorWithToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class DetailFragment : Fragment(), KoinComponent {
     private var _binding: FragmentDetailBinding? = null
@@ -31,6 +32,12 @@ class DetailFragment : Fragment(), KoinComponent {
         viewModel.setStory(story)
         sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
             drawingViewId = R.id.fragmentContainerView
+            val colorSurface: Int = MaterialColors.getColor(
+                requireContext(),
+                com.google.android.material.R.attr.colorSurface,
+                Color.TRANSPARENT
+            )
+            setAllContainerColors(colorSurface)
         }
     }
 
@@ -62,19 +69,16 @@ class DetailFragment : Fragment(), KoinComponent {
             ivDetailPhoto.load(story.photoUrl)
             tvDetailName.text = story.name
             tvDetailDescription.text = story.description
-            tvDate.text = story.createdAt.format(dateFormatter)
+            tvDate.text = story.createdAt.format(
+                DateTimeFormatter.ofPattern(
+                    requireContext().getString(R.string.txt_detail_desc)
+                )
+            )
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    companion object {
-        private val dateFormatter = DateTimeFormatter.ofPattern(
-            "'Dibuat pada tanggal' dd MMMM yyyy 'jam' HH:mm:ss z",
-            Locale("id")
-        )
     }
 }

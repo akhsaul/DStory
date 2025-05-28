@@ -51,7 +51,10 @@ class RegisterFragment : Fragment() {
                     }
 
                     is Result.Success -> {
-                        requireContext().showMessageWithDialog("Register", it.data) {
+                        requireContext().showMessageWithDialog(
+                            getString(R.string.txt_register),
+                            it.data
+                        ) {
                             progressBar?.hideProgressBar()
                             isAllButtonEnabled(true)
                             // return to loginFragment
@@ -63,7 +66,7 @@ class RegisterFragment : Fragment() {
 
                     is Result.Error -> {
                         requireContext().showErrorWithToast(
-                            lifecycleScope, it.message,
+                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
                             onShow = {
                                 progressBar?.hideProgressBar()
                             },
@@ -82,7 +85,7 @@ class RegisterFragment : Fragment() {
 
                 if (name == null || email == null || password == null) {
                     requireContext().showErrorWithToast(
-                        lifecycleScope, "Please fill all field!"
+                        lifecycleScope, getString(R.string.txt_error_input)
                     )
                     return@setOnClickListener
                 }
