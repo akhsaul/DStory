@@ -5,6 +5,7 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.util.Patterns
 import com.google.android.material.textfield.TextInputEditText
+import org.akhsaul.dicodingstory.R
 
 class TextInput : TextInputEditText {
     constructor(context: Context) : super(context)
@@ -42,19 +43,19 @@ class TextInput : TextInputEditText {
 
         when {
             text.isBlank() -> {
-                error = "Required field"
+                error = context.getString(R.string.txt_error_required)
             }
 
             isEmail && Patterns.EMAIL_ADDRESS.matcher(text).matches().not() -> {
-                error = "Email is not valid"
+                error = context.getString(R.string.txt_error_email)
             }
 
             isPassword && text.length < 8 -> {
-                error = "Minimum 8 characters"
+                error = context.getString(R.string.txt_error_password)
             }
 
             isPersonName && text.any { it.isLetter().not() } -> {
-                error = "Name only contains letters"
+                error = context.getString(R.string.txt_error_name)
             }
 
             else -> {

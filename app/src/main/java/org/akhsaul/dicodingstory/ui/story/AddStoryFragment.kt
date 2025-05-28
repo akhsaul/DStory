@@ -62,46 +62,34 @@ class AddStoryFragment : Fragment() {
                 permission == CAMERA && shouldShowRequestPermissionRationale(
                     CAMERA
                 ) -> {
-                    // In an educational UI, explain to the user why your app requires this
-                    // permission for a specific feature to behave as expected, and what
-                    // features are disabled if it's declined. In this UI, include a
-                    // "cancel" or "no thanks" button that lets the user continue
-                    // using your app without granting the permission.
-                    // Show your custom rationale dialog here.
                     showPermissionRationaleDialog(
-                        "Camera Permission Required",
+                        getString(R.string.txt_camera_permission_required),
                         CAMERA,
-                        "To add a photo to your story, please allow camera access."
+                        getString(R.string.txt_camera_dialog_message)
                     )
                 }
 
                 permission == ACCESS_FINE_LOCATION && shouldShowRequestPermissionRationale(
                     ACCESS_FINE_LOCATION
                 ) -> {
-                    // In an educational UI, explain to the user why your app requires this
-                    // permission for a specific feature to behave as expected, and what
-                    // features are disabled if it's declined. In this UI, include a
-                    // "cancel" or "no thanks" button that lets the user continue
-                    // using your app without granting the permission.
-                    // Show your custom rationale dialog here.
                     showPermissionRationaleDialog(
-                        "Location Permission Required",
+                        getString(R.string.txt_location_permission_required),
                         ACCESS_FINE_LOCATION,
-                        "This app needs location permission to add a story. Please grant the permission."
+                        getString(R.string.txt_location_dialog_message)
                     )
                 }
 
                 permission == CAMERA && !isGranted -> {
                     showPermissionDeniedForeverDialog(
-                        "Camera Permission Required",
-                        "You have denied camera permission. Please go to app settings and grant the permission manually."
+                        getString(R.string.txt_camera_permission_required),
+                        getString(R.string.txt_camera_denied_dialog_message)
                     )
                 }
 
                 permission == ACCESS_FINE_LOCATION && !isGranted -> {
                     showPermissionDeniedForeverDialog(
-                        "Location Permission Required",
-                        "You have denied location permission. Please go to app settings and grant the permission manually."
+                        getString(R.string.txt_location_permission_required),
+                        getString(R.string.txt_location_denied_dialog_message)
                     )
                 }
             }
@@ -134,10 +122,10 @@ class AddStoryFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Grant") { _, _ ->
+            .setPositiveButton(getString(R.string.txt_grant)) { _, _ ->
                 requestPermissionLauncher.launch(arrayOf(permission))
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(getString(R.string.txt_cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             .setCancelable(false)
@@ -148,12 +136,12 @@ class AddStoryFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Open settings") { _, _ ->
+            .setPositiveButton(getString(R.string.txt_open_setting)) { _, _ ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.fromParts("package", requireContext().packageName, null)
                 startActivity(intent)
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(getString(R.string.txt_cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             .setCancelable(false)
@@ -200,7 +188,7 @@ class AddStoryFragment : Fragment() {
 
                     is Result.Error -> {
                         requireContext().showErrorWithToast(
-                            lifecycleScope, it.message,
+                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
                             onShow = {
                                 progressBar?.hideProgressBar()
                             },
@@ -216,7 +204,7 @@ class AddStoryFragment : Fragment() {
                         btnUpload.setText(R.string.txt_upload)
                         btnUpload.isEnabled = true
                         requireContext().showMessageWithDialog(
-                            "Add Story",
+                            getString(R.string.txt_add_story),
                             it.data
                         ) {
                             findNavController().popBackStack()
@@ -224,13 +212,13 @@ class AddStoryFragment : Fragment() {
                     }
                 }
             }
-            btnAddPhotoFromCamera.setOnClickListener(::onButtonCameraClicked)
-            btnAddPhotoFromGallery.setOnClickListener(::onButtonGalleryClicked)
-            btnUpload.setOnClickListener(::onButtonUploadClicked)
+            btnAddPhotoFromCamera.setOnClickListener { onButtonCameraClicked() }
+            btnAddPhotoFromGallery.setOnClickListener { onButtonGalleryClicked() }
+            btnUpload.setOnClickListener { onButtonUploadClicked() }
         }
     }
 
-    private fun onButtonCameraClicked(@Suppress("unused") v: View) {
+    private fun onButtonCameraClicked() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(), CAMERA
             ) != PackageManager.PERMISSION_GRANTED
@@ -240,7 +228,7 @@ class AddStoryFragment : Fragment() {
 
         if (canUseCamera.not()) {
             this.requireContext().showErrorWithToast(
-                lifecycleScope, "Camera permission is not granted!"
+                lifecycleScope, getString(R.string.txt_error_camera)
             )
             return
         }
@@ -249,21 +237,21 @@ class AddStoryFragment : Fragment() {
         launcherIntentCamera.launch(currentImageUri!!)
     }
 
-    private fun onButtonGalleryClicked(@Suppress("unused") v: View) {
+    private fun onButtonGalleryClicked() {
         val intent = Intent().apply {
             action = Intent.ACTION_GET_CONTENT
             type = "image/*"
             putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/png", "image/jpeg"))
         }
         launcherIntentGallery.launch(
-            Intent.createChooser(intent, "Pilih Photo (PNG, JPG, JPEG)")
+            Intent.createChooser(intent, getString(R.string.txt_choose_photo))
         )
     }
 
-    private fun onButtonUploadClicked(@Suppress("unused") v: View) {
+    private fun onButtonUploadClicked() {
         if (canUseLocation.not()) {
             this.requireContext().showErrorWithToast(
-                lifecycleScope, "Location permission is not granted!"
+                lifecycleScope, getString(R.string.txt_error_location)
             )
             return
         }
@@ -274,14 +262,14 @@ class AddStoryFragment : Fragment() {
         when {
             image == null -> {
                 requireContext().showErrorWithToast(
-                    lifecycleScope, "Please add photo first!"
+                    lifecycleScope, getString(R.string.txt_error_add_photo)
                 )
                 return
             }
 
             desc == null -> {
                 requireContext().showErrorWithToast(
-                    lifecycleScope, "Please add description first!"
+                    lifecycleScope, getString(R.string.txt_error_add_desc)
                 )
                 return
             }
