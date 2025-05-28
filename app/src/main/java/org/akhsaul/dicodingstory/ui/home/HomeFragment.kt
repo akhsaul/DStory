@@ -113,7 +113,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                     is Result.Loading -> progressBar?.showProgressBar()
                     is Result.Success -> {
                         progressBar?.hideProgressBar()
-                        if (adapter.currentList.isEmpty()) {
+                        if (adapter.currentList.isEmpty() && it.data.isEmpty()) {
                             textMessage("No data available")
                         } else {
                             textMessage(null)

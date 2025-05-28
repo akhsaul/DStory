@@ -14,11 +14,7 @@ import androidx.preference.PreferenceDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.akhsaul.core.domain.model.User
-import java.time.Duration
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
-import kotlin.time.toJavaInstant
 
 class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataStore() {
 
@@ -54,15 +50,8 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
 
     @OptIn(ExperimentalTime::class)
     fun isUserLoggedIn(): Boolean {
-        val lastLogin = getString(LAST_LOGIN_KEY, null) ?: return false
-
-        val duration = Duration.between(
-            Instant.parse(lastLogin).toJavaInstant(),
-            Clock.System.now().toJavaInstant()
-        )
         val user = getUser()
-
-        return user != null && duration.toMinutes() <= 60
+        return user != null
     }
 
     /**
@@ -71,18 +60,11 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
      * */
     @OptIn(ExperimentalTime::class)
     fun setUser(user: User?) {
-        if (user == null) {
-            // do logout
-            putStringSet(USER_KEY, null)
-            putString(LAST_LOGIN_KEY, null)
-        } else {
-            // do login
-            putStringSet(USER_KEY, setOf(user.id, user.name, user.token))
-            putString(
-                LAST_LOGIN_KEY,
-                Clock.System.now().toString()
-            )
+        val userData: Set<String>? = user?.let {
+            setOf(it.id, it.name, it.token)
         }
+
+        putStringSet(USER_KEY, userData)
     }
 
     private fun getUser(): User? {

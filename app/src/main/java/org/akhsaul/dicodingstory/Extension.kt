@@ -71,7 +71,7 @@ fun Context?.showMessageWithToast(
     val toast = Toast.makeText(
         this,
         message,
-        Toast.LENGTH_LONG
+        Toast.LENGTH_SHORT
     )
 
     if (Build.VERSION.SDK_INT >= 30) {
