@@ -1,5 +1,6 @@
 package org.akhsaul.dicodingstory.util
 
+import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
@@ -8,11 +9,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.akhsaul.dicodingstory.R
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class MyGeocoder : KoinComponent {
     private val geocoder: Geocoder by inject()
+    private val messageInvalidLatitude = get<Context>().getString(R.string.txt_error_latitude)
+    private val messageInvalidLongitude = get<Context>().getString(R.string.txt_error_longitude)
+    private val messageUnknownError = get<Context>().getString(R.string.txt_error_unknown)
 
     interface ResultListener {
         fun onSuccess(address: List<Address>)
@@ -28,12 +34,12 @@ class MyGeocoder : KoinComponent {
     ) {
         when {
             latitude !in (-90.0..90.0) -> {
-                listener.onFailure("Invalid value for longitude")
+                listener.onFailure(messageInvalidLatitude)
                 return
             }
 
             longitude !in (-180.0..180.0) -> {
-                listener.onFailure("Invalid value for longitude")
+                listener.onFailure(messageInvalidLongitude)
                 return
             }
 
@@ -69,7 +75,7 @@ class MyGeocoder : KoinComponent {
                 }
 
                 override fun onError(errorMessage: String?) {
-                    listener.onFailure(errorMessage ?: "Unknown Error")
+                    listener.onFailure(errorMessage ?: messageUnknownError)
                 }
             }
         )
@@ -93,7 +99,7 @@ class MyGeocoder : KoinComponent {
                 }
             }.getOrElse {
                 withContext(Dispatchers.Main) {
-                    listener.onFailure(it.message ?: "Unknown Error")
+                    listener.onFailure(it.message ?: messageUnknownError)
                 }
                 null
             }

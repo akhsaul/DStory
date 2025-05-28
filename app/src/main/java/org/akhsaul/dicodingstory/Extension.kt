@@ -38,7 +38,7 @@ fun Context.showMessageWithDialog(
     MaterialAlertDialogBuilder(this)
         .setTitle(title)
         .setMessage(message)
-        .setPositiveButton("OK") { dialog, _ ->
+        .setPositiveButton(getString(R.string.txt_ok)) { dialog, _ ->
             onOk()
             dialog.dismiss()
         }
@@ -50,12 +50,12 @@ fun TextInputLayout.getText(): String? = editText?.text?.toString()
 
 fun Context?.showErrorWithToast(
     scope: LifecycleCoroutineScope,
-    message: String? = null,
+    message: String,
     onShow: () -> Unit = {},
     onHidden: () -> Unit = {}
 ) = showMessageWithToast(
     scope,
-    message ?: "No internet available",
+    message,
     onShow,
     onHidden
 )
@@ -125,10 +125,10 @@ fun Context.showConfirmationDialog(
     MaterialAlertDialogBuilder(this)
         .setTitle(title)
         .setMessage(message)
-        .setPositiveButton("Yes") { _, _ ->
+        .setPositiveButton(getString(R.string.txt_yes)) { _, _ ->
             onYes()
         }
-        .setNegativeButton("No", null)
+        .setNegativeButton(getString(R.string.txt_no), null)
         .setCancelable(false)
         .show()
 }

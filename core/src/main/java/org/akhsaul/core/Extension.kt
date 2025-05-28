@@ -40,15 +40,15 @@ inline fun <reified T> Response<T>.getErrorResponse(gson: Gson): T? {
 }
 
 /**
- * Convert [UnknownHostException] into [Result.Error] with message `No internet available`.
+ * Convert [UnknownHostException] into [Result.Error] with message `No network available`.
  *
  * if there's another Exception, then [otherAction] will be invoked.
  * */
-fun <T> Flow<Result<T>>.catchNoInternet(
+fun <T> Flow<Result<T>>.catchNoNetwork(
     otherAction: suspend FlowCollector<Result<T>>.(cause: Throwable) -> Unit = {}
 ): Flow<Result<T>> = this.catch {
     if (it is UnknownHostException) {
-        emit(Result.Error("No internet available"))
+        emit(Result.Error("No network available"))
     } else {
         otherAction.invoke(this, it)
     }

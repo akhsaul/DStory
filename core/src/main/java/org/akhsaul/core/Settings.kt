@@ -2,7 +2,6 @@ package org.akhsaul.core
 
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -18,7 +17,6 @@ import org.akhsaul.core.domain.model.User
 class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataStore() {
 
     fun initThemeMode(resources: Resources) {
-        Log.i(TAG, "initThemeMode: Initialize mode")
         val isDarkFromDatastore = getFromDataStore(booleanPreferencesKey(THEME_MODE_KEY))
         val isDarkFromSystem = isSystemInDarkMode(resources)
         val isDark = isDarkFromDatastore ?: isDarkFromSystem
@@ -126,6 +124,5 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
     companion object {
         private const val USER_KEY = "user"
         private const val THEME_MODE_KEY = "theme_mode"
-        private const val TAG = "Settings"
     }
 }

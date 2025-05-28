@@ -1,19 +1,23 @@
 package org.akhsaul.dicodingstory.ui.detail
 
+import android.content.Context
 import android.location.Address
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.akhsaul.core.domain.model.Story
+import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.util.MyGeocoder
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 
-class DetailViewModel : ViewModel(), KoinComponent {
+class DetailViewModel() : ViewModel(), KoinComponent {
     private var currentStory: Story? = null
     private val geocoder: MyGeocoder by inject()
-    val location = MutableStateFlow("Unknown")
+    private val defaultLocation = get<Context>().getString(R.string.txt_unknown)
+    val location = MutableStateFlow(defaultLocation)
     private var geocoderErrorListener: (String) -> Unit = {}
 
     fun setStory(story: Story) {
@@ -52,7 +56,7 @@ class DetailViewModel : ViewModel(), KoinComponent {
             val adminArea: String? = it.adminArea
             locality?.takeIf { it.isNotBlank() }?.let { parts.add(it.trim()) }
             adminArea?.takeIf { it.isNotBlank() }?.let { parts.add(it.trim()) }
-            val newLocation = parts.joinToString(", ").takeIf { it.isNotBlank() } ?: "Unknown"
+            val newLocation = parts.joinToString(", ").takeIf { it.isNotBlank() } ?: defaultLocation
             location.tryEmit(newLocation)
         }
     }

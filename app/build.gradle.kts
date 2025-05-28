@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-    implementation("jp.wasabeef:recyclerview-animators:4.0.2")
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.play.services.location)
