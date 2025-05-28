@@ -2,7 +2,6 @@ package org.akhsaul.dicodingstory.ui.detail
 
 import android.content.Context
 import android.location.Address
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +32,6 @@ class DetailViewModel() : ViewModel(), KoinComponent {
                 }
 
                 override fun onFailure(message: String) {
-                    Log.e(TAG, "Error when try to get city. message: $message")
                     geocoderErrorListener(message)
                 }
             }
@@ -59,9 +57,5 @@ class DetailViewModel() : ViewModel(), KoinComponent {
             val newLocation = parts.joinToString(", ").takeIf { it.isNotBlank() } ?: defaultLocation
             location.tryEmit(newLocation)
         }
-    }
-
-    companion object {
-        private const val TAG = "DetailViewModel"
     }
 }

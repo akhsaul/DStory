@@ -1,6 +1,5 @@
 package org.akhsaul.dicodingstory.ui.register
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +26,6 @@ class RegisterViewModel() : ViewModel(), KoinComponent {
         .flatMapLatest {
             authRepository.register(it.name, it.email, it.password)
         }.catch {
-            Log.e(TAG, "Error when try to register", it)
             emit(Result.Error("Unexpected Error"))
         }
 
@@ -35,9 +33,5 @@ class RegisterViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             dataRegister.emit(Register(name, email, password))
         }
-    }
-
-    companion object {
-        private const val TAG = "RegisterViewModel"
     }
 }

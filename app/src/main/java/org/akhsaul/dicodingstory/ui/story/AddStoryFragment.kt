@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -102,7 +101,6 @@ class AddStoryFragment : Fragment() {
         if (isSuccess) {
             binding.inputPhoto.load(requireNotNull(currentImageUri))
         } else {
-            Log.w(TAG, "Failed to get photo from camera")
             currentImageUri = null
         }
     }
@@ -113,8 +111,6 @@ class AddStoryFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             currentImageUri = result.data?.data
             binding.inputPhoto.load(requireNotNull(currentImageUri))
-        } else {
-            Log.w(TAG, "Failed to get photo from gallery")
         }
     }
 
@@ -311,6 +307,5 @@ class AddStoryFragment : Fragment() {
 
     companion object {
         private val fileNameFormatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss")
-        private const val TAG = "AddStoryFragment"
     }
 }

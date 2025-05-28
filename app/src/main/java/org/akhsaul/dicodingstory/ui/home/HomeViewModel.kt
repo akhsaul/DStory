@@ -1,6 +1,5 @@
 package org.akhsaul.dicodingstory.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,7 +38,6 @@ class HomeViewModel : ViewModel(), KoinComponent {
     }.flatMapLatest {
         storyRepository.getAllStory()
     }.catch {
-        Log.e(TAG, "Error happened in when fetch List Story", it)
         emit(Result.Error("Unexpected Error"))
     }.onEach {
         if (it is Result.Success) {
@@ -52,8 +50,4 @@ class HomeViewModel : ViewModel(), KoinComponent {
         SharingStarted.WhileSubscribed(5.seconds),
         Result.Loading
     )
-
-    companion object {
-        private const val TAG = "HomeViewModel"
-    }
 }

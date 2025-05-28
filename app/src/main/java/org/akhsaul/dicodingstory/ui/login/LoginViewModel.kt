@@ -1,6 +1,5 @@
 package org.akhsaul.dicodingstory.ui.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +26,6 @@ class LoginViewModel() : ViewModel(), KoinComponent {
         .flatMapLatest {
             authRepository.login(it.email, it.password)
         }.catch {
-            Log.e(TAG, "Error when try to login", it)
             emit(Result.Error("Unexpected Error"))
         }
 
@@ -35,9 +33,5 @@ class LoginViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch {
             dataLogin.emit(Login(username, password))
         }
-    }
-
-    companion object {
-        private const val TAG = "LoginViewModel"
     }
 }

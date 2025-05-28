@@ -27,7 +27,7 @@
     <string name="placeholder_email" translatable="false">example@gmail.com</string>
     <string name="txt_logout">Logout</string>
     <string name="txt_detail_desc">\'Dibuat pada tanggal\' dd MMMM yyyy \'jam\' HH:mm:ss z</string>
-    <string name="txt_choose_photo">Pilih Photo (PNG, JPG, JPEG)</string>
+    <string name="txt_choose_photo">Choose Photo (PNG, JPG, JPEG)</string>
     <string name="txt_add_story">Add Story</string>
     <string name="txt_cancel">Cancel</string>
     <string name="txt_open_setting">Open settings</string>
@@ -35,9 +35,9 @@
     <string name="txt_camera_permission_required">Camera Permission Required</string>
     <string name="txt_location_permission_required">Location Permission Required</string>
     <string name="txt_camera_dialog_message">To add a photo to your story, please allow camera access.</string>
-    <string name="txt_camera_denied_dialog_message">You have denied camera permission. Please go to app settings and grant the permission manually.</string>
-    <string name="txt_location_denied_dialog_message">You have denied location permission. Please go to app settings and grant the permission manually.</string>
-    <string name="txt_location_dialog_message">This app needs location permission to add a story. Please grant the permission.</string>
+    <string name="txt_camera_denied_dialog_message">You have denied camera permission. Please go to app settings and grant the permission manually!</string>
+    <string name="txt_location_denied_dialog_message">You have denied location permission. Please go to app settings and grant the permission manually!</string>
+    <string name="txt_location_dialog_message">This app needs location permission to add a story. Please grant the permission!</string>
     <string name="txt_error_add_desc">Please add description first!</string>
     <string name="txt_error_add_photo">Please add photo first!</string>
     <string name="txt_error_location">Location permission is not granted!</string>
@@ -46,7 +46,7 @@
     <string name="txt_no_network">No network available</string>
     <string name="txt_error_input">Please fill all field!</string>
     <string name="txt_login_success">Login successfully</string>
-    <string name="key_theme_mode">theme_mode</string>
+    <string name="key_theme_mode" translatable="false">theme_mode</string>
     <string name="txt_error_longitude">Invalid value for longitude</string>
     <string name="txt_error_latitude">Invalid value for latitude</string>
     <string name="txt_error_unknown">Unknown Error</string>
@@ -54,7 +54,7 @@
     <string name="txt_error_name">Name only contains letters</string>
     <string name="txt_error_email">Email is not valid</string>
     <string name="txt_error_required">Required field</string>
-    <string name="txt_ok">OK</string>
+    <string name="txt_ok" translatable="false">OK</string>
     <string name="txt_yes">Yes</string>
     <string name="txt_no">No</string>
 </resources>
