@@ -20,4 +20,5 @@
     <string name="title_login">Ayo masuk untuk mulai membagikan cerita Anda!</string>
     <string name="title_register">Daftar akun</string>
     <string name="txt_name">Nama</string>
+    <string name="txt_desc">Deskripsi</string>
 </resources>

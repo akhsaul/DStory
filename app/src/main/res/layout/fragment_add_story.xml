@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/photo_test" />
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddPhotoFromCamera"
@@ -63,8 +63,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="top"
+                android:hint="@string/txt_desc"
                 android:inputType="text|textCapSentences|textMultiLine"
-                tools:text="@string/lorem_ipsum" />
+                android:minHeight="150dp"
+                tools:text="@tools:sample/lorem/random" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

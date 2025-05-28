@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/photo_test" />
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_detail_name"
@@ -35,7 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_detail_photo"
-            tools:text="Title Story" />
+            tools:text="@tools:sample/full_names" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvDate"
@@ -48,7 +48,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_detail_name"
-            tools:text="Dibuat pada tanggal 24 Mei 2025 jam 23:59" />
+            tools:text="@tools:sample/date/mmddyy" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvLocation"
@@ -60,7 +60,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvDate"
-            tools:text="Karawang" />
+            tools:text="@tools:sample/cities" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_detail_description"
@@ -72,6 +72,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLocation"
-            tools:text="@string/lorem_ipsum" />
+            tools:text="@tools:sample/lorem/random" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
