@@ -18,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialElevationScale
-import jp.wasabeef.recyclerview.adapters.SlideInRightAnimationAdapter
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.R
@@ -50,21 +49,13 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater)
         _adapter = ListStoryAdapter(::onItemStoryClicked)
-        //binding.rvStory.adapter = adapter
-        binding.rvStory.adapter = SlideInRightAnimationAdapter(adapter).apply {
-            this.setFirstOnly(false)
-            this.setDuration(500)
-        }
+        binding.rvStory.adapter = adapter
         
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
         return binding.root
@@ -75,8 +66,8 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         sharedView: View,
         transitionName: String
     ) {
-        exitTransition = MaterialElevationScale(false).setDuration(500L)
-        reenterTransition = MaterialElevationScale(true).setDuration(500L)
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToDetailFragment(
                 story,

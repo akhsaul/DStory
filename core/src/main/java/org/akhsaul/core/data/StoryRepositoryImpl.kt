@@ -70,7 +70,7 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
         page: Int?,
         size: Int?, location: Int
     ): Flow<Result<List<Story>>> = flow {
-        val apiResult = apiService.getAllStory()
+        val apiResult = apiService.getAllStory(size = 50)
         if (apiResult.isSuccessful) {
             val listStory = apiResult.body()?.listStory.orEmpty().map {
                 Story(

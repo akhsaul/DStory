@@ -1,8 +1,10 @@
 package org.akhsaul.dicodingstory.adapter
 
+import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
@@ -48,6 +50,11 @@ class ListStoryAdapter(private val listener: (Story, View, String) -> Unit) :
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(getItem(position), listener)
+
+        val view = holder.itemView
+        val anim = ObjectAnimator.ofFloat(view, "translationX", view.rootView.width.toFloat(), 0f)
+        anim.interpolator = LinearInterpolator()
+        anim.setDuration(300).start()
     }
 }
 

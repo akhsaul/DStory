@@ -31,7 +31,6 @@ class DetailFragment : Fragment(), KoinComponent {
         viewModel.setStory(story)
         sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
             drawingViewId = R.id.fragmentContainerView
-            duration = 500L
         }
     }
 
