@@ -108,6 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="@string/txt_register"
+            android:textColor="@color/textColorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnLogin"
             app:layout_constraintHorizontal_bias="0.5"
@@ -116,13 +117,16 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/txt_login"
+            android:textColor="@color/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="@+id/btnRegister"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btnRegister"
-            app:layout_constraintTop_toTopOf="@+id/btnRegister" />
+            app:layout_constraintTop_toTopOf="@+id/btnRegister"
+            app:strokeColor="@color/navy" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -37,6 +37,5 @@
         android:background="@color/white"
         android:indeterminate="true"
         android:visibility="gone"
-        app:indicatorColor="@color/black"
         tools:visibility="visible" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
