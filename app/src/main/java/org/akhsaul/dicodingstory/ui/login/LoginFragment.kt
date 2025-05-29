@@ -15,6 +15,7 @@ import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentLoginBinding
 import org.akhsaul.dicodingstory.getText
+import org.akhsaul.dicodingstory.isError
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showExitConfirmationDialog
 import org.akhsaul.dicodingstory.showMessageWithDialog
@@ -99,15 +100,16 @@ class LoginFragment : Fragment(), KoinComponent {
             }
 
             btnLogin.setOnClickListener {
-                val email = edLoginEmail.getText()
-                val pass = edLoginPassword.getText()
-                if (email == null || pass == null) {
+                if (edLoginEmail.isError() || edLoginPassword.isError()) {
                     requireContext().showErrorWithToast(
                         lifecycleScope, getString(R.string.txt_error_input)
                     )
                     return@setOnClickListener
                 }
-                viewModel.login(email, pass)
+
+                val email = edLoginEmail.getText()
+                val pass = edLoginPassword.getText()
+                viewModel.login(email!!, pass!!)
                 isAllButtonEnabled(false)
             }
 

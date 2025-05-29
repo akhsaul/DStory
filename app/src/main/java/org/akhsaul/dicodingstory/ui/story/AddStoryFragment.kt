@@ -29,6 +29,7 @@ import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentAddStoryBinding
 import org.akhsaul.dicodingstory.getImageUri
 import org.akhsaul.dicodingstory.getText
+import org.akhsaul.dicodingstory.isError
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showMessageWithDialog
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
@@ -253,7 +254,7 @@ class AddStoryFragment : Fragment() {
         }
 
         val image = currentImageUri
-        val desc = binding.edAddDescription.getText()
+        val desc = binding.edAddDescription
 
         when {
             image == null -> {
@@ -263,7 +264,7 @@ class AddStoryFragment : Fragment() {
                 return
             }
 
-            desc == null -> {
+            desc.isError() -> {
                 requireContext().showErrorWithToast(
                     lifecycleScope, getString(R.string.txt_error_add_desc)
                 )
@@ -271,7 +272,7 @@ class AddStoryFragment : Fragment() {
             }
 
             else -> {
-                viewModel.addStory(requireContext(), image, desc)
+                viewModel.addStory(requireContext(), image, desc.getText()!!)
             }
         }
     }

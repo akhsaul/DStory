@@ -8,6 +8,9 @@ import com.google.android.material.textfield.TextInputEditText
 import org.akhsaul.dicodingstory.R
 
 class TextInput : TextInputEditText {
+    var isError = false
+        private set
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
@@ -25,13 +28,13 @@ class TextInput : TextInputEditText {
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
 
         val currentText = text?.toString()
-        validate(currentText)
+        isError = validate(currentText).not()
     }
 
-    private fun validate(text: String?) {
+    private fun validate(text: String?): Boolean {
         if (text == null) {
             error = null
-            return
+            return false
         }
 
         val variation = inputType and InputType.TYPE_MASK_VARIATION
@@ -40,7 +43,7 @@ class TextInput : TextInputEditText {
         val isPersonName = variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME
         val isPassword = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
                 variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
-
+        var isValid = false
         when {
             text.isBlank() -> {
                 error = context.getString(R.string.txt_error_required)
@@ -60,7 +63,9 @@ class TextInput : TextInputEditText {
 
             else -> {
                 error = null
+                isValid = true
             }
         }
+        return isValid
     }
 }

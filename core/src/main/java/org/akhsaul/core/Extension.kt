@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.exifinterface.media.ExifInterface
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
@@ -107,4 +109,17 @@ fun rotateImage(source: Bitmap, angle: Float): Bitmap {
     return Bitmap.createBitmap(
         source, 0, 0, source.width, source.height, matrix, true
     )
+}
+
+fun setAppDarkMode(isDark: Boolean) {
+    val compatDelegate = if (isDark) {
+        AppCompatDelegate.MODE_NIGHT_YES
+    } else {
+        AppCompatDelegate.MODE_NIGHT_NO
+    }
+    AppCompatDelegate.setDefaultNightMode(compatDelegate)
+}
+
+fun applyAppLanguage(languageCode: String) {
+    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode))
 }

@@ -6,6 +6,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import org.akhsaul.core.BuildConfig
 import org.akhsaul.core.Settings
 import org.akhsaul.core.di.coreModule
+import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.ui.detail.DetailViewModel
 import org.akhsaul.dicodingstory.ui.home.HomeViewModel
 import org.akhsaul.dicodingstory.ui.login.LoginViewModel
@@ -17,9 +18,15 @@ import org.koin.dsl.module
 
 private val Context.dataStore by preferencesDataStore(BuildConfig.LIBRARY_PACKAGE_NAME)
 val appModule = module {
+
     single(createdAtStart = true) {
         Settings(get<Context>().dataStore).apply {
-            initThemeMode(get<Context>().resources)
+            init(
+                get<Context>().resources,
+                get<Context>().resources.getStringArray(R.array.language_values),
+                get<Context>().getString(R.string.key_theme_mode),
+                get<Context>().getString(R.string.key_language),
+            )
         }
     }
     single(createdAtStart = true) {

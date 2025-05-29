@@ -22,6 +22,7 @@
     <string name="txt_name">Nama</string>
     <string name="txt_desc">Deskripsi</string>
     <string name="txt_logout">Keluar</string>
+    <string name="txt_detail_desc">\'Dibuat pada tanggal\' dd MMMM yyyy \'jam\' HH:mm:ss z</string>
     <string name="txt_choose_photo">Pilih Foto (PNG, JPG, JPEG)</string>
     <string name="txt_add_story">Tambah Cerita</string>
     <string name="txt_cancel">Batal</string>
@@ -29,17 +30,17 @@
     <string name="txt_grant">Izinkan</string>
     <string name="txt_camera_permission_required">Izin kamera dibutuhkan</string>
     <string name="txt_location_permission_required">Izin lokasi dibutuhkan</string>
-    <string name="txt_camera_dialog_message">Tolong izinkan akses kamera untuk menambahkan foto ke cerita Anda</string>
+    <string name="txt_camera_dialog_message">Mohon izinkan akses kamera untuk menambahkan foto ke cerita Anda</string>
     <string name="txt_camera_denied_dialog_message">Anda telah menolak izin kamera. Tolong buka pengaturan aplikasi dan izinkan kamera secara manual!</string>
     <string name="txt_location_denied_dialog_message">Anda telah menolak izin lokasi. Tolong buka pengaturan aplikasi dan izinkan lokasi secara manual!</string>
     <string name="txt_location_dialog_message">Aplikasi ini membutuhkan izin lokasi untuk menambahkan cerita. Tolong beri izin!</string>
-    <string name="txt_error_add_desc">Tolong tambah deskripsi terlebih dahulu!</string>
-    <string name="txt_error_add_photo">Tolong tambah foto terlebih dahulu!</string>
+    <string name="txt_error_add_desc">Mohon tambah deskripsi terlebih dahulu!</string>
+    <string name="txt_error_add_photo">Mohon tambah foto terlebih dahulu!</string>
     <string name="txt_error_location">Izin lokasi tidak diberikan!</string>
     <string name="txt_error_camera">Izin kamera tidak diberikan!</string>
     <string name="txt_unknown">Tidak diketahui</string>
     <string name="txt_no_network">Tidak ada internet</string>
-    <string name="txt_error_input">Tolong isi semua kolom!</string>
+    <string name="txt_error_input">Mohon isi semua kolom!</string>
     <string name="txt_login_success">Berhasil masuk</string>
     <string name="txt_error_longitude">Nilai tidak valid untuk longitude</string>
     <string name="txt_error_latitude">Nilai tidak valid untuk latitude</string>
@@ -50,4 +51,11 @@
     <string name="txt_error_required">Kolom yang wajib diisi</string>
     <string name="txt_yes">Ya</string>
     <string name="txt_no">Tidak</string>
+    <string name="txt_light_mode">Mode Terang diaktifkan</string>
+    <string name="txt_dark_mode">Mode Gelap diaktifkan</string>
+    <string name="title_theme_mode">Mode Gelap</string>
+    <string name="choose_language">Pilih Bahasa</string>
+    <string name="lang_id">Indonesia</string>
+    <string name="lang_en">Inggris</string>
+    <string name="txt_ui">Antarmuka Pengguna</string>
 </resources>

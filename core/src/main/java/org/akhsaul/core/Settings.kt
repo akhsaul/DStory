@@ -2,7 +2,6 @@ package org.akhsaul.core
 
 import android.content.res.Configuration
 import android.content.res.Resources
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -13,36 +12,38 @@ import androidx.preference.PreferenceDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.akhsaul.core.domain.model.User
+import java.util.Locale
 
 class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataStore() {
 
-    fun initThemeMode(resources: Resources) {
-        val isDarkFromDatastore = getFromDataStore(booleanPreferencesKey(THEME_MODE_KEY))
-        val isDarkFromSystem = isSystemInDarkMode(resources)
+    fun init(
+        resources: Resources,
+        supportedLocales: Array<String>,
+        keyThemeMode: String,
+        keyLanguage: String
+    ) {
+        val localeFromDataStore = getFromDataStore(stringPreferencesKey(keyLanguage))?.let {
+            Locale(it)
+        }
+        val localeFromSystem = resources.configuration.locales.getFirstMatch(supportedLocales)
+        val locale: Locale = (localeFromDataStore ?: localeFromSystem) ?: Locale("en")
+        val languageCode = locale.language
+        applyAppLanguage(languageCode)
+        putString(keyLanguage, languageCode)
+
+        val isDarkFromDatastore = getFromDataStore(booleanPreferencesKey(keyThemeMode))
+        val isDarkFromSystem = isSystemInDarkMode(resources.configuration)
         val isDark = isDarkFromDatastore ?: isDarkFromSystem
-        setThemeMode(isDark)
+        setAppDarkMode(isDark)
+        putBoolean(keyThemeMode, isDark)
     }
 
-    private fun isSystemInDarkMode(resources: Resources): Boolean {
-        return when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+    private fun isSystemInDarkMode(configuration: Configuration): Boolean {
+        return when (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
             else -> false
         }
-    }
-
-    fun setAppDarkMode(isDark: Boolean) {
-        val compatDelegate = if (isDark) {
-            AppCompatDelegate.MODE_NIGHT_YES
-        } else {
-            AppCompatDelegate.MODE_NIGHT_NO
-        }
-        AppCompatDelegate.setDefaultNightMode(compatDelegate)
-    }
-
-    private fun setThemeMode(isDark: Boolean) {
-        setAppDarkMode(isDark)
-        putBoolean(THEME_MODE_KEY, isDark)
     }
 
     fun isUserLoggedIn(): Boolean {

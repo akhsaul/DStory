@@ -21,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
+import org.akhsaul.dicodingstory.view.TextInput
 import java.io.File
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -45,6 +46,8 @@ fun Context.showMessageWithDialog(
         .setCancelable(false)
         .show()
 }
+
+fun TextInputLayout.isError(): Boolean = (editText as? TextInput)?.isError == true
 
 fun TextInputLayout.getText(): String? = editText?.text?.toString()
 

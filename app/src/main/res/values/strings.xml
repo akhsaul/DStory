@@ -26,7 +26,7 @@
     <string name="txt_desc">Description</string>
     <string name="placeholder_email" translatable="false">example@gmail.com</string>
     <string name="txt_logout">Logout</string>
-    <string name="txt_detail_desc">\'Dibuat pada tanggal\' dd MMMM yyyy \'jam\' HH:mm:ss z</string>
+    <string name="txt_detail_desc">\'Created on date\' dd MMMM yyyy \'at\' HH:mm:ss z</string>
     <string name="txt_choose_photo">Choose Photo (PNG, JPG, JPEG)</string>
     <string name="txt_add_story">Add Story</string>
     <string name="txt_cancel">Cancel</string>
@@ -57,4 +57,12 @@
     <string name="txt_ok" translatable="false">OK</string>
     <string name="txt_yes">Yes</string>
     <string name="txt_no">No</string>
+    <string name="txt_light_mode">Light mode enabled</string>
+    <string name="txt_dark_mode">Dark mode enabled</string>
+    <string name="title_theme_mode">Dark Mode</string>
+    <string name="key_language" translatable="false">language</string>
+    <string name="choose_language">Select Language</string>
+    <string name="lang_id">Indonesian</string>
+    <string name="lang_en">English</string>
+    <string name="txt_ui">User Interface</string>
 </resources>

@@ -13,6 +13,7 @@ import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentRegisterBinding
 import org.akhsaul.dicodingstory.getText
+import org.akhsaul.dicodingstory.isError
 import org.akhsaul.dicodingstory.showErrorWithToast
 import org.akhsaul.dicodingstory.showMessageWithDialog
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
@@ -79,17 +80,17 @@ class RegisterFragment : Fragment() {
             }
 
             btnRegister.setOnClickListener {
-                val name = edRegisterName.getText()
-                val email = edRegisterEmail.getText()
-                val password = edRegisterPassword.getText()
-
-                if (name == null || email == null || password == null) {
+                if (edRegisterName.isError() || edRegisterEmail.isError() || edRegisterPassword.isError()) {
                     requireContext().showErrorWithToast(
                         lifecycleScope, getString(R.string.txt_error_input)
                     )
                     return@setOnClickListener
                 }
-                viewModel.register(name, email, password)
+
+                val name = edRegisterName.getText()
+                val email = edRegisterEmail.getText()
+                val password = edRegisterPassword.getText()
+                viewModel.register(name!!, email!!, password!!)
                 isAllButtonEnabled(false)
             }
 
