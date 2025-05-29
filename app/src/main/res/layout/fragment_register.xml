@@ -91,7 +91,8 @@
             app:layout_constraintBottom_toTopOf="@+id/btnRegister"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ed_register_email">
+            app:layout_constraintTop_toBottomOf="@+id/ed_register_email"
+            app:passwordToggleEnabled="true">
 
             <org.akhsaul.dicodingstory.view.TextInput
                 android:layout_width="match_parent"

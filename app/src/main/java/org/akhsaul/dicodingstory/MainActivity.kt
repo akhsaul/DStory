@@ -3,7 +3,6 @@ package org.akhsaul.dicodingstory
 import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.View
 import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity(), ProgressBarControls {
                 when (destination.id) {
                     R.id.homeFragment, R.id.settingsFragment -> {
                         root.fitsSystemWindows = true
-                        appBarLayout.visibility = View.VISIBLE
+                        appBarLayout.isVisible = true
                         fragmentContainerView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                             topMargin = getActionBarHeightPx(this@MainActivity)
                         }
@@ -47,7 +46,7 @@ class MainActivity : AppCompatActivity(), ProgressBarControls {
 
                     else -> {
                         root.fitsSystemWindows = false
-                        appBarLayout.visibility = View.GONE
+                        appBarLayout.isVisible = false
                         fragmentContainerView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                             topMargin = 0
                         }

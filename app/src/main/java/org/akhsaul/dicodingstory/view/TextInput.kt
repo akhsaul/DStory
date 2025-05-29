@@ -46,7 +46,11 @@ class TextInput : TextInputEditText {
         var isValid = false
         when {
             text.isBlank() -> {
-                error = context.getString(R.string.txt_error_required)
+                if (isPassword) {
+                    setError(context.getString(R.string.txt_error_password), null)
+                } else {
+                    error = context.getString(R.string.txt_error_required)
+                }
             }
 
             isEmail && Patterns.EMAIL_ADDRESS.matcher(text).matches().not() -> {
@@ -54,7 +58,7 @@ class TextInput : TextInputEditText {
             }
 
             isPassword && text.length < 8 -> {
-                error = context.getString(R.string.txt_error_password)
+                setError(context.getString(R.string.txt_error_password), null)
             }
 
             isPersonName && text.any { it.isLetter().not() } -> {
