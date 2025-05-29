@@ -2,8 +2,6 @@
     <string name="app_name">Dicoding Story</string>
     <string name="txt_email">Email</string>
     <string name="txt_password">Password</string>
-    <string name="tmp_pass" translatable="false">password99</string>
-    <string name="tmp_email" translatable="false">test.mail@example.com</string>
     <string name="exit_confirm_msg">Are you sure you want to close this application?</string>
     <string name="logout_confirm_msg">Are you sure you want to logout?</string>
     <string name="txt_register">Register</string>
@@ -17,7 +15,6 @@
     <string name="txt_camera">Camera</string>
     <string name="txt_gallery">Gallery</string>
     <string name="transition_view_detail" translatable="false">view_transition_%s</string>
-    <string name="transition_view" translatable="false">view_transition</string>
     <string name="desc_fab_add">Button Add Story</string>
     <string name="txt_no_data">No data available</string>
     <string name="title_login">Let\'s login to start sharing your story!</string>

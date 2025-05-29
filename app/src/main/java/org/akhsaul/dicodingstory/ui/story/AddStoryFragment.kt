@@ -64,8 +64,8 @@ class AddStoryFragment : Fragment() {
                 ) -> {
                     showPermissionRationaleDialog(
                         getString(R.string.txt_camera_permission_required),
+                        getString(R.string.txt_camera_dialog_message),
                         CAMERA,
-                        getString(R.string.txt_camera_dialog_message)
                     )
                 }
 
@@ -74,8 +74,8 @@ class AddStoryFragment : Fragment() {
                 ) -> {
                     showPermissionRationaleDialog(
                         getString(R.string.txt_location_permission_required),
+                        getString(R.string.txt_location_dialog_message),
                         ACCESS_FINE_LOCATION,
-                        getString(R.string.txt_location_dialog_message)
                     )
                 }
 

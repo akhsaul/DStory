@@ -28,14 +28,18 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         val localeFromSystem = resources.configuration.locales.getFirstMatch(supportedLocales)
         val locale: Locale = (localeFromDataStore ?: localeFromSystem) ?: Locale("en")
         val languageCode = locale.language
+        if (localeFromDataStore == null) {
+            putString(keyLanguage, languageCode)
+        }
         applyAppLanguage(languageCode)
-        putString(keyLanguage, languageCode)
 
         val isDarkFromDatastore = getFromDataStore(booleanPreferencesKey(keyThemeMode))
         val isDarkFromSystem = isSystemInDarkMode(resources.configuration)
         val isDark = isDarkFromDatastore ?: isDarkFromSystem
+        if (isDarkFromDatastore == null) {
+            putBoolean(keyThemeMode, isDark)
+        }
         setAppDarkMode(isDark)
-        putBoolean(keyThemeMode, isDark)
     }
 
     private fun isSystemInDarkMode(configuration: Configuration): Boolean {
@@ -124,6 +128,5 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
 
     companion object {
         private const val USER_KEY = "user"
-        private const val THEME_MODE_KEY = "theme_mode"
     }
 }

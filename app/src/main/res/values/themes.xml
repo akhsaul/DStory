@@ -9,6 +9,11 @@
 
     <style name="Theme.DicodingStory" parent="Base.Theme.DicodingStory" />
 
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="postSplashScreenTheme">@style/Theme.DicodingStory</item>
+    </style>
+
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="buttonBarPositiveButtonStyle">@style/MyDialogButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/MyDialogButton</item>
