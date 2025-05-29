@@ -1,6 +1,8 @@
 package org.akhsaul.core
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -22,6 +24,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.net.UnknownHostException
+import java.util.Locale
 
 val MediaType.Companion.PlainText: MediaType?
     get() = "text/plain".toMediaTypeOrNull()
@@ -122,4 +125,20 @@ fun setAppDarkMode(isDark: Boolean) {
 
 fun applyAppLanguage(languageCode: String) {
     AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode))
+}
+
+fun isSystemInDarkMode(resources: Resources): Boolean {
+    return when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+        Configuration.UI_MODE_NIGHT_YES -> true
+        Configuration.UI_MODE_NIGHT_NO -> false
+        else -> false
+    }
+}
+
+fun getSupportedSystemLocale(
+    resources: Resources,
+    supportedLocales: Array<String>,
+    defaultLocale: Locale = Locale("en")
+): Locale {
+    return resources.configuration.locales.getFirstMatch(supportedLocales) ?: defaultLocale
 }

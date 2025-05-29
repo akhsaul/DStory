@@ -1,6 +1,5 @@
 package org.akhsaul.core
 
-import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -25,8 +24,8 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         val localeFromDataStore = getFromDataStore(stringPreferencesKey(keyLanguage))?.let {
             Locale(it)
         }
-        val localeFromSystem = resources.configuration.locales.getFirstMatch(supportedLocales)
-        val locale: Locale = (localeFromDataStore ?: localeFromSystem) ?: Locale("en")
+        val localeFromSystem = getSupportedSystemLocale(resources, supportedLocales)
+        val locale: Locale = (localeFromDataStore ?: localeFromSystem)
         val languageCode = locale.language
         if (localeFromDataStore == null) {
             putString(keyLanguage, languageCode)
@@ -34,20 +33,12 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
         applyAppLanguage(languageCode)
 
         val isDarkFromDatastore = getFromDataStore(booleanPreferencesKey(keyThemeMode))
-        val isDarkFromSystem = isSystemInDarkMode(resources.configuration)
+        val isDarkFromSystem = isSystemInDarkMode(resources)
         val isDark = isDarkFromDatastore ?: isDarkFromSystem
         if (isDarkFromDatastore == null) {
             putBoolean(keyThemeMode, isDark)
         }
         setAppDarkMode(isDark)
-    }
-
-    private fun isSystemInDarkMode(configuration: Configuration): Boolean {
-        return when (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            Configuration.UI_MODE_NIGHT_NO -> false
-            else -> false
-        }
     }
 
     fun isUserLoggedIn(): Boolean {

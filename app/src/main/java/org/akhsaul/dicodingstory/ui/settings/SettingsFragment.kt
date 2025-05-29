@@ -21,6 +21,7 @@ class SettingsFragment : PreferenceFragmentCompat(), KoinComponent {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
         val switchMode = findPreference<SwitchPreferenceCompat>(getString(R.string.key_theme_mode))
+
         switchMode?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _, newValue ->
                 setAppDarkMode(newValue as Boolean)
