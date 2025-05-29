@@ -246,13 +246,6 @@ class AddStoryFragment : Fragment() {
     }
 
     private fun onButtonUploadClicked() {
-        if (canUseLocation.not()) {
-            this.requireContext().showErrorWithToast(
-                lifecycleScope, getString(R.string.txt_error_location)
-            )
-            return
-        }
-
         val image = currentImageUri
         val desc = binding.edAddDescription
 
