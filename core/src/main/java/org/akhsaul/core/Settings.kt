@@ -14,6 +14,7 @@ import org.akhsaul.core.domain.model.User
 import java.util.Locale
 
 class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataStore() {
+    private var currentUser: User? = null
 
     fun init(
         resources: Resources,
@@ -55,19 +56,25 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
             setOf(it.id, it.name, it.token)
         }
 
+        currentUser = user
         putStringSet(USER_KEY, userData)
     }
 
     private fun getUser(): User? {
+        if (currentUser != null) {
+            return currentUser
+        }
+
         val user = getStringSet(USER_KEY, null)
         return if (user == null || user.size != 3) {
             null
         } else {
-            User(
+            currentUser = User(
                 id = user.elementAt(0),
                 name = user.elementAt(1),
                 token = user.elementAt(2)
             )
+            currentUser
         }
     }
 
