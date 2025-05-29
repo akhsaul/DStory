@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
+            android:alpha="0"
             android:text="@string/title_login"
             android:textAlignment="center"
             android:textSize="20sp"
@@ -40,7 +41,8 @@
             app:layout_constraintBottom_toTopOf="@+id/ed_login_email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image" />
+            app:layout_constraintTop_toBottomOf="@+id/image"
+            tools:alpha="100" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_login_email"
@@ -48,10 +50,12 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
+            android:alpha="0"
             app:layout_constraintBottom_toTopOf="@+id/ed_login_password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title">
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:alpha="100">
 
             <org.akhsaul.dicodingstory.view.TextInput
                 android:layout_width="match_parent"
@@ -68,11 +72,13 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
+            android:alpha="0"
             app:layout_constraintBottom_toTopOf="@+id/btnRegister"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ed_login_email"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            tools:alpha="100">
 
             <org.akhsaul.dicodingstory.view.TextInput
                 android:layout_width="match_parent"
@@ -90,6 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:alpha="0"
             android:text="@string/txt_register"
             android:textColor="@color/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -97,18 +104,21 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ed_login_password"
-            app:strokeColor="@color/navy" />
+            app:strokeColor="@color/navy"
+            tools:alpha="100" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:alpha="0"
             android:text="@string/txt_login"
             android:textColor="@color/textColorPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/btnRegister"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btnRegister"
-            app:layout_constraintTop_toTopOf="@+id/btnRegister" />
+            app:layout_constraintTop_toTopOf="@+id/btnRegister"
+            tools:alpha="100" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

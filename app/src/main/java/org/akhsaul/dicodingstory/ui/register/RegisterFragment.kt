@@ -1,5 +1,7 @@
 package org.akhsaul.dicodingstory.ui.register
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -36,6 +38,7 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRegisterBinding.inflate(layoutInflater)
+        binding.playAnimation()
         return binding.root
     }
 
@@ -100,6 +103,30 @@ class RegisterFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun FragmentRegisterBinding.playAnimation() {
+        ObjectAnimator.ofFloat(image, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
+
+        val title = ObjectAnimator.ofFloat(title, View.ALPHA, 1f).setDuration(300)
+        val name = ObjectAnimator.ofFloat(edRegisterName, View.ALPHA, 1f).setDuration(300)
+        val email = ObjectAnimator.ofFloat(edRegisterEmail, View.ALPHA, 1f).setDuration(300)
+        val password = ObjectAnimator.ofFloat(edRegisterPassword, View.ALPHA, 1f).setDuration(300)
+
+        val btnLogin = ObjectAnimator.ofFloat(btnLogin, View.ALPHA, 1f).setDuration(300)
+        val btnRegister = ObjectAnimator.ofFloat(btnRegister, View.ALPHA, 1f).setDuration(300)
+        val btnAnimator = AnimatorSet().apply {
+            playTogether(btnLogin, btnRegister)
+        }
+
+        AnimatorSet().apply {
+            startDelay = 500
+            playSequentially(title, name, email, password, btnAnimator)
+        }.start()
     }
 
     private fun isAllButtonEnabled(value: Boolean) {
