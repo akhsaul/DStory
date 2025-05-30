@@ -11,7 +11,7 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="org.akhsaul.core.CoilInitializer"
+                android:name="org.akhsaul.core.util.CoilInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>

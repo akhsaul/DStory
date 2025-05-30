@@ -1,4 +1,4 @@
-package org.akhsaul.dicodingstory
+package org.akhsaul.dicodingstory.util
 
 import android.content.ContentValues
 import android.content.Context
@@ -21,6 +21,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
+import org.akhsaul.dicodingstory.BuildConfig
+import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.view.TextInput
 import java.io.File
 import java.time.ZoneId

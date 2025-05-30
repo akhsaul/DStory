@@ -5,9 +5,9 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
-import org.akhsaul.core.Settings
-import org.akhsaul.core.applyAppLanguage
-import org.akhsaul.core.setAppDarkMode
+import org.akhsaul.core.util.Settings
+import org.akhsaul.core.util.applyAppLanguage
+import org.akhsaul.core.util.setAppDarkMode
 import org.akhsaul.dicodingstory.R
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

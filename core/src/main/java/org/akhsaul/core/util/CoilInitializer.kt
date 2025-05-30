@@ -1,4 +1,4 @@
-package org.akhsaul.core
+package org.akhsaul.core.util
 
 import android.content.Context
 import androidx.appcompat.content.res.AppCompatResources
@@ -11,6 +11,7 @@ import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
+import org.akhsaul.core.R
 
 @Suppress("unused")
 class CoilInitializer : Initializer<ImageLoader> {

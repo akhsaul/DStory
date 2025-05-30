@@ -4,7 +4,7 @@ import android.content.Context
 import android.location.Geocoder
 import androidx.datastore.preferences.preferencesDataStore
 import org.akhsaul.core.BuildConfig
-import org.akhsaul.core.Settings
+import org.akhsaul.core.util.Settings
 import org.akhsaul.core.di.coreModule
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.ui.detail.DetailViewModel

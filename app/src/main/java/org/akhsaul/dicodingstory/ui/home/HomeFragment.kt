@@ -20,13 +20,14 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialElevationScale
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
+import org.akhsaul.core.util.Settings
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
-import org.akhsaul.dicodingstory.collectOn
+import org.akhsaul.dicodingstory.util.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
-import org.akhsaul.dicodingstory.showConfirmationDialog
-import org.akhsaul.dicodingstory.showErrorWithToast
-import org.akhsaul.dicodingstory.showExitConfirmationDialog
+import org.akhsaul.dicodingstory.util.showConfirmationDialog
+import org.akhsaul.dicodingstory.util.showErrorWithToast
+import org.akhsaul.dicodingstory.util.showExitConfirmationDialog
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
@@ -38,7 +39,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     private val binding get() = _binding!!
     private var _adapter: ListStoryAdapter? = null
     private val adapter get() = _adapter!!
-    private val settings: org.akhsaul.core.Settings by inject()
+    private val settings: Settings by inject()
     private val viewModel: HomeViewModel by viewModel()
     private var progressBar: ProgressBarControls? = null
 

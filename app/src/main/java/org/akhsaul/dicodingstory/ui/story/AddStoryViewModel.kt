@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.StoryRequest
 import org.akhsaul.core.domain.repository.StoryRepository
-import org.akhsaul.core.toFile
+import org.akhsaul.core.util.toFile
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.random.Random

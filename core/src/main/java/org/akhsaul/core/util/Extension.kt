@@ -1,4 +1,4 @@
-package org.akhsaul.core
+package org.akhsaul.core.util
 
 import android.content.Context
 import android.content.res.Configuration
