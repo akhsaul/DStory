@@ -37,7 +37,6 @@
     <string name="txt_error_add_desc">Mohon tambah deskripsi terlebih dahulu!</string>
     <string name="txt_error_add_photo">Mohon tambah foto terlebih dahulu!</string>
     <string name="txt_error_location">Izin lokasi tidak diberikan!</string>
-    <string name="txt_error_camera">Izin kamera tidak diberikan!</string>
     <string name="txt_unknown">Tidak diketahui</string>
     <string name="txt_no_network">Tidak ada internet</string>
     <string name="txt_error_input">Mohon isi semua kolom!</string>
@@ -58,4 +57,5 @@
     <string name="lang_id">Indonesia</string>
     <string name="lang_en">Inggris</string>
     <string name="txt_ui">Antarmuka Pengguna</string>
+    <string name="txt_gps">Gunakan lokasi/GPS (opsional)</string>
 </resources>

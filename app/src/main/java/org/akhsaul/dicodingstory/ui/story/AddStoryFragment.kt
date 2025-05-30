@@ -1,5 +1,6 @@
 package org.akhsaul.dicodingstory.ui.story
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
 import android.app.Activity
@@ -13,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -45,53 +47,61 @@ class AddStoryFragment : Fragment() {
     private var canUseLocation = false
     private var currentImageUri: Uri? = null
     private var progressBar: ProgressBarControls? = null
+    private var locationToken: CancellationTokenSource? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { results ->
-        results.forEach { permission, isGranted ->
-            when {
-                permission == CAMERA && isGranted -> {
-                    canUseCamera = true
-                }
+        val camera = results[CAMERA]
+        val fineLocation = results[ACCESS_FINE_LOCATION]
+        val coarseLocation = results[ACCESS_COARSE_LOCATION]
+        binding.switchGps.isChecked = fineLocation == true || coarseLocation == true
 
-                permission == ACCESS_FINE_LOCATION && isGranted -> {
-                    canUseLocation = true
-                }
+        when {
+            camera == true -> {
+                canUseCamera = true
+            }
 
-                permission == CAMERA && shouldShowRequestPermissionRationale(
-                    CAMERA
-                ) -> {
-                    showPermissionRationaleDialog(
-                        getString(R.string.txt_camera_permission_required),
-                        getString(R.string.txt_camera_dialog_message),
-                        CAMERA,
-                    )
-                }
+            fineLocation == true || coarseLocation == true -> {
+                canUseLocation = true
+            }
 
-                permission == ACCESS_FINE_LOCATION && shouldShowRequestPermissionRationale(
-                    ACCESS_FINE_LOCATION
-                ) -> {
-                    showPermissionRationaleDialog(
-                        getString(R.string.txt_location_permission_required),
-                        getString(R.string.txt_location_dialog_message),
-                        ACCESS_FINE_LOCATION,
-                    )
-                }
+            camera == false && shouldShowRequestPermissionRationale(CAMERA) -> {
+                showPermissionRationaleDialog(
+                    getString(R.string.txt_camera_permission_required),
+                    getString(R.string.txt_camera_dialog_message),
+                    CAMERA,
+                )
+            }
 
-                permission == CAMERA && !isGranted -> {
-                    showPermissionDeniedForeverDialog(
-                        getString(R.string.txt_camera_permission_required),
-                        getString(R.string.txt_camera_denied_dialog_message)
-                    )
-                }
+            fineLocation == false && shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION) -> {
+                showPermissionRationaleDialog(
+                    getString(R.string.txt_location_permission_required),
+                    getString(R.string.txt_location_dialog_message),
+                    ACCESS_FINE_LOCATION,
+                )
+            }
 
-                permission == ACCESS_FINE_LOCATION && !isGranted -> {
-                    showPermissionDeniedForeverDialog(
-                        getString(R.string.txt_location_permission_required),
-                        getString(R.string.txt_location_denied_dialog_message)
-                    )
-                }
+            coarseLocation == false && shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION) -> {
+                showPermissionRationaleDialog(
+                    getString(R.string.txt_location_permission_required),
+                    getString(R.string.txt_location_dialog_message),
+                    ACCESS_COARSE_LOCATION,
+                )
+            }
+
+            camera == false -> {
+                showPermissionDeniedForeverDialog(
+                    getString(R.string.txt_camera_permission_required),
+                    getString(R.string.txt_camera_denied_dialog_message)
+                )
+            }
+
+            fineLocation == false && coarseLocation == false -> {
+                showPermissionDeniedForeverDialog(
+                    getString(R.string.txt_location_permission_required),
+                    getString(R.string.txt_location_denied_dialog_message)
+                )
             }
         }
     }
@@ -212,6 +222,7 @@ class AddStoryFragment : Fragment() {
             btnAddPhotoFromCamera.setOnClickListener { onButtonCameraClicked() }
             btnAddPhotoFromGallery.setOnClickListener { onButtonGalleryClicked() }
             btnUpload.setOnClickListener { onButtonUploadClicked() }
+            switchGps.setOnClickListener { onSwitchGpsClicked() }
         }
     }
 
@@ -221,12 +232,6 @@ class AddStoryFragment : Fragment() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissionLauncher.launch(arrayOf(CAMERA))
-        }
-
-        if (canUseCamera.not()) {
-            this.requireContext().showErrorWithToast(
-                lifecycleScope, getString(R.string.txt_error_camera)
-            )
             return
         }
 
@@ -245,9 +250,10 @@ class AddStoryFragment : Fragment() {
         )
     }
 
-    private fun onButtonUploadClicked() {
+    private fun FragmentAddStoryBinding.onButtonUploadClicked() {
         val image = currentImageUri
-        val desc = binding.edAddDescription
+        val desc = edAddDescription
+        val useGps = switchGps.isChecked
 
         when {
             image == null -> {
@@ -264,30 +270,60 @@ class AddStoryFragment : Fragment() {
                 return
             }
 
+            useGps && canUseLocation.not() -> {
+                requireContext().showErrorWithToast(
+                    lifecycleScope, "Please grant GPS or disable it!"
+                )
+                return
+            }
+
             else -> {
+                if (useGps) {
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(),
+                            ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        requestPermissionLauncher.launch(
+                            arrayOf(
+                                ACCESS_FINE_LOCATION,
+                                ACCESS_COARSE_LOCATION
+                            )
+                        )
+                    }
+                    startCollectGps()
+                }
                 viewModel.addStory(requireContext(), image, desc.getText()!!)
             }
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun FragmentAddStoryBinding.onSwitchGpsClicked() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermissionLauncher.launch(arrayOf(ACCESS_FINE_LOCATION))
+            switchGps.isChecked = false
+            requestPermissionLauncher.launch(arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
         }
+        startCollectGps()
+    }
 
+    @RequiresPermission(allOf = [ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION])
+    private fun startCollectGps() {
         if (canUseLocation) {
-            val locationToken = CancellationTokenSource()
+            if (locationToken != null) {
+                return
+            }
+            val tokenSource = CancellationTokenSource()
+            locationToken = tokenSource
             LocationServices.getFusedLocationProviderClient(requireContext())
                 .getCurrentLocation(
                     CurrentLocationRequest.Builder()
                         .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
                         .setMaxUpdateAgeMillis(5.minutes.inWholeMilliseconds)
-                        .build(), locationToken.token
+                        .build(), tokenSource.token
                 ).addOnSuccessListener { location ->
                     viewModel.currentLocation.tryEmit(location)
                 }
@@ -297,6 +333,8 @@ class AddStoryFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        locationToken?.cancel()
+        locationToken = null
     }
 
     companion object {

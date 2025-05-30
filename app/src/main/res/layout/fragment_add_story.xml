@@ -50,6 +50,15 @@
             app:layout_constraintStart_toEndOf="@+id/btnAddPhotoFromCamera"
             app:layout_constraintTop_toBottomOf="@+id/inputPhoto" />
 
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchGps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/txt_gps"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnAddPhotoFromCamera" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_add_description"
             android:layout_width="match_parent"
@@ -58,7 +67,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnAddPhotoFromCamera"
+            app:layout_constraintTop_toBottomOf="@+id/switchGps"
             app:layout_constraintVertical_chainStyle="packed">
 
             <org.akhsaul.dicodingstory.view.TextInput
