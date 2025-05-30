@@ -1,9 +1,11 @@
 package org.akhsaul.core
 
 import android.content.Context
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.startup.Initializer
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
+import coil3.asImage
 import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.memory.MemoryCache
@@ -25,6 +27,8 @@ class CoilInitializer : Initializer<ImageLoader> {
                     .maxSizePercent(0.25)
                     .build()
             )
+            .placeholder(AppCompatResources.getDrawable(context, R.drawable.photo_24px)?.asImage())
+            .error(AppCompatResources.getDrawable(context, R.drawable.broken_image_24px)?.asImage())
             .build()
         SingletonImageLoader.setSafe { imageLoader }
         return imageLoader
