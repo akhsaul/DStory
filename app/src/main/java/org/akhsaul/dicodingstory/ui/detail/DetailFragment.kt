@@ -13,8 +13,8 @@ import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.MaterialContainerTransform
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.dicodingstory.R
-import org.akhsaul.dicodingstory.util.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentDetailBinding
+import org.akhsaul.dicodingstory.util.collectOn
 import org.akhsaul.dicodingstory.util.showErrorWithToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent

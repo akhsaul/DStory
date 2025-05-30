@@ -5,13 +5,13 @@ import com.google.gson.GsonBuilder
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import org.akhsaul.core.BuildConfig
-import org.akhsaul.core.util.Settings
 import org.akhsaul.core.data.AuthRepositoryImpl
 import org.akhsaul.core.data.StoryRepositoryImpl
 import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.repository.AuthRepository
 import org.akhsaul.core.domain.repository.StoryRepository
 import org.akhsaul.core.util.ConverterUTCToZoneDeserializer
+import org.akhsaul.core.util.Settings
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit

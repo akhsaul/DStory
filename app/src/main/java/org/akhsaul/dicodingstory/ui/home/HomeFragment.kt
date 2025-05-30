@@ -23,12 +23,12 @@ import org.akhsaul.core.domain.model.Story
 import org.akhsaul.core.util.Settings
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
-import org.akhsaul.dicodingstory.util.collectOn
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
+import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
+import org.akhsaul.dicodingstory.util.collectOn
 import org.akhsaul.dicodingstory.util.showConfirmationDialog
 import org.akhsaul.dicodingstory.util.showErrorWithToast
 import org.akhsaul.dicodingstory.util.showExitConfirmationDialog
-import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -57,7 +57,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         _binding = FragmentHomeBinding.inflate(layoutInflater)
         _adapter = ListStoryAdapter(::onItemStoryClicked)
         binding.rvStory.adapter = adapter
-        
+
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
         return binding.root
     }
@@ -174,6 +174,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 onButtonLogoutClicked()
                 true
             }
+
             else -> false
         }
     }

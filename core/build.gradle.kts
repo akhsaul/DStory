@@ -6,14 +6,14 @@ plugins {
     id("kotlin-parcelize")
 }
 
-var BASE_URL: String? = System.getenv("BASE_URL")
-var HOSTNAME: String? = System.getenv("HOSTNAME")
+var baseUrl: String? = System.getenv("BASE_URL")
+var hostname: String? = System.getenv("HOSTNAME")
 
 val localFile = rootProject.file("local.properties")
 if (localFile.exists()) {
     loadProperties(localFile.toString()).let {
-        BASE_URL = it.getProperty("BASE_URL")
-        HOSTNAME = it.getProperty("HOSTNAME")
+        baseUrl = it.getProperty("BASE_URL")
+        hostname = it.getProperty("HOSTNAME")
     }
 }
 
@@ -22,8 +22,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        buildConfigField("String", "BASE_URL", "\"$BASE_URL\"")
-        buildConfigField("String", "HOSTNAME", "\"$HOSTNAME\"")
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        buildConfigField("String", "HOSTNAME", "\"$hostname\"")
         minSdk = 27
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -56,8 +56,6 @@ dependencies {
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
-    // App Startup
-    implementation(libs.koin.androidx.startup)
     implementation(libs.androidx.startup.runtime)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.preference.ktx)
@@ -69,7 +67,6 @@ dependencies {
     implementation(libs.gson)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.koin.test)
-    // Koin for JUnit 5
     testImplementation(libs.koin.test.junit5)
 
     implementation(libs.androidx.core.ktx)
