@@ -8,12 +8,18 @@ plugins {
 
 var baseUrl: String? = System.getenv("BASE_URL")
 var hostname: String? = System.getenv("HOSTNAME")
+var certPin1: String? = System.getenv("CERT_PIN1")
+var certPin2: String? = System.getenv("CERT_PIN2")
+var certPin3: String? = System.getenv("CERT_PIN3")
 
 val localFile = rootProject.file("local.properties")
 if (localFile.exists()) {
     loadProperties(localFile.toString()).let {
         baseUrl = it.getProperty("BASE_URL")
         hostname = it.getProperty("HOSTNAME")
+        certPin1 = it.getProperty("CERT_PIN1")
+        certPin2 = it.getProperty("CERT_PIN2")
+        certPin3 = it.getProperty("CERT_PIN3")
     }
 }
 
@@ -22,6 +28,9 @@ android {
     compileSdk = 35
 
     defaultConfig {
+        buildConfigField("String", "CERT_PIN1", "\"$certPin1\"")
+        buildConfigField("String", "CERT_PIN2", "\"$certPin2\"")
+        buildConfigField("String", "CERT_PIN3", "\"$certPin3\"")
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         buildConfigField("String", "HOSTNAME", "\"$hostname\"")
         minSdk = 27

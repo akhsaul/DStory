@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit
 val coreModule = module {
     single<OkHttpClient> {
         val certificatePinner = CertificatePinner.Builder()
-            .add(BuildConfig.HOSTNAME, "sha256/bKTIluDN5O7wQKDoVBap/2FVvNQkOlv6Uivq+D44YH4=")
-            .add(BuildConfig.HOSTNAME, "sha256/bdrBhpj38ffhxpubzkINl0rG+UyossdhcBYj+Zx2fcc=")
-            .add(BuildConfig.HOSTNAME, "sha256/C5+lpZ7tcVwmwQIMcRtPbsQtWLABXhQzejna0wHFr8M=")
+            .add(BuildConfig.HOSTNAME, BuildConfig.CERT_PIN1)
+            .add(BuildConfig.HOSTNAME, BuildConfig.CERT_PIN2)
+            .add(BuildConfig.HOSTNAME, BuildConfig.CERT_PIN3)
             .build()
 
         val clientBuilder = OkHttpClient.Builder()
