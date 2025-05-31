@@ -2,6 +2,7 @@ package org.akhsaul.dicodingstory.ui.home
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -17,12 +18,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.map
 import com.google.android.material.transition.MaterialElevationScale
-import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.core.util.Settings
 import org.akhsaul.dicodingstory.R
-import org.akhsaul.dicodingstory.adapter.ListStoryAdapter
+import org.akhsaul.dicodingstory.adapter.StoryListPagingAdapter
+import org.akhsaul.dicodingstory.adapter.StoryLoadingStateAdapter
 import org.akhsaul.dicodingstory.databinding.FragmentHomeBinding
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
 import org.akhsaul.dicodingstory.util.collectOn
@@ -37,7 +40,7 @@ import kotlin.time.ExperimentalTime
 class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private var _adapter: ListStoryAdapter? = null
+    private var _adapter: StoryListPagingAdapter? = null
     private val adapter get() = _adapter!!
     private val settings: Settings by inject()
     private val viewModel: HomeViewModel by viewModel()
@@ -55,8 +58,8 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater)
-        _adapter = ListStoryAdapter(::onItemStoryClicked)
-        binding.rvStory.adapter = adapter
+        _adapter = StoryListPagingAdapter(::onItemStoryClicked)
+        //_adapter = ListStoryAdapter(::onItemStoryClicked)
 
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
         return binding.root
@@ -86,48 +89,73 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
             startPostponedEnterTransition()
         }
 
-        viewModel.currentListStory.collectOn(
-            lifecycleScope,
-            viewLifecycleOwner
-        ) {
-            adapter.submitList(it)
-        }
+//        viewModel.currentListStory.collectOn(
+//            lifecycleScope,
+//            viewLifecycleOwner
+//        ) {
+//            adapter.submitList(it)
+//        }
 
         with(binding) {
-            viewModel.stateFetchListStory.collectOn(
-                lifecycleScope,
-                viewLifecycleOwner
-            ) {
-                when (it) {
-                    is Result.Error -> {
-                        requireContext().showErrorWithToast(
-                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
-                            onShow = {
-                                progressBar?.hideProgressBar()
-                            }
-                        )
-                        if (adapter.currentList.isEmpty()) {
-                            textMessage(getString(R.string.txt_no_network))
-                        } else {
-                            textMessage(null)
-                        }
-                    }
+//            viewModel.stateFetchListStory.collectOn(
+//                lifecycleScope,
+//                viewLifecycleOwner
+//            ) {
+//                when (it) {
+//                    is Result.Error -> {
+//                        requireContext().showErrorWithToast(
+//                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
+//                            onShow = {
+//                                progressBar?.hideProgressBar()
+//                            }
+//                        )
+//                        if (adapter.currentList.isEmpty()) {
+//                            textMessage(getString(R.string.txt_no_network))
+//                        } else {
+//                            textMessage(null)
+//                        }
+//                    }
+//
+//                    is Result.Loading -> progressBar?.showProgressBar()
+//                    is Result.Success -> {
+//                        progressBar?.hideProgressBar()
+//                        if (adapter.currentList.isEmpty() && it.data.isEmpty()) {
+//                            textMessage(getString(R.string.txt_no_data))
+//                        } else {
+//                            textMessage(null)
+//                        }
+//                    }
+//                }
+//            }
 
-                    is Result.Loading -> progressBar?.showProgressBar()
-                    is Result.Success -> {
-                        progressBar?.hideProgressBar()
-                        if (adapter.currentList.isEmpty() && it.data.isEmpty()) {
-                            textMessage(getString(R.string.txt_no_data))
-                        } else {
-                            textMessage(null)
-                        }
-                    }
-                }
+            adapter.addLoadStateListener {
+                swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+            }
+
+            rvStory.adapter = adapter
+                .withLoadStateFooter(
+                    StoryLoadingStateAdapter(
+                        onError = { message ->
+                            requireContext().showErrorWithToast(
+                                lifecycleScope, message ?: getString(R.string.txt_no_network),
+                            )
+                        },
+                        onRetry = { adapter.retry() }
+                    )
+                )
+
+
+            viewModel.storyPaging.collectOn(viewLifecycleOwner) {
+                adapter.submitData(it.map {
+                    Log.i("HomeFragment", "storyPaging.collectOn: $it")
+                    it
+                })
             }
 
             swipeRefresh.setOnRefreshListener {
-                viewModel.triggerRefresh()
-                swipeRefresh.isRefreshing = false
+                //viewModel.triggerRefresh()
+                adapter.refresh()
+                //swipeRefresh.isRefreshing = false
             }
 
             btnAddStory.setOnClickListener {

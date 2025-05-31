@@ -13,13 +13,14 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.akhsaul.dicodingstory.BuildConfig
 import org.akhsaul.dicodingstory.R
@@ -110,14 +111,13 @@ fun Toast.callBack(onShow: () -> Unit, onHidden: () -> Unit) {
  * shorthand for using [repeatOnLifecycle]
  * */
 fun <T> Flow<T>.collectOn(
-    scope: LifecycleCoroutineScope,
     owner: LifecycleOwner,
     state: Lifecycle.State = Lifecycle.State.STARTED,
-    collector: FlowCollector<T>
+    collector: suspend (T) -> Unit
 ) {
-    scope.launch {
+    owner.lifecycleScope.launch {
         owner.lifecycle.repeatOnLifecycle(state) {
-            this@collectOn.collect(collector)
+            this@collectOn.collectLatest(collector)
         }
     }
 }

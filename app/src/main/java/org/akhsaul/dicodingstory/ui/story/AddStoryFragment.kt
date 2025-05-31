@@ -182,10 +182,7 @@ class AddStoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
-            viewModel.addStoryResult.collectOn(
-                lifecycleScope,
-                viewLifecycleOwner
-            ) {
+            viewModel.addStoryResult.collectOn(viewLifecycleOwner) {
                 when (it) {
                     is Result.Loading -> {
                         progressBar?.showProgressBar()

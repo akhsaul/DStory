@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp") version "2.1.21-2.0.1"
 }
 
 var baseUrl: String? = System.getenv("BASE_URL")
@@ -61,6 +62,11 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.room.paging)
+
     implementation(libs.androidx.exifinterface)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)

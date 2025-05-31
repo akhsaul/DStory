@@ -44,10 +44,7 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(binding) {
-            viewModel.registerResult.collectOn(
-                lifecycleScope,
-                viewLifecycleOwner
-            ) {
+            viewModel.registerResult.collectOn(viewLifecycleOwner) {
                 when (it) {
                     is Result.Loading -> {
                         progressBar?.showProgressBar()

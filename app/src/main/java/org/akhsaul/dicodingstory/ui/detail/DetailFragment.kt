@@ -59,10 +59,7 @@ class DetailFragment : Fragment(), KoinComponent {
         binding.root.transitionName = args.transitionName
 
         with(binding) {
-            viewModel.location.collectOn(
-                lifecycleScope,
-                viewLifecycleOwner
-            ) {
+            viewModel.location.collectOn(viewLifecycleOwner) {
                 tvLocation.text = it
             }
             val story = viewModel.getStory()

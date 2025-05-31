@@ -7,12 +7,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.exifinterface.media.ExifInterface
+import androidx.paging.PagingSource.LoadResult
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -44,18 +45,32 @@ inline fun <reified T> Response<T>.getErrorResponse(gson: Gson): T? {
     }.getOrNull()
 }
 
+
 /**
  * Convert [UnknownHostException] into [Result.Error] with message `No network available`.
  *
- * if there's another Exception, then [otherAction] will be invoked.
+ * if there's another Exception, then re-throw it
  * */
-fun <T> Flow<Result<T>>.catchNoNetwork(
-    otherAction: suspend FlowCollector<Result<T>>.(cause: Throwable) -> Unit = {}
-): Flow<Result<T>> = this.catch {
+fun <K : Any, V : Any> kotlin.Result<LoadResult<K, V>>.catchNoNetwork()
+        : kotlin.Result<LoadResult<K, V>> = recoverCatching {
+    if (it is UnknownHostException) {
+        Log.i("PagingSource", "catchNoNetwork: $it")
+        LoadResult.Error(Exception("No network available", it))
+    } else {
+        throw it
+    }
+}
+
+/**
+ * Convert [UnknownHostException] into [Result.Error] with message `No network available`.
+ *
+ * if there's another Exception, then re-throw it
+ * */
+fun <T> Flow<Result<T>>.catchNoNetwork(): Flow<Result<T>> = this.catch {
     if (it is UnknownHostException) {
         emit(Result.Error("No network available"))
     } else {
-        otherAction.invoke(this, it)
+        throw it
     }
 }
 

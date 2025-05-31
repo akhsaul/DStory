@@ -1,5 +1,6 @@
 package org.akhsaul.core.domain.repository
 
+import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import org.akhsaul.core.data.Result
 import org.akhsaul.core.domain.model.Story
@@ -18,4 +19,6 @@ interface StoryRepository {
         size: Int? = null,
         location: Int = 0
     ): Flow<Result<List<Story>>>
+
+    fun getAllStoryPaging(): Flow<PagingData<Story>>
 }

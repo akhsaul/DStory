@@ -41,6 +41,7 @@ interface ApiService {
 
     @GET("stories")
     suspend fun getAllStory(
+        @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
     ): Response<AllStoryResponse>
 }

@@ -2,10 +2,12 @@ package org.akhsaul.dicodingstory.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
@@ -23,7 +25,7 @@ import kotlin.time.Duration.Companion.seconds
 class HomeViewModel : ViewModel(), KoinComponent {
     private val storyRepository: StoryRepository by inject()
     private val _currentListStory = MutableStateFlow<List<Story>>(emptyList())
-    val currentListStory = _currentListStory
+    val currentListStory: StateFlow<List<Story>> = _currentListStory
     private val refreshTrigger = MutableSharedFlow<Unit>()
 
     fun triggerRefresh() {
@@ -50,4 +52,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
         SharingStarted.WhileSubscribed(5.seconds),
         Result.Loading
     )
+
+    val storyPaging = storyRepository.getAllStoryPaging()
+        .cachedIn(viewModelScope)
 }

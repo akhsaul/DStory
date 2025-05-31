@@ -1,6 +1,10 @@
 package org.akhsaul.core.data
 
 import android.graphics.Bitmap
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -92,4 +96,14 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
     }.catchNoNetwork().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getAllStoryPaging(): Flow<PagingData<Story>> {
+        return Pager(
+            config = PagingConfig(pageSize = 5),
+            // mediator if want use database
+            // remoteMediator = StoryRemoteMediator(apiService),
+            pagingSourceFactory = { StoryPagingSource(apiService, gson) }
+        ).flow.flowOn(Dispatchers.IO)
+    }
 }

@@ -64,10 +64,7 @@ class LoginFragment : Fragment(), KoinComponent {
         with(binding) {
             playAnimation()
 
-            viewModel.loginResult.collectOn(
-                lifecycleScope,
-                viewLifecycleOwner
-            ) {
+            viewModel.loginResult.collectOn(viewLifecycleOwner) {
                 when (it) {
                     is Result.Loading -> {
                         progressBar?.showProgressBar()
