@@ -5,8 +5,8 @@ import androidx.paging.PagingState
 import com.google.gson.Gson
 import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.model.Story
-import org.akhsaul.core.util.catchNoNetwork
 import org.akhsaul.core.util.getErrorResponse
+import java.net.UnknownHostException
 
 class StoryPagingSource(
     private val apiService: ApiService,
@@ -20,7 +20,7 @@ class StoryPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Story> {
-        return runCatching {
+        return try {
             val page = params.key ?: 1
             val result = apiService.getAllStory(page = page, size = params.loadSize)
 
@@ -38,15 +38,17 @@ class StoryPagingSource(
                 }
                 LoadResult.Page(
                     data = data,
-                    prevKey = if (page == 1) null else page - 1,
-                    nextKey = if (data.isEmpty()) null else page + 1,
+                    prevKey = if (page == 1) null else page.minus(1),
+                    nextKey = if (data.isEmpty()) null else page.plus(1),
                 )
             } else {
                 val errorMessage = result.getErrorResponse(gson)?.message
                 LoadResult.Error(Exception(errorMessage))
             }
-        }.catchNoNetwork().getOrElse {
-            LoadResult.Error(it)
+        } catch (e: UnknownHostException) {
+            LoadResult.Error(Exception("No network available", e))
+        } catch (e: Exception) {
+            LoadResult.Error(e)
         }
     }
 }

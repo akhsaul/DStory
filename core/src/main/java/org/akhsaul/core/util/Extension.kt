@@ -7,11 +7,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.exifinterface.media.ExifInterface
-import androidx.paging.PagingSource.LoadResult
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -43,22 +41,6 @@ inline fun <reified T> Response<T>.getErrorResponse(gson: Gson): T? {
         val stream = this.errorBody()?.charStream() ?: return null
         gson.fromJson(stream, T::class.java)
     }.getOrNull()
-}
-
-
-/**
- * Convert [UnknownHostException] into [Result.Error] with message `No network available`.
- *
- * if there's another Exception, then re-throw it
- * */
-fun <K : Any, V : Any> kotlin.Result<LoadResult<K, V>>.catchNoNetwork()
-        : kotlin.Result<LoadResult<K, V>> = recoverCatching {
-    if (it is UnknownHostException) {
-        Log.i("PagingSource", "catchNoNetwork: $it")
-        LoadResult.Error(Exception("No network available", it))
-    } else {
-        throw it
-    }
 }
 
 /**

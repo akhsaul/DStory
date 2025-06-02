@@ -20,5 +20,5 @@ interface StoryRepository {
         location: Int = 0
     ): Flow<Result<List<Story>>>
 
-    fun getAllStoryPaging(): Flow<PagingData<Story>>
+    fun getAllStoryWithPaging(pageSize: Int = 10): Flow<PagingData<Story>>
 }

@@ -123,6 +123,8 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 activity?.finish()
             }
         }
+
+        adapter.refresh()
     }
 
     override fun onDestroy() {
