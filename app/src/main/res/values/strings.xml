@@ -62,4 +62,5 @@
     <string name="lang_en">English</string>
     <string name="txt_ui">User Interface</string>
     <string name="txt_gps">Use location/GPS (optional)</string>
+    <string name="txt_maps">Maps</string>
 </resources>

@@ -1,5 +1,7 @@
 <resources>
 
+    <style name="Theme.DicodingStory.Google.Maps" parent="Theme.Material3.DayNight" />
+
     <style name="Base.Theme.DicodingStory" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/navy</item>
         <item name="colorPrimaryContainer">@color/navy</item>

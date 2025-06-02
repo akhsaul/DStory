@@ -1,10 +1,8 @@
 package org.akhsaul.core.data
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.gson.Gson
-import kotlinx.coroutines.delay
 import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.core.util.catchNoNetwork
@@ -24,9 +22,7 @@ class StoryPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Story> {
         return runCatching {
             val page = params.key ?: 1
-            Log.i("PagingSource", "fetch network $page")
             val result = apiService.getAllStory(page = page, size = params.loadSize)
-            delay(5000)
 
             if (result.isSuccessful) {
                 val data = result.body()?.listStory.orEmpty().map {
@@ -51,12 +47,6 @@ class StoryPagingSource(
             }
         }.catchNoNetwork().getOrElse {
             LoadResult.Error(it)
-        }.apply {
-            Log.i("PagingSource", "getOrElse: $this")
         }
-    }
-
-    companion object {
-        const val INITIAL_PAGE_INDEX = 1
     }
 }

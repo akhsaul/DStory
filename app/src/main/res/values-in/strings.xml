@@ -58,4 +58,5 @@
     <string name="lang_en">Inggris</string>
     <string name="txt_ui">Antarmuka Pengguna</string>
     <string name="txt_gps">Gunakan lokasi/GPS (opsional)</string>
+    <string name="txt_maps">Peta</string>
 </resources>

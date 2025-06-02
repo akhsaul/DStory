@@ -8,6 +8,7 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -20,6 +21,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting"
         tools:targetApi="35">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DicodingStory.Google.Maps" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -40,5 +50,4 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
-
 </manifest>

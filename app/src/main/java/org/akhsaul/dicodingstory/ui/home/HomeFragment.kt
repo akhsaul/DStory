@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.core.view.MenuProvider
 import androidx.core.view.doOnPreDraw
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -57,7 +56,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater)
         _adapter = StoryListPagingAdapter(::onItemStoryClicked)
-        //_adapter = ListStoryAdapter(::onItemStoryClicked)
 
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
         return binding.root
@@ -115,7 +113,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
 
             btnAddStory.setOnClickListener {
                 findNavController().navigate(
-                    R.id.action_homeFragment_to_addStoryFragment
+                    HomeFragmentDirections.actionHomeFragmentToAddStoryFragment()
                 )
             }
         }
@@ -124,13 +122,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
             requireContext().showExitConfirmationDialog {
                 activity?.finish()
             }
-        }
-    }
-
-    private fun textMessage(message: String?) {
-        with(binding) {
-            tvMessage.text = message
-            tvMessage.isVisible = message != null
         }
     }
 
@@ -148,13 +139,20 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         return when (menuItem.itemId) {
             R.id.action_settings -> {
                 findNavController().navigate(
-                    R.id.action_homeFragment_to_settingsFragment
+                    HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
                 )
                 true
             }
 
             R.id.action_logout -> {
                 onButtonLogoutClicked()
+                true
+            }
+
+            R.id.action_maps -> {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToMapsActivity()
+                )
                 true
             }
 
@@ -169,7 +167,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         ) {
             settings.setUser(null)
             findNavController().navigate(
-                R.id.action_homeFragment_to_loginFragment
+                HomeFragmentDirections.actionHomeFragmentToLoginFragment()
             )
         }
     }

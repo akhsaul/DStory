@@ -6,6 +6,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import org.akhsaul.core.BuildConfig
 import org.akhsaul.core.di.coreModule
 import org.akhsaul.core.util.Settings
+import org.akhsaul.dicodingstory.MapsViewModel
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.ui.detail.DetailViewModel
 import org.akhsaul.dicodingstory.ui.home.HomeViewModel
@@ -41,4 +42,5 @@ val appModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::AddStoryViewModel)
     viewModelOf(::DetailViewModel)
+    viewModelOf(::MapsViewModel)
 }
