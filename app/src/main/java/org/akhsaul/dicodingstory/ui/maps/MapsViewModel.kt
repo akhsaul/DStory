@@ -1,4 +1,4 @@
-package org.akhsaul.dicodingstory
+package org.akhsaul.dicodingstory.ui.maps
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

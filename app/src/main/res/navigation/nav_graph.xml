@@ -88,7 +88,7 @@
         tools:layout="@layout/fragment_add_story" />
     <activity
         android:id="@+id/mapsActivity"
-        android:name="org.akhsaul.dicodingstory.MapsActivity"
+        android:name="org.akhsaul.dicodingstory.ui.maps.MapsActivity"
         android:label="@string/app_name"
         tools:layout="@layout/activity_maps" />
 </navigation>

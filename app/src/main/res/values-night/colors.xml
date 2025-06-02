@@ -2,4 +2,5 @@
 <resources>
     <color name="textColorSecondary">#FFFFFFFF</color>
     <color name="messageColor">#FFFFFFFF</color>
+    <color name="iconMapsColor">#FFFFFF</color>
 </resources>

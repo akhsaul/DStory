@@ -6,11 +6,11 @@ import androidx.datastore.preferences.preferencesDataStore
 import org.akhsaul.core.BuildConfig
 import org.akhsaul.core.di.coreModule
 import org.akhsaul.core.util.Settings
-import org.akhsaul.dicodingstory.MapsViewModel
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.ui.detail.DetailViewModel
 import org.akhsaul.dicodingstory.ui.home.HomeViewModel
 import org.akhsaul.dicodingstory.ui.login.LoginViewModel
+import org.akhsaul.dicodingstory.ui.maps.MapsViewModel
 import org.akhsaul.dicodingstory.ui.register.RegisterViewModel
 import org.akhsaul.dicodingstory.ui.story.AddStoryViewModel
 import org.akhsaul.dicodingstory.util.MyGeocoder

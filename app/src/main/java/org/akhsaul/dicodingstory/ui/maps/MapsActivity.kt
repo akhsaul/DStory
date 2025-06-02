@@ -1,18 +1,22 @@
-package org.akhsaul.dicodingstory
+package org.akhsaul.dicodingstory.ui.maps
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import org.akhsaul.core.data.Result
+import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.ActivityMapsBinding
 import org.akhsaul.dicodingstory.util.collectOn
+import org.akhsaul.dicodingstory.util.showErrorWithToast
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 
@@ -30,8 +34,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, KoinComponent {
         setContentView(binding.root)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = binding.map.getFragment<SupportMapFragment>()
         mapFragment.getMapAsync(this)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -71,7 +74,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, KoinComponent {
         }
 
         viewModel.stateFetchListStory.collectOn(owner = this) {
-            Log.d("MapsActivity", "onMapReady: $it")
+            when (it) {
+                is Result.Error -> {
+                    binding.progressBar.isVisible = false
+                    showErrorWithToast(
+                        lifecycleScope,
+                        it.message ?: getString(R.string.txt_error_unknown)
+                    )
+                }
+
+                Result.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+
+                is Result.Success -> {
+                    binding.progressBar.isVisible = false
+                }
+            }
         }
 
         mMap.setOnMapLongClickListener {

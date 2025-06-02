@@ -5,4 +5,5 @@
     <color name="textColorSecondary">#2D3D4F</color>
     <color name="textColorPrimary">#FFFFFFFF</color>
     <color name="messageColor">#FF000000</color>
+    <color name="iconMapsColor">#000000</color>
 </resources>
