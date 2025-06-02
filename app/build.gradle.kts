@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.androidx.navigation.safeargs.kotlin)
-    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
     id("com.google.devtools.ksp") version "2.1.21-2.0.1"
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -43,6 +43,11 @@ android {
 }
 
 dependencies {
+    // KTX for the Maps SDK for Android library
+    implementation("com.google.maps.android:maps-ktx:5.2.0")
+    // KTX for the Maps SDK for Android Utility Library
+    implementation("com.google.maps.android:maps-utils-ktx:5.2.0")
+    implementation(libs.play.services.maps)
     implementation(libs.androidx.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.androidx.paging.runtime.ktx)

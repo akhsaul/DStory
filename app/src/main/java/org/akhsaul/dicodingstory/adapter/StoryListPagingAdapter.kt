@@ -1,9 +1,11 @@
 package org.akhsaul.dicodingstory.adapter
 
+import android.animation.ObjectAnimator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
@@ -29,15 +31,15 @@ class StoryListPagingAdapter(
         holder: MyViewHolder,
         position: Int
     ) {
-        Log.i("PagingAdapter", "onBindViewHolder: ${getItem(position)}")
         val item = getItem(position)
         if (item != null) {
             holder.bind(item)
 
-//            val view = holder.itemView
-//            val anim = ObjectAnimator.ofFloat(view, "translationX", view.rootView.width.toFloat(), 0f)
-//            anim.interpolator = LinearInterpolator()
-//            anim.setDuration(300).start()
+            val view = holder.itemView
+            val anim =
+                ObjectAnimator.ofFloat(view, "translationX", view.rootView.width.toFloat(), 0f)
+            anim.interpolator = LinearInterpolator()
+            anim.setDuration(300).start()
         }
     }
 

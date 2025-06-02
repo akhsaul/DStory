@@ -15,16 +15,16 @@ class StoryPagingSource(
     private val gson: Gson
 ) : PagingSource<Int, Story>() {
     override fun getRefreshKey(state: PagingState<Int, Story>): Int? {
-        return state.anchorPosition?.let {
-            val anchorPage = state.closestPageToPosition(it)
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Story> {
         return runCatching {
-            Log.i("PagingSource", "fetch network")
-            val page = params.key ?: INITIAL_PAGE_INDEX
+            val page = params.key ?: 1
+            Log.i("PagingSource", "fetch network $page")
             val result = apiService.getAllStory(page = page, size = params.loadSize)
             delay(5000)
 
@@ -57,6 +57,6 @@ class StoryPagingSource(
     }
 
     companion object {
-        const val INITIAL_PAGE_INDEX = -1
+        const val INITIAL_PAGE_INDEX = 1
     }
 }

@@ -2,7 +2,6 @@ package org.akhsaul.dicodingstory.ui.home
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -19,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.paging.map
 import com.google.android.material.transition.MaterialElevationScale
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.core.util.Settings
@@ -89,45 +87,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
             startPostponedEnterTransition()
         }
 
-//        viewModel.currentListStory.collectOn(
-//            lifecycleScope,
-//            viewLifecycleOwner
-//        ) {
-//            adapter.submitList(it)
-//        }
-
         with(binding) {
-//            viewModel.stateFetchListStory.collectOn(
-//                lifecycleScope,
-//                viewLifecycleOwner
-//            ) {
-//                when (it) {
-//                    is Result.Error -> {
-//                        requireContext().showErrorWithToast(
-//                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
-//                            onShow = {
-//                                progressBar?.hideProgressBar()
-//                            }
-//                        )
-//                        if (adapter.currentList.isEmpty()) {
-//                            textMessage(getString(R.string.txt_no_network))
-//                        } else {
-//                            textMessage(null)
-//                        }
-//                    }
-//
-//                    is Result.Loading -> progressBar?.showProgressBar()
-//                    is Result.Success -> {
-//                        progressBar?.hideProgressBar()
-//                        if (adapter.currentList.isEmpty() && it.data.isEmpty()) {
-//                            textMessage(getString(R.string.txt_no_data))
-//                        } else {
-//                            textMessage(null)
-//                        }
-//                    }
-//                }
-//            }
-
             adapter.addLoadStateListener {
                 swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
             }
@@ -146,16 +106,11 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
 
 
             viewModel.storyPaging.collectOn(viewLifecycleOwner) {
-                adapter.submitData(it.map {
-                    Log.i("HomeFragment", "storyPaging.collectOn: $it")
-                    it
-                })
+                adapter.submitData(it)
             }
 
             swipeRefresh.setOnRefreshListener {
-                //viewModel.triggerRefresh()
                 adapter.refresh()
-                //swipeRefresh.isRefreshing = false
             }
 
             btnAddStory.setOnClickListener {

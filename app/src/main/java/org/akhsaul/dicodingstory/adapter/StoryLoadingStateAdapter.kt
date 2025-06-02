@@ -1,6 +1,5 @@
 package org.akhsaul.dicodingstory.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -17,7 +16,6 @@ class StoryLoadingStateAdapter(
         holder: StateViewHolder,
         loadState: LoadState
     ) {
-        Log.i("StateAdapter", "onBindViewHolder: $loadState")
         holder.bind(loadState)
     }
 

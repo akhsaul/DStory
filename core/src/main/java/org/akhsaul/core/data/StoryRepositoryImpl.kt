@@ -100,10 +100,10 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
     @OptIn(ExperimentalPagingApi::class)
     override fun getAllStoryPaging(): Flow<PagingData<Story>> {
         return Pager(
-            config = PagingConfig(pageSize = 5),
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false, initialLoadSize = 10),
             // mediator if want use database
             // remoteMediator = StoryRemoteMediator(apiService),
             pagingSourceFactory = { StoryPagingSource(apiService, gson) }
-        ).flow.flowOn(Dispatchers.IO)
+        ).flow
     }
 }
