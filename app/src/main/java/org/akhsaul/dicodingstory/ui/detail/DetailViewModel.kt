@@ -5,7 +5,7 @@ import android.location.Address
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.akhsaul.core.domain.model.Story
+import org.akhsaul.core.data.model.domain.Story
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.util.MyGeocoder
 import org.koin.core.component.KoinComponent

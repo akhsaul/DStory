@@ -19,7 +19,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.transition.MaterialElevationScale
-import org.akhsaul.core.domain.model.Story
+import org.akhsaul.core.data.model.domain.Story
 import org.akhsaul.core.util.AuthManager
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.StoryListPagingAdapter

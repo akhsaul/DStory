@@ -1,4 +1,4 @@
-package org.akhsaul.core.domain.model
+package org.akhsaul.dicodingstory.data.model.domain
 
 data class Login(
     val email: String,

@@ -1,11 +1,10 @@
-package org.akhsaul.core.data
+package org.akhsaul.core.data.source.remote
 
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.gson.Gson
-import org.akhsaul.core.data.source.remote.network.ApiService
-import org.akhsaul.core.domain.model.Story
+import org.akhsaul.core.data.model.domain.Story
 import org.akhsaul.core.util.getErrorResponse
 import java.net.UnknownHostException
 import javax.net.ssl.SSLPeerUnverifiedException

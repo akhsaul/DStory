@@ -8,7 +8,7 @@ import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
-import org.akhsaul.core.domain.model.Story
+import org.akhsaul.core.data.model.domain.Story
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.ItemStoryBinding
 import org.akhsaul.dicodingstory.util.DiffCallBack

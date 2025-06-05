@@ -3,7 +3,7 @@ package org.akhsaul.core.util
 import androidx.preference.PreferenceDataStore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import org.akhsaul.core.domain.model.User
+import org.akhsaul.core.data.model.domain.User
 
 class AuthManager(private val prefs: PreferenceDataStore) {
     private var currentUser: User? = null

@@ -25,7 +25,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.akhsaul.core.data.Result
+import org.akhsaul.core.util.Result
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.FragmentAddStoryBinding
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls

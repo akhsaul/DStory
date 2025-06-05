@@ -12,7 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import org.akhsaul.core.data.Result
+import org.akhsaul.core.util.Result
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.ActivityMapsBinding
 import org.akhsaul.dicodingstory.util.collectOn

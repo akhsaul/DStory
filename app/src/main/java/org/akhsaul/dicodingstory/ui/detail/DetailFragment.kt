@@ -11,7 +11,7 @@ import androidx.navigation.fragment.navArgs
 import coil3.load
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.MaterialContainerTransform
-import org.akhsaul.core.domain.model.Story
+import org.akhsaul.core.data.model.domain.Story
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.FragmentDetailBinding
 import org.akhsaul.dicodingstory.util.collectOn

@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
-import org.akhsaul.core.data.Result
-import org.akhsaul.core.domain.model.Story
-import org.akhsaul.core.domain.repository.StoryRepository
+import org.akhsaul.core.data.model.domain.Story
+import org.akhsaul.core.data.repository.StoryRepository
+import org.akhsaul.core.util.Result
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

@@ -23,7 +23,7 @@
             app:destination="@id/detailFragment">
             <argument
                 android:name="shareData"
-                app:argType="org.akhsaul.core.domain.model.Story" />
+                app:argType="org.akhsaul.core.data.model.domain.Story" />
             <argument
                 android:name="transitionName"
                 app:argType="string" />
@@ -76,7 +76,7 @@
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="shareData"
-            app:argType="org.akhsaul.core.domain.model.Story" />
+            app:argType="org.akhsaul.core.data.model.domain.Story" />
         <argument
             android:name="transitionName"
             app:argType="string" />

@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.akhsaul.core.data.Result
-import org.akhsaul.core.domain.model.StoryRequest
-import org.akhsaul.core.domain.repository.StoryRepository
+import org.akhsaul.core.data.repository.StoryRepository
+import org.akhsaul.core.util.Result
 import org.akhsaul.core.util.toFile
+import org.akhsaul.dicodingstory.data.model.domain.StoryRequest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.random.Random

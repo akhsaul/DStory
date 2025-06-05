@@ -10,7 +10,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.preference.PreferenceDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
-import org.akhsaul.core.domain.model.User
+import org.akhsaul.core.data.model.domain.User
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Locale

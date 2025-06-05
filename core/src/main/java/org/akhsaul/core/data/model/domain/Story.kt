@@ -1,4 +1,4 @@
-package org.akhsaul.core.domain.model
+package org.akhsaul.core.data.model.domain
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

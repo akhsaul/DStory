@@ -11,8 +11,8 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import org.akhsaul.core.data.Result
 import org.akhsaul.core.util.AuthManager
+import org.akhsaul.core.util.Result
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.FragmentLoginBinding
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls

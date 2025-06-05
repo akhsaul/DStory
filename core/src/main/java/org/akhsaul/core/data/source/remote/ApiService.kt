@@ -1,10 +1,10 @@
-package org.akhsaul.core.data.source.remote.network
+package org.akhsaul.core.data.source.remote
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.akhsaul.core.data.source.remote.reponse.AllStoryResponse
-import org.akhsaul.core.data.source.remote.reponse.ApiResponse
-import org.akhsaul.core.data.source.remote.reponse.LoginResponse
+import org.akhsaul.core.data.model.reponse.AllStoryResponse
+import org.akhsaul.core.data.model.reponse.ApiResponse
+import org.akhsaul.core.data.model.reponse.LoginResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import org.akhsaul.core.data.Result
-import org.akhsaul.core.domain.model.Login
-import org.akhsaul.core.domain.repository.AuthRepository
+import org.akhsaul.core.data.repository.AuthRepository
+import org.akhsaul.core.util.Result
+import org.akhsaul.dicodingstory.data.model.domain.Login
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds

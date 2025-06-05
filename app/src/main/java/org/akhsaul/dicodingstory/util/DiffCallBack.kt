@@ -1,7 +1,7 @@
 package org.akhsaul.dicodingstory.util
 
 import androidx.recyclerview.widget.DiffUtil
-import org.akhsaul.core.domain.model.Story
+import org.akhsaul.core.data.model.domain.Story
 
 object DiffCallBack : DiffUtil.ItemCallback<Story>() {
     override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean {

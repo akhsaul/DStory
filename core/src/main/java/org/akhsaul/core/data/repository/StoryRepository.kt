@@ -1,9 +1,9 @@
-package org.akhsaul.core.domain.repository
+package org.akhsaul.core.data.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import org.akhsaul.core.data.Result
-import org.akhsaul.core.domain.model.Story
+import org.akhsaul.core.data.model.domain.Story
+import org.akhsaul.core.util.Result
 import java.io.File
 
 interface StoryRepository {

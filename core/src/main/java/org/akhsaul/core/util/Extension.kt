@@ -17,7 +17,6 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.akhsaul.core.data.Result
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File

@@ -1,13 +1,13 @@
-package org.akhsaul.core.data
+package org.akhsaul.core.data.repository
 
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
-import org.akhsaul.core.data.source.remote.network.ApiService
-import org.akhsaul.core.domain.model.User
-import org.akhsaul.core.domain.repository.AuthRepository
+import org.akhsaul.core.data.model.domain.User
+import org.akhsaul.core.data.source.remote.ApiService
+import org.akhsaul.core.util.Result
 import org.akhsaul.core.util.catchNoNetwork
 import org.akhsaul.core.util.catchSSLError
 import org.akhsaul.core.util.getErrorResponse

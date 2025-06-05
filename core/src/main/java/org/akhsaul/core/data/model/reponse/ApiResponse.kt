@@ -1,4 +1,4 @@
-package org.akhsaul.core.data.source.remote.reponse
+package org.akhsaul.core.data.model.reponse
 
 data class ApiResponse(
     val error: Boolean,

@@ -1,4 +1,4 @@
-package org.akhsaul.core.domain.model
+package org.akhsaul.core.data.model.domain
 
 data class User(
     val id: String,
