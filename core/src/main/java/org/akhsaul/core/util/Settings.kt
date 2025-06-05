@@ -11,9 +11,14 @@ import androidx.preference.PreferenceDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.akhsaul.core.domain.model.User
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.Locale
 
-class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataStore() {
+class Settings(
+    private val datastore: DataStore<Preferences>
+) : PreferenceDataStore(), KoinComponent {
+    private val authManager: AuthManager by inject()
     private var currentUser: User? = null
 
     fun init(
@@ -52,6 +57,11 @@ class Settings(private val datastore: DataStore<Preferences>) : PreferenceDataSt
      * @param user set null if you want logout, otherwise it count as login
      * */
     fun setUser(user: User?) {
+        if (user != null) {
+            authManager.setCurrentUser(user)
+        } else {
+            authManager.removeCurrentUser()
+        }
         val userData: Set<String>? = user?.let {
             setOf(it.id, it.name, it.token)
         }

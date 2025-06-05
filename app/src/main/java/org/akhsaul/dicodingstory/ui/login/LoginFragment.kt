@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import org.akhsaul.core.data.Result
-import org.akhsaul.core.util.Settings
+import org.akhsaul.core.util.AuthManager
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.databinding.FragmentLoginBinding
 import org.akhsaul.dicodingstory.ui.base.ProgressBarControls
@@ -27,7 +27,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class LoginFragment : Fragment(), KoinComponent {
-    private val settings: Settings by inject()
+    private val authManager: AuthManager by inject()
     private val viewModel: LoginViewModel by viewModel()
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -42,7 +42,7 @@ class LoginFragment : Fragment(), KoinComponent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (settings.isUserLoggedIn()) {
+        if (authManager.isUserLoggedIn()) {
             findNavController().navigate(
                 R.id.action_loginFragment_to_homeFragment
             )
@@ -77,7 +77,7 @@ class LoginFragment : Fragment(), KoinComponent {
                             getString(R.string.txt_login_success)
                         ) {
                             progressBar?.hideProgressBar()
-                            settings.setUser(it.data)
+                            authManager.setCurrentUser(it.data)
                             isAllButtonEnabled(true)
                             findNavController().navigate(
                                 R.id.action_loginFragment_to_homeFragment
@@ -87,7 +87,7 @@ class LoginFragment : Fragment(), KoinComponent {
 
                     is Result.Error -> {
                         requireContext().showErrorWithToast(
-                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
+                            lifecycleScope, it.message ?: getString(R.string.txt_error_no_network),
                             onShow = {
                                 progressBar?.hideProgressBar()
                             },

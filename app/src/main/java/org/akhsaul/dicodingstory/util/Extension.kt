@@ -42,7 +42,7 @@ fun Context.showMessageWithDialog(
     MaterialAlertDialogBuilder(this)
         .setTitle(title)
         .setMessage(message)
-        .setPositiveButton(getString(R.string.txt_ok)) { dialog, _ ->
+        .setPositiveButton(R.string.txt_ok) { dialog, _ ->
             onOk()
             dialog.dismiss()
         }
@@ -54,7 +54,7 @@ fun TextInputLayout.isError(): Boolean = (editText as? TextInput)?.isError == tr
 
 fun TextInputLayout.getText(): String? = editText?.text?.toString()
 
-fun Context?.showErrorWithToast(
+fun Context.showErrorWithToast(
     scope: LifecycleCoroutineScope,
     message: String,
     onShow: () -> Unit = {},
@@ -66,14 +66,12 @@ fun Context?.showErrorWithToast(
     onHidden
 )
 
-fun Context?.showMessageWithToast(
+fun Context.showMessageWithToast(
     scope: LifecycleCoroutineScope,
     message: String,
     onShow: () -> Unit = {},
     onHidden: () -> Unit = {}
 ) {
-    if (this == null) return
-
     val toast = Toast.makeText(
         this,
         message,
@@ -130,10 +128,10 @@ fun Context.showConfirmationDialog(
     MaterialAlertDialogBuilder(this)
         .setTitle(title)
         .setMessage(message)
-        .setPositiveButton(getString(R.string.txt_yes)) { _, _ ->
+        .setPositiveButton(R.string.txt_yes) { _, _ ->
             onYes()
         }
-        .setNegativeButton(getString(R.string.txt_no), null)
+        .setNegativeButton(R.string.txt_no, null)
         .setCancelable(false)
         .show()
 }

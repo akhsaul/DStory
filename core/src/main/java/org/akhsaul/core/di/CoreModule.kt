@@ -10,6 +10,7 @@ import org.akhsaul.core.data.StoryRepositoryImpl
 import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.repository.AuthRepository
 import org.akhsaul.core.domain.repository.StoryRepository
+import org.akhsaul.core.util.AuthManager
 import org.akhsaul.core.util.ConverterUTCToZoneDeserializer
 import org.akhsaul.core.util.Settings
 import org.koin.core.module.dsl.singleOf
@@ -22,11 +23,14 @@ import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 
 val httpModule = lazyModule {
+    single {
+        AuthManager(get<Settings>())
+    }
     single<OkHttpClient> {
         val certificatePinner = CertificatePinner.Builder()
-            .add(BuildConfig.HOST_NAME, "sha256/ZdGDMyvHNGrXBuINzalWFR5cBK9I8vpwwew3OROCe0c=")
-//            .add(BuildConfig.HOST_NAME, BuildConfig.CERT_PIN2)
-//            .add(BuildConfig.HOST_NAME, BuildConfig.CERT_PIN3)
+            .add(BuildConfig.HOST_NAME, BuildConfig.CERT_PIN1)
+            .add(BuildConfig.HOST_NAME, BuildConfig.CERT_PIN2)
+            .add(BuildConfig.HOST_NAME, BuildConfig.CERT_PIN3)
             .build()
 
         val clientBuilder = OkHttpClient.Builder()
@@ -35,13 +39,21 @@ val httpModule = lazyModule {
             .certificatePinner(certificatePinner)
 
         clientBuilder.addInterceptor {
+            val authManager = get<AuthManager>()
+
             var newRequest = it.request().newBuilder()
                 .addHeader("User-Agent", "github@Akhsaul")
-            val token = get<Settings>().getAuthToken()
+            val token = authManager.getAuthToken()
             if (token != null) {
                 newRequest.addHeader("Authorization", "Bearer $token")
             }
-            it.proceed(newRequest.build())
+
+            val response = it.proceed(newRequest.build())
+            if (response.code == 401) {
+                authManager.triggerAuthExpired()
+            }
+
+            response
         }
 
         clientBuilder.build()

@@ -24,6 +24,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.net.UnknownHostException
 import java.util.Locale
+import javax.net.ssl.SSLPeerUnverifiedException
 
 val MediaType.Companion.PlainText: MediaType?
     get() = "text/plain".toMediaTypeOrNull()
@@ -51,6 +52,19 @@ inline fun <reified T> Response<T>.getErrorResponse(gson: Gson): T? {
 fun <T> Flow<Result<T>>.catchNoNetwork(): Flow<Result<T>> = this.catch {
     if (it is UnknownHostException) {
         emit(Result.Error("No network available"))
+    } else {
+        throw it
+    }
+}
+
+/**
+ * Convert [SSLPeerUnverifiedException] into [Result.Error] with message `SSL error`.
+ *
+ * if there's another Exception, then re-throw it
+ * */
+fun <T> Flow<Result<T>>.catchSSLError(): Flow<Result<T>> = this.catch {
+    if (it is SSLPeerUnverifiedException) {
+        emit(Result.Error("SSL error"))
     } else {
         throw it
     }
