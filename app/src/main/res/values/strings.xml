@@ -35,14 +35,14 @@
     <string name="txt_camera_denied_dialog_message">You have denied camera permission. Please go to app settings and grant the permission manually!</string>
     <string name="txt_location_denied_dialog_message">You have denied location permission. Please go to app settings and grant the permission manually!</string>
     <string name="txt_location_dialog_message">This app needs location permission to add a story. Please grant the permission!</string>
+    <string name="txt_location_unknown">Unknown</string>
+    <string name="txt_login_success">Login successfully</string>
+    <string name="key_theme_mode" translatable="false">theme_mode</string>
     <string name="txt_error_add_desc">Please add description first!</string>
     <string name="txt_error_add_photo">Please add photo first!</string>
     <string name="txt_error_location">Location permission is not granted!</string>
-    <string name="txt_unknown">Unknown</string>
-    <string name="txt_no_network">No network available</string>
+    <string name="txt_error_no_network">No network available</string>
     <string name="txt_error_input">Please fill all field!</string>
-    <string name="txt_login_success">Login successfully</string>
-    <string name="key_theme_mode" translatable="false">theme_mode</string>
     <string name="txt_error_longitude">Invalid value for longitude</string>
     <string name="txt_error_latitude">Invalid value for latitude</string>
     <string name="txt_error_unknown">Unknown Error</string>
@@ -63,4 +63,5 @@
     <string name="txt_ui">User Interface</string>
     <string name="txt_gps">Use location/GPS (optional)</string>
     <string name="txt_maps">Maps</string>
+    <string name="txt_session_expired">Your session is expired!</string>
 </resources>

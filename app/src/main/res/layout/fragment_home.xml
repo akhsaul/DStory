@@ -31,4 +31,16 @@
         android:contentDescription="@string/desc_fab_add"
         app:srcCompat="@android:drawable/ic_input_add"
         tools:visibility="visible" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:inputType="text|textCapWords"
+        android:text="@string/txt_no_data"
+        android:textColor="@color/messageColor"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

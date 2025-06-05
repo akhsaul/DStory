@@ -34,13 +34,13 @@
     <string name="txt_camera_denied_dialog_message">Anda telah menolak izin kamera. Tolong buka pengaturan aplikasi dan izinkan kamera secara manual!</string>
     <string name="txt_location_denied_dialog_message">Anda telah menolak izin lokasi. Tolong buka pengaturan aplikasi dan izinkan lokasi secara manual!</string>
     <string name="txt_location_dialog_message">Aplikasi ini membutuhkan izin lokasi untuk menambahkan cerita. Tolong beri izin!</string>
+    <string name="txt_login_success">Berhasil masuk</string>
+    <string name="txt_location_unknown">Tidak diketahui</string>
     <string name="txt_error_add_desc">Mohon tambah deskripsi terlebih dahulu!</string>
     <string name="txt_error_add_photo">Mohon tambah foto terlebih dahulu!</string>
     <string name="txt_error_location">Izin lokasi tidak diberikan!</string>
-    <string name="txt_unknown">Tidak diketahui</string>
-    <string name="txt_no_network">Tidak ada internet</string>
+    <string name="txt_error_no_network">Tidak ada internet</string>
     <string name="txt_error_input">Mohon isi semua kolom!</string>
-    <string name="txt_login_success">Berhasil masuk</string>
     <string name="txt_error_longitude">Nilai tidak valid untuk longitude</string>
     <string name="txt_error_latitude">Nilai tidak valid untuk latitude</string>
     <string name="txt_error_unknown">Kesalahan tidak diketahui</string>
@@ -59,4 +59,5 @@
     <string name="txt_ui">Antarmuka Pengguna</string>
     <string name="txt_gps">Gunakan lokasi/GPS (opsional)</string>
     <string name="txt_maps">Peta</string>
+    <string name="txt_session_expired">Sesi anda telah berakhir!</string>
 </resources>
