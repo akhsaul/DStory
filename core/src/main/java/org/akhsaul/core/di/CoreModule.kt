@@ -13,18 +13,20 @@ import org.akhsaul.core.domain.repository.StoryRepository
 import org.akhsaul.core.util.ConverterUTCToZoneDeserializer
 import org.akhsaul.core.util.Settings
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.includes
+import org.koin.dsl.lazyModule
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 
-val coreModule = module {
+val httpModule = lazyModule {
     single<OkHttpClient> {
         val certificatePinner = CertificatePinner.Builder()
-            .add(BuildConfig.HOSTNAME, BuildConfig.CERT_PIN1)
-            .add(BuildConfig.HOSTNAME, BuildConfig.CERT_PIN2)
-            .add(BuildConfig.HOSTNAME, BuildConfig.CERT_PIN3)
+            .add(BuildConfig.HOST_NAME, "sha256/ZdGDMyvHNGrXBuINzalWFR5cBK9I8vpwwew3OROCe0c=")
+//            .add(BuildConfig.HOST_NAME, BuildConfig.CERT_PIN2)
+//            .add(BuildConfig.HOST_NAME, BuildConfig.CERT_PIN3)
             .build()
 
         val clientBuilder = OkHttpClient.Builder()
@@ -44,12 +46,7 @@ val coreModule = module {
 
         clientBuilder.build()
     }
-    single(createdAtStart = true) {
-        GsonBuilder()
-            .setPrettyPrinting()
-            .registerTypeAdapter(ZonedDateTime::class.java, ConverterUTCToZoneDeserializer())
-            .create()
-    }
+
     single<ApiService> {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
@@ -58,6 +55,24 @@ val coreModule = module {
             .build()
             .create(ApiService::class.java)
     }
+}
+
+val gsonModule = module(createdAtStart = true) {
+    single {
+        GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(ZonedDateTime::class.java, ConverterUTCToZoneDeserializer())
+            .create()
+    }
+}
+
+val repositoryModule = lazyModule {
     singleOf<AuthRepository>(::AuthRepositoryImpl)
     singleOf<StoryRepository>(::StoryRepositoryImpl)
+}
+
+val coreModule = lazyModule {
+    includes(gsonModule)
+    includes(httpModule)
+    includes(repositoryModule)
 }

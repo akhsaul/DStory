@@ -14,33 +14,48 @@ import org.akhsaul.dicodingstory.ui.maps.MapsViewModel
 import org.akhsaul.dicodingstory.ui.register.RegisterViewModel
 import org.akhsaul.dicodingstory.ui.story.AddStoryViewModel
 import org.akhsaul.dicodingstory.util.MyGeocoder
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.includes
+import org.koin.dsl.lazyModule
 import org.koin.dsl.module
 
 private val Context.dataStore by preferencesDataStore(BuildConfig.LIBRARY_PACKAGE_NAME)
-val appModule = module {
 
-    single(createdAtStart = true) {
-        Settings(get<Context>().dataStore).apply {
+val settingsModule = module(createdAtStart = true) {
+    single {
+        val settingDataStore = get<Context>().dataStore
+        val resources = get<Context>().resources
+
+        Settings(settingDataStore).apply {
             init(
-                get<Context>().resources,
-                get<Context>().resources.getStringArray(R.array.language_values),
-                get<Context>().getString(R.string.key_theme_mode),
-                get<Context>().getString(R.string.key_language),
+                resources, resources.getStringArray(R.array.language_values),
+                resources.getString(R.string.key_theme_mode),
+                resources.getString(R.string.key_language),
             )
         }
     }
-    single(createdAtStart = true) {
+}
+
+val geocoderModule = module(createdAtStart = true) {
+    single {
         Geocoder(get<Context>())
     }
-    single(createdAtStart = true) {
-        MyGeocoder()
-    }
-    includes(coreModule)
+    singleOf(::MyGeocoder)
+}
+
+val viewModelModule = lazyModule {
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::AddStoryViewModel)
     viewModelOf(::DetailViewModel)
     viewModelOf(::MapsViewModel)
+}
+
+val appModule = module {
+    includes(settingsModule)
+    includes(geocoderModule)
+    includes(coreModule)
+    includes(viewModelModule)
 }

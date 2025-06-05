@@ -1,5 +1,6 @@
 package org.akhsaul.core.data
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.gson.Gson
@@ -48,7 +49,8 @@ class StoryPagingSource(
         } catch (e: UnknownHostException) {
             LoadResult.Error(Exception("No network available", e))
         } catch (e: Exception) {
-            LoadResult.Error(e)
+            Log.e("PagingSource", "error: $e")
+            LoadResult.Error(Exception("Unexpected Error", e))
         }
     }
 }

@@ -59,6 +59,7 @@ dependencies {
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+    implementation("io.insert-koin:koin-core-coroutines")
     implementation(libs.koin.androidx.startup)
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
@@ -71,15 +72,25 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.annotation)
-    testImplementation(libs.koin.test)
-    testImplementation(libs.koin.test.junit5)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    testImplementation(libs.koin.test)
+    testImplementation("io.insert-koin:koin-android-test")
+    testImplementation("io.insert-koin:koin-test-junit4")
+    //testImplementation(libs.koin.test.junit5)
+    testImplementation(libs.androidx.core.testing) // InstantTaskExecutorRule
+    testImplementation(libs.kotlinx.coroutines.test) //TestDispatcher
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
     testImplementation(libs.junit)
+
+    androidTestImplementation(libs.androidx.core.testing)  //InstantTaskExecutorRule
+    androidTestImplementation(libs.kotlinx.coroutines.test) //TestDispatcher
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

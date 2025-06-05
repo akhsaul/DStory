@@ -1,27 +1,9 @@
-import org.jetbrains.kotlin.konan.properties.loadProperties
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     id("com.google.devtools.ksp") version "2.1.21-2.0.1"
-}
-
-var baseUrl: String? = System.getenv("BASE_URL")
-var hostname: String? = System.getenv("HOSTNAME")
-var certPin1: String? = System.getenv("CERT_PIN1")
-var certPin2: String? = System.getenv("CERT_PIN2")
-var certPin3: String? = System.getenv("CERT_PIN3")
-
-val localFile = rootProject.file("local.properties")
-if (localFile.exists()) {
-    loadProperties(localFile.toString()).let {
-        baseUrl = it.getProperty("BASE_URL")
-        hostname = it.getProperty("HOSTNAME")
-        certPin1 = it.getProperty("CERT_PIN1")
-        certPin2 = it.getProperty("CERT_PIN2")
-        certPin3 = it.getProperty("CERT_PIN3")
-    }
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -29,11 +11,6 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        buildConfigField("String", "CERT_PIN1", "\"$certPin1\"")
-        buildConfigField("String", "CERT_PIN2", "\"$certPin2\"")
-        buildConfigField("String", "CERT_PIN3", "\"$certPin3\"")
-        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
-        buildConfigField("String", "HOSTNAME", "\"$hostname\"")
         minSdk = 27
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -71,6 +48,7 @@ dependencies {
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+    implementation("io.insert-koin:koin-core-coroutines")
     implementation(libs.androidx.startup.runtime)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.preference.ktx)
@@ -82,7 +60,9 @@ dependencies {
     implementation(libs.gson)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.koin.test)
-    testImplementation(libs.koin.test.junit5)
+    //testImplementation("io.insert-koin:koin-android-test")
+    testImplementation("io.insert-koin:koin-test-junit4")
+    //testImplementation(libs.koin.test.junit5)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
