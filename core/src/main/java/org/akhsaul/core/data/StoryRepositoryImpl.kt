@@ -20,6 +20,7 @@ import org.akhsaul.core.domain.model.Story
 import org.akhsaul.core.domain.repository.StoryRepository
 import org.akhsaul.core.util.PlainText
 import org.akhsaul.core.util.catchNoNetwork
+import org.akhsaul.core.util.catchSSLError
 import org.akhsaul.core.util.getErrorResponse
 import org.akhsaul.core.util.reduceFileImage
 import org.akhsaul.core.util.toMultiPartBody
@@ -66,7 +67,7 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse(gson)
             Result.Error(errorResponse?.message ?: apiResult.message())
         }
-    }.catchNoNetwork().onStart {
+    }.catchNoNetwork().catchSSLError().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 
@@ -93,7 +94,7 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse(gson)
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
-    }.catchNoNetwork().onStart {
+    }.catchNoNetwork().catchSSLError().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 

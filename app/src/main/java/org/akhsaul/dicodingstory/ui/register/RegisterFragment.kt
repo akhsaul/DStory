@@ -67,7 +67,7 @@ class RegisterFragment : Fragment() {
 
                     is Result.Error -> {
                         requireContext().showErrorWithToast(
-                            lifecycleScope, it.message ?: getString(R.string.txt_no_network),
+                            lifecycleScope, it.message ?: getString(R.string.txt_error_no_network),
                             onShow = {
                                 progressBar?.hideProgressBar()
                             },

@@ -15,7 +15,7 @@ import org.koin.core.component.inject
 class DetailViewModel() : ViewModel(), KoinComponent {
     private var currentStory: Story? = null
     private val geocoder: MyGeocoder by inject()
-    private val defaultLocation = get<Context>().getString(R.string.txt_unknown)
+    private val defaultLocation = get<Context>().getString(R.string.txt_location_unknown)
     val location = MutableStateFlow(defaultLocation)
     private var geocoderErrorListener: (String) -> Unit = {}
 

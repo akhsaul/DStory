@@ -1,6 +1,5 @@
 package org.akhsaul.dicodingstory.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -37,7 +36,6 @@ class StoryLoadingStateAdapter(
 
         fun bind(loadState: LoadState) {
             with(binding) {
-                Log.i("LoadAdapter", "bind: $loadState")
                 progressBar.isVisible = loadState is LoadState.Loading
                 if (loadState is LoadState.Error) {
                     onError(loadState.error.localizedMessage)

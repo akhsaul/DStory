@@ -9,6 +9,7 @@ import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.model.User
 import org.akhsaul.core.domain.repository.AuthRepository
 import org.akhsaul.core.util.catchNoNetwork
+import org.akhsaul.core.util.catchSSLError
 import org.akhsaul.core.util.getErrorResponse
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -32,7 +33,7 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse(gson)
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
-    }.catchNoNetwork().onStart {
+    }.catchNoNetwork().catchSSLError().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 
@@ -52,7 +53,7 @@ class AuthRepositoryImpl : AuthRepository, KoinComponent {
             val errorResponse = apiResult.getErrorResponse(gson)
             emit(Result.Error(errorResponse?.message ?: apiResult.message()))
         }
-    }.catchNoNetwork().onStart {
+    }.catchNoNetwork().catchSSLError().onStart {
         emit(Result.Loading)
     }.flowOn(Dispatchers.IO)
 }

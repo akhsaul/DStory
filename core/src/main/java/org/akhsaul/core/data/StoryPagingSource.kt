@@ -8,6 +8,7 @@ import org.akhsaul.core.data.source.remote.network.ApiService
 import org.akhsaul.core.domain.model.Story
 import org.akhsaul.core.util.getErrorResponse
 import java.net.UnknownHostException
+import javax.net.ssl.SSLPeerUnverifiedException
 
 class StoryPagingSource(
     private val apiService: ApiService,
@@ -24,7 +25,6 @@ class StoryPagingSource(
         return try {
             val page = params.key ?: 1
             val result = apiService.getAllStory(page = page, size = params.loadSize)
-
             if (result.isSuccessful) {
                 val data = result.body()?.listStory.orEmpty().map {
                     Story(
@@ -47,7 +47,9 @@ class StoryPagingSource(
                 LoadResult.Error(Exception(errorMessage))
             }
         } catch (e: UnknownHostException) {
-            LoadResult.Error(Exception("No network available", e))
+            LoadResult.Error(Exception("No Network Available", e))
+        } catch (e: SSLPeerUnverifiedException) {
+            LoadResult.Error(Exception("SSL Error", e))
         } catch (e: Exception) {
             Log.e("PagingSource", "error: $e")
             LoadResult.Error(Exception("Unexpected Error", e))

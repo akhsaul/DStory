@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.core.view.MenuProvider
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,7 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.transition.MaterialElevationScale
 import org.akhsaul.core.domain.model.Story
-import org.akhsaul.core.util.Settings
+import org.akhsaul.core.util.AuthManager
 import org.akhsaul.dicodingstory.R
 import org.akhsaul.dicodingstory.adapter.StoryListPagingAdapter
 import org.akhsaul.dicodingstory.adapter.StoryLoadingStateAdapter
@@ -29,6 +30,7 @@ import org.akhsaul.dicodingstory.util.collectOn
 import org.akhsaul.dicodingstory.util.showConfirmationDialog
 import org.akhsaul.dicodingstory.util.showErrorWithToast
 import org.akhsaul.dicodingstory.util.showExitConfirmationDialog
+import org.akhsaul.dicodingstory.util.showMessageWithDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -39,7 +41,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
     private val binding get() = _binding!!
     private var _adapter: StoryListPagingAdapter? = null
     private val adapter get() = _adapter!!
-    private val settings: Settings by inject()
+    private val authManager: AuthManager by inject()
     private val viewModel: HomeViewModel by viewModel()
     private var progressBar: ProgressBarControls? = null
 
@@ -86,8 +88,28 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         }
 
         with(binding) {
-            adapter.addLoadStateListener {
-                swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+            adapter.addLoadStateListener { loadState ->
+                swipeRefresh.isRefreshing = loadState.refresh is LoadState.Loading
+
+                // Handle refresh errors (initial loading failures)
+                if (loadState.refresh is LoadState.Error) {
+                    val state = loadState.refresh as LoadState.Error
+                    val errorMessage =
+                        state.error.localizedMessage ?: getString(R.string.txt_error_no_network)
+                    txtMessage.text = errorMessage
+                    txtMessage.isVisible = true
+                } else {
+                    txtMessage.isVisible = false
+                }
+
+                if (loadState.refresh is LoadState.NotLoading) {
+                    if (adapter.itemCount == 0) {
+                        txtMessage.setText(R.string.txt_no_data)
+                        txtMessage.isVisible = true
+                    } else {
+                        txtMessage.isVisible = false
+                    }
+                }
             }
 
             rvStory.adapter = adapter
@@ -95,13 +117,12 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                     StoryLoadingStateAdapter(
                         onError = { message ->
                             requireContext().showErrorWithToast(
-                                lifecycleScope, message ?: getString(R.string.txt_no_network),
+                                lifecycleScope, message ?: getString(R.string.txt_error_no_network),
                             )
                         },
                         onRetry = { adapter.retry() }
                     )
                 )
-
 
             viewModel.storyPaging.collectOn(viewLifecycleOwner) {
                 adapter.submitData(it)
@@ -121,6 +142,17 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireContext().showExitConfirmationDialog {
                 activity?.finish()
+            }
+        }
+
+        authManager.authExpiredEvent.collectOn(viewLifecycleOwner) {
+            requireContext().showMessageWithDialog(
+                getString(R.string.app_name),
+                getString(R.string.txt_session_expired)
+            ) {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToLoginFragment()
+                )
             }
         }
 
@@ -167,7 +199,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
             R.string.app_name,
             R.string.logout_confirm_msg
         ) {
-            settings.setUser(null)
+            authManager.removeCurrentUser()
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeFragmentToLoginFragment()
             )
