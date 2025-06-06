@@ -89,6 +89,10 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         }
 
         with(binding) {
+            viewModel.storyPaging.collectOn(viewLifecycleOwner) {
+                adapter.submitData(it)
+            }
+
             var loadingAdapter = StoryLoadingStateAdapter(
                 onError = { message ->
                     requireContext().showErrorWithToast(
@@ -132,10 +136,6 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 }
             }
             rvStory.adapter = ConcatAdapter(adapter, loadingAdapter)
-
-            viewModel.storyPaging.collectOn(viewLifecycleOwner) {
-                adapter.submitData(it)
-            }
 
             swipeRefresh.setOnRefreshListener {
                 adapter.refresh()

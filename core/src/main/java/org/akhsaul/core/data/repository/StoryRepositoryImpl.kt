@@ -103,6 +103,6 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
             pagingSourceFactory = { appDatabase.storyDao().getAllStory() }
         ).flow.map { pagingData ->
             pagingData.map(DataMapper::entityToDomain)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 }
