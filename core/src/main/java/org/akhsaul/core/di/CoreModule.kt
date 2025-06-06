@@ -1,15 +1,17 @@
 package org.akhsaul.core.di
 
+import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import org.akhsaul.core.BuildConfig
-import org.akhsaul.core.data.AuthRepositoryImpl
-import org.akhsaul.core.data.StoryRepositoryImpl
-import org.akhsaul.core.data.source.remote.network.ApiService
-import org.akhsaul.core.domain.repository.AuthRepository
-import org.akhsaul.core.domain.repository.StoryRepository
+import org.akhsaul.core.data.repository.AuthRepository
+import org.akhsaul.core.data.repository.AuthRepositoryImpl
+import org.akhsaul.core.data.repository.StoryRepository
+import org.akhsaul.core.data.repository.StoryRepositoryImpl
+import org.akhsaul.core.data.source.local.AppDatabase
+import org.akhsaul.core.data.source.remote.ApiService
 import org.akhsaul.core.util.AuthManager
 import org.akhsaul.core.util.ConverterUTCToZoneDeserializer
 import org.akhsaul.core.util.Settings
@@ -78,6 +80,10 @@ val gsonModule = module(createdAtStart = true) {
     }
 }
 
+val databaseModule = lazyModule {
+    single { AppDatabase.getDatabase(get<Context>()) }
+}
+
 val repositoryModule = lazyModule {
     singleOf<AuthRepository>(::AuthRepositoryImpl)
     singleOf<StoryRepository>(::StoryRepositoryImpl)
@@ -86,5 +92,6 @@ val repositoryModule = lazyModule {
 val coreModule = lazyModule {
     includes(gsonModule)
     includes(httpModule)
+    includes(databaseModule)
     includes(repositoryModule)
 }
