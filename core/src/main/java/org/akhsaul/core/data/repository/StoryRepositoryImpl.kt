@@ -1,10 +1,11 @@
-package org.akhsaul.core.data
+package org.akhsaul.core.data.repository
 
 import android.graphics.Bitmap
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,10 +16,13 @@ import kotlinx.coroutines.flow.onStart
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.akhsaul.core.data.source.remote.network.ApiService
-import org.akhsaul.core.domain.model.Story
-import org.akhsaul.core.domain.repository.StoryRepository
+import org.akhsaul.core.data.StoryRemoteMediator
+import org.akhsaul.core.data.model.domain.Story
+import org.akhsaul.core.data.source.local.AppDatabase
+import org.akhsaul.core.data.source.remote.ApiService
+import org.akhsaul.core.util.DataMapper
 import org.akhsaul.core.util.PlainText
+import org.akhsaul.core.util.Result
 import org.akhsaul.core.util.catchNoNetwork
 import org.akhsaul.core.util.catchSSLError
 import org.akhsaul.core.util.getErrorResponse
@@ -31,6 +35,7 @@ import java.io.File
 
 class StoryRepositoryImpl : StoryRepository, KoinComponent {
     private val apiService: ApiService by inject()
+    private val appDatabase: AppDatabase by inject()
     private val gson: Gson by inject()
 
     override fun addStory(
@@ -77,17 +82,8 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
     ): Flow<Result<List<Story>>> = flow {
         val apiResult = apiService.getAllStory(page, size, location)
         if (apiResult.isSuccessful) {
-            val listStory = apiResult.body()?.listStory.orEmpty().map {
-                Story(
-                    id = it.id,
-                    name = it.name,
-                    description = it.description,
-                    photoUrl = it.photoUrl,
-                    createdAt = it.createdAt,
-                    lat = it.lat,
-                    lon = it.lon
-                )
-            }
+            val listStory = apiResult.body()?.listStory.orEmpty()
+                .map(DataMapper::responseToDomain)
 
             emit(Result.Success(listStory))
         } else {
@@ -103,8 +99,10 @@ class StoryRepositoryImpl : StoryRepository, KoinComponent {
         return Pager(
             config = PagingConfig(pageSize = pageSize, enablePlaceholders = false),
             // mediator if want use database
-            // remoteMediator = StoryRemoteMediator(apiService),
-            pagingSourceFactory = { StoryPagingSource(apiService, gson) }
-        ).flow
+            remoteMediator = StoryRemoteMediator(apiService, appDatabase),
+            pagingSourceFactory = { appDatabase.storyDao().getAllStory() }
+        ).flow.map { pagingData ->
+            pagingData.map(DataMapper::entityToDomain)
+        }
     }
 }

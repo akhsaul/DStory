@@ -92,7 +92,7 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                 swipeRefresh.isRefreshing = loadState.refresh is LoadState.Loading
 
                 // Handle refresh errors (initial loading failures)
-                if (loadState.refresh is LoadState.Error) {
+                if (loadState.refresh is LoadState.Error && adapter.itemCount == 0) {
                     val state = loadState.refresh as LoadState.Error
                     val errorMessage =
                         state.error.localizedMessage ?: getString(R.string.txt_error_no_network)
@@ -102,13 +102,12 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
                     txtMessage.isVisible = false
                 }
 
-                if (loadState.refresh is LoadState.NotLoading) {
-                    if (adapter.itemCount == 0) {
-                        txtMessage.setText(R.string.txt_no_data)
-                        txtMessage.isVisible = true
-                    } else {
-                        txtMessage.isVisible = false
-                    }
+                // handle refresh state when api doesn't have data
+                if (loadState.refresh is LoadState.NotLoading && adapter.itemCount == 0) {
+                    txtMessage.setText(R.string.txt_no_data)
+                    txtMessage.isVisible = true
+                } else {
+                    txtMessage.isVisible = false
                 }
             }
 

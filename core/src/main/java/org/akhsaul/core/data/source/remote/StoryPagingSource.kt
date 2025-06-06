@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.gson.Gson
 import org.akhsaul.core.data.model.domain.Story
+import org.akhsaul.core.util.DataMapper
 import org.akhsaul.core.util.getErrorResponse
 import java.net.UnknownHostException
 import javax.net.ssl.SSLPeerUnverifiedException
@@ -25,17 +26,7 @@ class StoryPagingSource(
             val page = params.key ?: 1
             val result = apiService.getAllStory(page = page, size = params.loadSize)
             if (result.isSuccessful) {
-                val data = result.body()?.listStory.orEmpty().map {
-                    Story(
-                        id = it.id,
-                        name = it.name,
-                        description = it.description,
-                        photoUrl = it.photoUrl,
-                        createdAt = it.createdAt,
-                        lat = it.lat,
-                        lon = it.lon
-                    )
-                }
+                val data = result.body()?.listStory.orEmpty().map(DataMapper::responseToDomain)
                 LoadResult.Page(
                     data = data,
                     prevKey = if (page == 1) null else page.minus(1),
