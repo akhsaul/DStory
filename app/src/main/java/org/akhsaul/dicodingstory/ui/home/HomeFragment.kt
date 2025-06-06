@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import com.google.android.material.transition.MaterialElevationScale
 import org.akhsaul.core.data.model.domain.Story
 import org.akhsaul.core.util.AuthManager
@@ -88,40 +89,49 @@ class HomeFragment : Fragment(), KoinComponent, MenuProvider {
         }
 
         with(binding) {
+            var loadingAdapter = StoryLoadingStateAdapter(
+                onError = { message ->
+                    requireContext().showErrorWithToast(
+                        lifecycleScope, message ?: getString(R.string.txt_error_no_network),
+                    )
+                },
+                onRetry = { adapter.retry() }
+            )
+
             adapter.addLoadStateListener { loadState ->
                 swipeRefresh.isRefreshing = loadState.refresh is LoadState.Loading
 
                 // Handle refresh errors (initial loading failures)
-                if (loadState.refresh is LoadState.Error && adapter.itemCount == 0) {
-                    val state = loadState.refresh as LoadState.Error
-                    val errorMessage =
-                        state.error.localizedMessage ?: getString(R.string.txt_error_no_network)
-                    txtMessage.text = errorMessage
-                    txtMessage.isVisible = true
-                } else {
-                    txtMessage.isVisible = false
+                if (loadState.refresh is LoadState.Error) {
+                    if (adapter.itemCount == 0) {
+                        val state = loadState.refresh as LoadState.Error
+                        val errorMessage =
+                            state.error.localizedMessage ?: getString(R.string.txt_error_no_network)
+                        txtMessage.text = errorMessage
+                        txtMessage.isVisible = true
+                    } else {
+                        txtMessage.isVisible = false
+                    }
                 }
 
                 // handle refresh state when api doesn't have data
-                if (loadState.refresh is LoadState.NotLoading && adapter.itemCount == 0) {
-                    txtMessage.setText(R.string.txt_no_data)
-                    txtMessage.isVisible = true
+                if (loadState.refresh is LoadState.NotLoading) {
+                    if (adapter.itemCount == 0) {
+                        txtMessage.setText(R.string.txt_no_data)
+                        txtMessage.isVisible = true
+                    } else {
+                        txtMessage.isVisible = false
+                    }
+                }
+
+                if (loadState.refresh is LoadState.Error) {
+                    // show error when refresh state is error
+                    loadingAdapter.loadState = loadState.refresh
                 } else {
-                    txtMessage.isVisible = false
+                    loadingAdapter.loadState = loadState.append
                 }
             }
-
-            rvStory.adapter = adapter
-                .withLoadStateFooter(
-                    StoryLoadingStateAdapter(
-                        onError = { message ->
-                            requireContext().showErrorWithToast(
-                                lifecycleScope, message ?: getString(R.string.txt_error_no_network),
-                            )
-                        },
-                        onRetry = { adapter.retry() }
-                    )
-                )
+            rvStory.adapter = ConcatAdapter(adapter, loadingAdapter)
 
             viewModel.storyPaging.collectOn(viewLifecycleOwner) {
                 adapter.submitData(it)

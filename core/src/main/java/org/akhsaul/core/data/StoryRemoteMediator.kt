@@ -47,11 +47,15 @@ class StoryRemoteMediator(
         }
 
         return try {
-            //delay(5000)
             val result = apiService.getAllStory(page = page, size = state.config.pageSize)
             val data = result.body()?.listStory.orEmpty().map(DataMapper::responseToEntity)
 
             appDatabase.withTransaction {
+                if (loadType == LoadType.REFRESH) {
+                    appDatabase.remoteKeyDao().deleteAllRemoteKey()
+                    appDatabase.storyDao().deleteAllStory()
+                }
+
                 val prevKey = if (page == 1) null else page.minus(1)
                 val nextKey = if (data.isEmpty()) null else page.plus(1)
                 val keys = data.map {
@@ -89,9 +93,5 @@ class StoryRemoteMediator(
                 appDatabase.remoteKeyDao().getRemoteKeyById(it)
             }
         }
-    }
-
-    private companion object {
-        const val INITIAL_PAGE_INDEX = 1
     }
 }
